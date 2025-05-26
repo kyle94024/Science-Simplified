@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
-import articleThumbnailPlaceholder from "../../assets/article-thumbnail-placeholder.webp";
+import { tenant } from "@/lib/config";
 import { Loader2, User } from "lucide-react";
 import { Button } from "../ui/button";
 import "./ArticleCard.scss";
@@ -23,6 +23,8 @@ const FallbackAuthorImage = ({ authorName }) => {
         </div>
     );
 };
+
+const articleThumbnailPlaceholder = `/assets/${tenant.shortName}/article-thumbnail-placeholder.webp`;
 
 function ArticleCard({
     id,

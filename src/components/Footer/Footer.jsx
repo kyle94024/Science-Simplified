@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react"; // Using default icons as filled versions may not exist
 import "./Footer.scss";
 import Image from "next/image";
-import brandlogo from "../../assets/navbrand.png";
 import { tenant } from "@/lib/config";
+
+const brandlogo = `/assets/${tenant.shortName}/navbrand.png`;
 
 const Footer = () => {
     return (

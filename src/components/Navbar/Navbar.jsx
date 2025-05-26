@@ -4,7 +4,7 @@ import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
 import "./Navbar.scss";
 import Link from "next/link";
-import navbrand from "../../assets/navbrand.png";
+import { tenant } from "@/lib/config";
 import Image from "next/image";
 import { Menu, X, ArrowRight } from "lucide-react";
 
@@ -13,6 +13,8 @@ function Navbar() {
     const { user, isAdmin, role } = useAuthStore(); // Access user and admin state from Zustand
     const { logout } = useAuth();
     const toggleNavbar = () => setNavbar(!navbar);
+
+    const navbrand = `/assets/${tenant.shortName}/navbrand.png`;
 
     // Define the navigation links based on authentication and admin status
     const navLinks = [

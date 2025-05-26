@@ -3,8 +3,8 @@
     border-radius: 2rem;
     padding: 4rem 4rem 7rem;
 
-    background: url("../../assets/subscription-banner-bg-left.webp"),
-        url("../../assets/subscription-banner-bg-right.webp"),
+    background: url("../../assets/${tenant}/subscription-banner-bg-left.webp"),
+        url("../../assets/${tenant}/subscription-banner-bg-right.webp"),
         linear-gradient(90deg, #4cb19f 0%, #4cb19f 100%);
 
     background-repeat: no-repeat;

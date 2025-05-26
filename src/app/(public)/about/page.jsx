@@ -8,14 +8,14 @@ import Marquee from "react-fast-marquee";
 import { tenant } from "@/lib/config";
 
 // images
-import kyle from "../../../assets/about/kyle.png";
-import vanessa from "../../../assets/about/vanessa.png";
-import roxana from "../../../assets/about/roxana.png";
-import nfNetwork from "../../../assets/about/nf-network.png";
-import reins from "../../../assets/about/reins.png";
-import expertPlaceholder from "../../../assets/about/expert-placeholder.png";
-import joinUsIllustration from "../../../assets/about/our-mission.jpg";
-import getInvolvedIllustration from "../../../assets/about/get-involved.jpg";
+const kyle = `/assets/${tenant.shortName}/about/kyle.png`;
+const vanessa = `/assets/${tenant.shortName}/about/vanessa.png`;
+const roxana = `/assets/${tenant.shortName}/about/roxana.png`;
+const nfNetwork = `/assets/${tenant.shortName}/about/nf-network.png`;
+const reins = `/assets/${tenant.shortName}/about/reins.png`;
+const expertPlaceholder = `/assets/${tenant.shortName}/about/expert-placeholder.png`;
+const joinUsIllustration = `/assets/${tenant.shortName}/about/our-mission.jpg`;
+const getInvolvedIllustration = `/assets/${tenant.shortName}/about/get-involved.jpg`;
 
 // Fetch editors from the API
 async function fetchEditors() {
