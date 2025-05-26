@@ -2,6 +2,7 @@ import { tenant } from "@/lib/config";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer/Footer";
+import ThemeProvider from "@/components/ThemeProvider/ThemeProvider";
 
 import { ToastContainer } from "react-toastify";
 
@@ -22,16 +23,18 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body className={`${outfitFont.variable} antialiased`}>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={2000}
-                    hideProgressBar={true}
-                    closeOnClick
-                    pauseOnHover
-                    draggable
-                />
+                <ThemeProvider>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={2000}
+                        hideProgressBar={true}
+                        closeOnClick
+                        pauseOnHover
+                        draggable
+                    />
 
-                {children}
+                    {children}
+                </ThemeProvider>
             </body>
         </html>
     );

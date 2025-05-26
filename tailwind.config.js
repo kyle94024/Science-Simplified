@@ -13,7 +13,13 @@ module.exports = {
     			md: 'calc(var(--radius) - 2px)',
     			sm: 'calc(var(--radius) - 4px)'
     		},
-    		colors: {},
+    		colors: {
+                primary: 'var(--color-primary)',
+                'primary-dark': 'var(--color-primary-dark)',
+                'light-grey': 'var(--color-light-grey)',
+                text: 'var(--color-text)',
+                background: 'var(--color-background)'
+    		},
     		keyframes: {
     			'accordion-down': {
     				from: {
