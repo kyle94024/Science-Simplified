@@ -13,7 +13,10 @@ export const sites = {
         lightGrey: "#f5f5f5",
         text: "#0b1618",
         background: "#f8fdff"
-      }
+      },
+      homeHeroPath: "home-hero-illustration.webp",
+      navBrandPath: "navbrand.png",
+
     },
     EB: {
       name: "EB Simplified",
@@ -29,7 +32,9 @@ export const sites = {
         lightGrey: "#f5f5f5",
         text: "#0b1618",
         background: "#fff8fe"
-      }
+      },
+      homeHeroPath: "home-hero-illustration.png",
+      navBrandPath: "sseblogo.jpg",
     },
     // …add more here…
   };
