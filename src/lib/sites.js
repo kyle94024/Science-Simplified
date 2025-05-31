@@ -35,7 +35,7 @@ export const sites = {
         background: "#ffffff"
       },
       homeBG: "EB_homeBG.png", //home/homeBG
-      homeExploreAllBG: "EB_ExploreAllBg.png", //home/homeExploreAllBG
+      homeExploreAllBG: "EB_ExploreAllBG.png", //home/homeExploreAllBG
 
       logoWithText: "EB_logoWithText.png", //logoWithText
     },
