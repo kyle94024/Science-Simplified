@@ -24,7 +24,7 @@ const FallbackAuthorImage = ({ authorName }) => {
     );
 };
 
-const articleThumbnailPlaceholder = `/assets/${tenant.shortName}/article-thumbnail-placeholder.webp`;
+const articleThumbnailPlaceholder = `/assets/${tenant.shortName}/${tenant.articleThumbnailPlaceholder}`;
 
 function ArticleCard({
     id,

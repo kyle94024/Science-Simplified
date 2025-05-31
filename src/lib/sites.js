@@ -17,6 +17,7 @@ export const sites = {
       homeBG: "home-hero-illustration.webp",
       logoWithText: "navbrand.png",
       homeExploreAllBG: "home-cta-1-bg.webp",
+      articleThumbnailPlaceholder: "article-thumbnail-placeholder.webp", //articleThumbnailPlaceholder
 
     },
     EB: {
@@ -36,7 +37,7 @@ export const sites = {
       },
       homeBG: "EB_homeBG.png", //home/homeBG
       homeExploreAllBG: "EB_ExploreAllBG.png", //home/homeExploreAllBG
-
+      articleThumbnailPlaceholder: "EB_articleThumbnailPlaceholder.jpg", //articleThumbnailPlaceholder
       logoWithText: "EB_logoWithText.png", //logoWithText
     },
     // …add more here…
