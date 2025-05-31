@@ -14,11 +14,12 @@ export const sites = {
         text: "#0b1618",
         background: "#f8fdff"
       },
-      homeBG: "home-hero-illustration.webp",
-      logoWithText: "navbrand.png",
-      homeExploreAllBG: "home-cta-1-bg.webp",
+      homeBG: "home-hero-illustration.webp", //home/homeBG
+      homeExploreAllBG: "home-cta-1-bg.webp", //home/homeExploreAllBG
+      logoWithText: "navbrand.png", //logoWithText
       articleThumbnailPlaceholder: "article-thumbnail-placeholder.webp", //articleThumbnailPlaceholder
-
+      contactUsBGLeft: "subscription-banner-bg-left.webp", //contactUsBGLeft
+      contactUsBGRight: "subscription-banner-bg-right.webp", //contactUsBGRight
     },
     EB: {
       name: "EB Simplified",
@@ -37,8 +38,10 @@ export const sites = {
       },
       homeBG: "EB_homeBG.png", //home/homeBG
       homeExploreAllBG: "EB_ExploreAllBG.png", //home/homeExploreAllBG
-      articleThumbnailPlaceholder: "EB_articleThumbnailPlaceholder.jpg", //articleThumbnailPlaceholder
       logoWithText: "EB_logoWithText.png", //logoWithText
+      articleThumbnailPlaceholder: "EB_articleThumbnailPlaceholder.jpg", //articleThumbnailPlaceholder
+      contactUsBGLeft: "EB_contactUsBGLeft.png", //contactUsBGLeft
+      contactUsBGRight: "EB_contactUsBGRight.png", //contactUsBGRight
     },
     // …add more here…
   };
