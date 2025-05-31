@@ -5,7 +5,7 @@ import "./Footer.scss";
 import Image from "next/image";
 import { tenant } from "@/lib/config";
 
-const brandlogo = `/assets/${tenant.shortName}/${tenant.navBrandPath}`;
+const brandlogo = `/assets/${tenant.shortName}/${tenant.logoWithText}`;
 
 const Footer = () => {
     return (

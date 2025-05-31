@@ -14,8 +14,8 @@ export const sites = {
         text: "#0b1618",
         background: "#f8fdff"
       },
-      homeHeroPath: "home-hero-illustration.webp",
-      navBrandPath: "navbrand.png",
+      homeBG: "home-hero-illustration.webp",
+      logoWithText: "navbrand.png",
 
     },
     EB: {
@@ -33,8 +33,8 @@ export const sites = {
         text: "#484753",
         background: "#ffffff"
       },
-      homeHeroPath: "home-hero-illustration.png",
-      navBrandPath: "sseblogo.jpg",
+      homeBG: "EB_homeBG.png", //home/homeBG
+      logoWithText: "EB_logoWithText.jpg", //logoWithText
     },
     // …add more here…
   };
