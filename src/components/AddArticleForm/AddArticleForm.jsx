@@ -398,14 +398,14 @@ const AddArticleForm = () => {
             </div>
 
             <div className="add-article-form__row">
-                <div className="add-article-form__field">
-                    <Label hidden={true}
+                <div className="add-article-form__field" hidden={true}>
+                    <Label 
                         htmlFor="simplifyLength"
                         className="add-article-form__label"
                     >
                         Simplify Length
                     </Label>
-                    <Input hidden={true}
+                    <Input 
                         id="simplifyLength"
                         type="number"
                         className="add-article-form__input"
