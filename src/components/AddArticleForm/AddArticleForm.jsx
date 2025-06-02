@@ -415,14 +415,14 @@ const AddArticleForm = () => {
                         min="1"
                     />
                 </div>
-                <div className="add-article-form__field">
-                    <Label hidden={true}
+                <div className="add-article-form__field" hidden={true}>
+                    <Label 
                         htmlFor="simplifyUnit"
                         className="add-article-form__label"
                     >
                         Unit
                     </Label>
-                    <Select hidden={true}
+                    <Select 
                         value={simplifyUnit}
                         onValueChange={(value) => setSimplifyUnit(value)}
                     >
