@@ -15,6 +15,7 @@ export const sites = {
         background: "#f8fdff",
         contactUsColor: "#4cb19f", //contactUsColor
         authorTextColor: "#4cb19f", //authorTextColor
+        footerBGColor: "#e6f8f4", //footerBGColor
       },
       homeBG: "NF_homeBG.webp", //home/homeBG
       homeExploreAllBG: "NF_ExploreAllBG.webp", //home/homeExploreAllBG
@@ -24,9 +25,10 @@ export const sites = {
       contactUsBGRight: "NF_contactUsBGRight.webp", //contactUsBGRight
       loginBGTop: "NF_loginBGTop.webp", //loginBGTop
       loginBGBottom: "EB_loginBGBottom.webp", //loginBGTop
-
+      //text
       text_exploreAllTitle: "We give knowledge to NF patients, families, and caregivers",
       text_exploreAllDescription: "Collection of simplified NF articles certified by experts. Powered by REiNS.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Neurofibromatosis to patients, families, and caregivers. We aim to empower those affected by NF with the knowledge and resources they need to navigate their journey.",
     },
     EB: {
       name: "EB Simplified",
@@ -44,6 +46,7 @@ export const sites = {
         background: "#ffffff",
         contactUsColor: "#e89ec3", //contactUsColor
         authorTextColor: "#4c85b1", //authorTextColor
+        footerBGColor: "#f2e6f8", //footerBGColor
       },
       homeBG: "EB_homeBG.png", //home/homeBG
       homeExploreAllBG: "EB_ExploreAllBG.png", //home/homeExploreAllBG
@@ -53,8 +56,10 @@ export const sites = {
       contactUsBGRight: "EB_contactUsBGRight.png", //contactUsBGRight
       loginBGTop: "EB_loginBGTop.webp", //loginBGTop
       loginBGBottom: "EB_loginBGBottom.webp", //loginBGTop
+      //text
       text_exploreAllTitle: "We give knowledge to EB patients, families, and caregivers",
       text_exploreAllDescription: "Collection of simplified EB articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Epidermolysis Bullosa to patients, families, and caregivers. We aim to empower those affected by EB with the knowledge and resources they need to navigate their journey.",
     },
     // …add more here…
   };

@@ -19,11 +19,7 @@ const Footer = () => {
                             className="footer__logo"
                         />
                         <p className="footer__description">
-                            Provide accessible, up-to-date, and comprehensive
-                            information about {tenant.disease} ({tenant.shortName}) to
-                            patients, families, and caregivers. We aim to
-                            empower those affected by {tenant.shortName} with the knowledge and
-                            resources they need to navigate their journey.
+                            {tenant.text_footerDescription}
                         </p>
                         <div className="footer__social">
                             <Link href="#" className="footer__social-link">

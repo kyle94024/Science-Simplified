@@ -13,6 +13,7 @@ export default function ThemeProvider({ children }) {
         document.documentElement.style.setProperty('--color-background', tenant.theme.background);
         document.documentElement.style.setProperty('--color-contactUsColor', tenant.theme.contactUsColor);
         document.documentElement.style.setProperty('--color-author-text-color', tenant.theme.authorTextColor);
+        document.documentElement.style.setProperty('--color-footer-bg', tenant.theme.footerBGColor);
     }, []);
 
     return children;
