@@ -50,8 +50,7 @@ export default function Home() {
                                 </h2>
                             </div>
                             <p className="body-large">
-                                Collection of simplified {tenant.acronym} articles certified
-                                by experts.{" "}
+                                {tenant.text_homeTitleDescription}.{" "}
                                 <span className="w-700 color-green-dark">
                                     Powered by Innovation.
                                 </span>
