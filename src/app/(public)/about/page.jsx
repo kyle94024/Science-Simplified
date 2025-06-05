@@ -132,8 +132,8 @@ export default async function AboutPage() {
                                     className={`${aboutPageClass}__team-member-photo`}
                                 >
                                     <Image
-                                        src={kyle}
-                                        alt="Kyle Wan"
+                                        src={`/assets/${tenant.shortName}/about/${tenant.about_teamMember1Image}`}
+                                        alt={tenant.about_teamMember1Name}
                                         width={200}
                                         height={200}
                                         className={`${aboutPageClass}__team-image`}
@@ -145,20 +145,17 @@ export default async function AboutPage() {
                                     <h4
                                         className={`${aboutPageClass}__team-member-name`}
                                     >
-                                        Kyle Wan
+                                        {tenant.about_teamMember1Name}
                                     </h4>
                                     <p
                                         className={`${aboutPageClass}__team-member-title`}
                                     >
-                                        Founder & Lead
+                                        {tenant.about_teamMember1Title}
                                     </p>
                                     <p
                                         className={`${aboutPageClass}__team-member-bio`}
                                     >
-                                        Committed to building a user-friendly
-                                        platform to help researchers share
-                                        clear, accurate summaries with the {tenant.shortName}
-                                        community.
+                                        {tenant.about_teamMember1Bio}
                                     </p>
                                 </div>
                             </div>
@@ -169,8 +166,8 @@ export default async function AboutPage() {
                                     className={`${aboutPageClass}__team-member-photo`}
                                 >
                                     <Image
-                                        src={vanessa}
-                                        alt="Vanessa Merker"
+                                        src={`/assets/${tenant.shortName}/about/${tenant.about_teamMember2Image}`}
+                                        alt={tenant.about_teamMember2Name}
                                         width={200}
                                         height={200}
                                         className={`${aboutPageClass}__team-image`}
@@ -182,21 +179,17 @@ export default async function AboutPage() {
                                     <h4
                                         className={`${aboutPageClass}__team-member-name`}
                                     >
-                                        Vanessa Merker, Ph.D.
+                                        {tenant.about_teamMember2Name}
                                     </h4>
                                     <p
                                         className={`${aboutPageClass}__team-member-title`}
                                     >
-                                        Faculty Advisor
+                                        {tenant.about_teamMember2Title}
                                     </p>
                                     <p
                                         className={`${aboutPageClass}__team-member-bio`}
                                     >
-                                        Assistant Professor of Neurology at
-                                        Harvard Medical School. Specializes in
-                                        patient-centered research and improving
-                                        care in {tenant.disease} and related
-                                        conditions.
+                                        {tenant.about_teamMember2Bio}
                                     </p>
                                 </div>
                             </div>
@@ -207,8 +200,8 @@ export default async function AboutPage() {
                                     className={`${aboutPageClass}__team-member-photo`}
                                 >
                                     <Image
-                                        src={roxana}
-                                        alt="Roxana Daneshjou"
+                                        src={`/assets/${tenant.shortName}/about/${tenant.about_teamMember3Image}`}
+                                        alt={tenant.about_teamMember3Name}
                                         width={200}
                                         height={200}
                                         className={`${aboutPageClass}__team-image`}
@@ -220,20 +213,17 @@ export default async function AboutPage() {
                                     <h4
                                         className={`${aboutPageClass}__team-member-name`}
                                     >
-                                        Roxana Daneshjou, MD Ph.D.
+                                        {tenant.about_teamMember3Name}
                                     </h4>
                                     <p
                                         className={`${aboutPageClass}__team-member-title`}
                                     >
-                                        Faculty Advisor
+                                        {tenant.about_teamMember3Title}
                                     </p>
                                     <p
                                         className={`${aboutPageClass}__team-member-bio`}
                                     >
-                                        Assistant Professor of Biomedical Data
-                                        Science, Stanford University.
-                                        Specializes in building Fair and
-                                        trustworthy AI for healthcare.
+                                        {tenant.about_teamMember3Bio}
                                     </p>
                                 </div>
                             </div>
