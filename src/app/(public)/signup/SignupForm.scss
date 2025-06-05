@@ -131,6 +131,21 @@
                 text-decoration: underline;
             }
         }
+
+        &__terms {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        &__terms-link {
+            color: #0070f3;
+            text-decoration: underline;
+            &:hover {
+                color: #005bb5;
+            }
+        }
     }
 }
 

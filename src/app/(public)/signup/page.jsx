@@ -212,6 +212,9 @@ export default function CreateAccountForm() {
                                 </button>
                             </div>
                         </div>
+                        <p className="create-account__terms">
+                            By clicking Create Account, you agree to the <a href="https://www.scisimplified.org/terms-of-use" className="create-account__terms-link">Terms of Use</a> and acknowledge the <a href="https://www.scisimplified.org/privacy-policy" className="create-account__terms-link">Privacy Policy</a>.
+                        </p>
                         <Button
                             type="submit"
                             className="create-account__submit"
