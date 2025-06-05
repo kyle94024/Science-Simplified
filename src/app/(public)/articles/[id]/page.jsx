@@ -233,13 +233,10 @@ const ArticlePage = ({ params }) => {
                                                         aria-label="Favorite article"
                                                     />
                                                 ))}
-                                            <span className="text-gray-600 text-2xl">
+                                            <span className="text-gray-600 text-2xl whitespace-nowrap"> 
                                                 Save to favorites
                                             </span>
-                                            {/* <span className="text-gray-600 text-2xl">
-                                                {Number(article?.favorite_count) ||
-                                                    0}
-                                            </span> */}
+                                            
                                         </div>
                                     </div>
                                     {article.image_url && (
