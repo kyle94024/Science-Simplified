@@ -60,6 +60,7 @@ export const sites = {
       about_supporter2Width: 200,
       about_supporter2Height: 100,
       about_supporter2Link: "https://ccrod.cancer.gov/confluence/",
+      about_supporter2Hidden: false,
 
       about_mission1: "NF Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by NF1, NF2 and schwannomatosis.",
       about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in NF research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the NF community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
@@ -132,6 +133,7 @@ export const sites = {
       about_supporter2Width: 200,
       about_supporter2Height: 100,
       about_supporter2Link: "https://ccrod.cancer.gov/confluence/",
+      about_supporter2Hidden: true,
 
       about_mission1: "EB Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by EB.",
       about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in EB research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the EB community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",

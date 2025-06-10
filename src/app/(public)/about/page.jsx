@@ -11,8 +11,8 @@ import { tenant } from "@/lib/config";
 // const kyle = `/assets/${tenant.shortName}/about/kyle.png`;
 // const vanessa = `/assets/${tenant.shortName}/about/vanessa.png`;
 // const roxana = `/assets/${tenant.shortName}/about/roxana.png`;
-const nfNetwork = `/assets/${tenant.shortName}/about/nf-network.png`;
-const reins = `/assets/${tenant.shortName}/about/reins.png`;
+// const nfNetwork = `/assets/${tenant.shortName}/about/nf-network.png`;
+// const reins = `/assets/${tenant.shortName}/about/reins.png`;
 const expertPlaceholder = `/assets/${tenant.shortName}/about/expert-placeholder.png`;
 const joinUsIllustration = `/assets/${tenant.shortName}/about/our-mission.jpg`;
 const getInvolvedIllustration = `/assets/${tenant.shortName}/about/get-involved.jpg`;
@@ -382,7 +382,7 @@ export default async function AboutPage() {
                                     <p
                                         className={`${aboutPageClass}__logo-name`}
                                     >
-                                        {tenant.shortName}-Network
+                                        {tenant.about_supporter1Name}
                                     </p>
                                     <ExternalLink
                                         size={16}
@@ -391,6 +391,7 @@ export default async function AboutPage() {
                                 </div>
                             </Link>
                             <Link
+                                hidden={tenant.about_supporter2Hidden}
                                 href={tenant.about_supporter2Link}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -407,7 +408,7 @@ export default async function AboutPage() {
                                     <p
                                         className={`${aboutPageClass}__logo-name`}
                                     >
-                                        REiNS
+                                         {tenant.about_supporter2Name}
                                     </p>
                                     <ExternalLink
                                         size={16}
