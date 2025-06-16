@@ -166,7 +166,7 @@ export const sites = {
       homeExploreAllBG: "CF_ExploreAllBG.jpg", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "CF_text_with_logo.png", //logoWithText
-      articleThumbnailPlaceholder: "EB_articleThumbnailPlaceholder.jpg", //articleThumbnailPlaceholder
+      articleThumbnailPlaceholder: "CF_article_placeholder.jpg", //articleThumbnailPlaceholder
       contactUsBGLeft: "CF_contactUsBG.jpg", //contactUsBGLeft
       contactUsBGRight: "CF_contactUsBG.jpg", //contactUsBGRight
       loginBGTop: "EB_loginBGTop.webp", //loginBGTop
