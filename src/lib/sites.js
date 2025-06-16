@@ -169,7 +169,8 @@ export const sites = {
       articleThumbnailPlaceholder: "CF_article_placeholder.jpg", //articleThumbnailPlaceholder
       contactUsBGLeft: "CF_contactUsBG.jpg", //contactUsBGLeft # uses full width background
       contactUsBGRight: "CF_contactUsBG.jpg", //contactUsBGRight # uses full width background
-      contactUsBGFull: "CF_contactUsBG.jpg", //contactUsBGFull # uses full width background
+      // contactUsBGFull: "CF_contactUsBG.jpg", //contactUsBGFull # uses full width background
+      
       loginBGTop: "EB_loginBGTop.webp", //loginBGTop
       loginBGBottom: "EB_loginBGBottom.webp", //loginBGTop
 
