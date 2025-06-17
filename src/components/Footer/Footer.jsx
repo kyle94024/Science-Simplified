@@ -21,7 +21,7 @@ const Footer = () => {
                         <p className="footer__description">
                             {tenant.text_footerDescription}
                         </p>
-                        <div className="footer__social">
+                        {/* <div className="footer__social">
                             <Link href="#" className="footer__social-link">
                                 <Facebook className="footer__social-icon" />
                             </Link>
@@ -34,7 +34,7 @@ const Footer = () => {
                             <Link href="#" className="footer__social-link">
                                 <Linkedin className="footer__social-icon" />
                             </Link>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="footer__links">

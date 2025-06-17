@@ -206,8 +206,8 @@ export const sites = {
       about_supporter1Height: 200,
       about_supporter1Link: "https://www.cff.org/",
 
-      about_supporter2Logo: "ebrp.png",
-      about_supporter2Name: "REiNS",
+      about_supporter2Logo: "CFF.jpg",
+      about_supporter2Name: "CFF",
       about_supporter2Width: 200,
       about_supporter2Height: 100,
       about_supporter2Link: "https://ccrod.cancer.gov/confluence/",
