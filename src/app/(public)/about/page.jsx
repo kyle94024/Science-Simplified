@@ -19,7 +19,7 @@ const getInvolvedIllustration = `/assets/${tenant.pathName}/about/get-involved.j
 
 // Fetch editors from the API
 async function fetchEditors() {
-    const res = await fetch("http://localhost:3000/api/editors", {
+    const res = await fetch("/api/editors", {
         cache: "no-store", // Ensure fresh data is fetched
     });
     if (!res.ok) {
