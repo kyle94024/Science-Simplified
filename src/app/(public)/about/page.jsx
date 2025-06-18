@@ -7,6 +7,9 @@ import Image from "next/image";
 import Marquee from "react-fast-marquee";
 import { tenant } from "@/lib/config";
 
+import { query } from "@/lib/db";
+
+
 // images
 // const kyle = `/assets/${tenant.pathName}/about/kyle.png`;
 // const vanessa = `/assets/${tenant.pathName}/about/vanessa.png`;
@@ -19,14 +22,23 @@ const getInvolvedIllustration = `/assets/${tenant.pathName}/about/get-involved.j
 
 // Fetch editors from the API
 async function fetchEditors() {
-    const res = await fetch("/api/editors", {
-        cache: "no-store", // Ensure fresh data is fetched
-    });
-    if (!res.ok) {
-        throw new Error("Failed to fetch editors: " + (await res.text()));
-    }
-    return res.json();
-}
+    const result = await query(`
+      SELECT
+        ec.id,
+        p.name,
+        p.photo,
+        p.title,
+        p.degree,
+        p.university
+      FROM email_credentials ec
+      LEFT JOIN profile p
+        ON ec.id = p.user_id
+      WHERE ec.role = 'editor'
+      ORDER BY p.name
+    `);
+    return result.rows;
+  }
+  
 
 // Function to get the first initial from a name
 function getInitial(name) {
