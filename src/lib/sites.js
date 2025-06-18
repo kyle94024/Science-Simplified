@@ -242,23 +242,23 @@ export const sites = {
         footerBGColor: "#f5ebc1", //footerBGColor
       },
       // Images (Home)
-      homeBG: "CF_BG_home.jpg", //home/homeBG
+      homeBG: "Ashermans_BG_home.jpg", //home/homeBG
       homeExploreAllBG: "Ashermans_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "TempAshermans_text_with_logo.png", //logoWithText
-      articleThumbnailPlaceholder: "CF_article_placeholder.jpg", //articleThumbnailPlaceholder
-      contactUsBGLeft: "CF_contactUsBGLeft-Enhanced.jpg", //contactUsBGLeft # uses full width background
-      contactUsBGRight: "CF_contactUsBGLeft-Enhanced.jpg", //contactUsBGRight # uses full width background
+      articleThumbnailPlaceholder: "Ashermans_article_placeholder.jpg", //articleThumbnailPlaceholder
+      contactUsBGLeft: "Ashermans_contactUsBG.png", //contactUsBGLeft # uses full width background
+      contactUsBGRight: "Ashermans_contactUsBG.png", //contactUsBGRight # uses full width background
 
       
       loginBGTop: "Asherman's_loginBGTop.webp", //loginBGTop
       loginBGBottom: "Asherman's_loginBGBottom.webp", //loginBGTop
 
       //Text
-      text_homeTitleDescription: "Collection of simplified CF articles certified by experts. ",
+      text_homeTitleDescription: "Collection of simplified Asherman's Syndrome articles certified by experts. ",
       text_exploreAllTitle: "Breathe Easier, Understand More",
-      text_exploreAllDescription: "Collection of simplified CF articles certified by experts.",
-      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Cystic Fibrosis to patients, families, and caregivers. We aim to empower those affected by CF with the knowledge and resources they need to navigate their journey.",
+      text_exploreAllDescription: "Collection of simplified Asherman's Syndrome articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Asherman's Syndrome to patients, families, and caregivers. We aim to empower those affected by Asherman's Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
       about_teamMember1Image: "kyle.png",

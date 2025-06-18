@@ -35,7 +35,7 @@ export default function Home() {
 
     return (
         <main className="home">
-            <section className={`home__header ${tenant.shortName === "CF" ? "background-alt" : ""}`}>
+            <section className={`home__header ${tenant.shortName === "CF" ? "background-alt" : ""} ${tenant.shortName === "Ashermans" ? "background-alt" : ""}`}>
                 <Navbar />
 
                 <section className="home__hero padding">
