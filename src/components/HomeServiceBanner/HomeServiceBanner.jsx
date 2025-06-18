@@ -9,7 +9,7 @@ function HomeServiceBanner() {
     }, []);
 
     return (
-        <div className={`service-banner ${tenant.shortName === "CF" ? "background-alt" : ""} ${tenant.shortName === "Ashermans" ? "background-alt" : ""}`}>
+        <div className={`service-banner ${tenant.shortName === "CF" || tenant.shortName === "Asherman's" ? "background-alt" : ""}`}>
             <div className="service-banner__content">
                 <h2 className="heading-quaternary">
                     {tenant.text_exploreAllTitle}{" "}
