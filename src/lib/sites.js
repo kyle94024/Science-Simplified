@@ -320,7 +320,7 @@ export const sites = {
         background: "#ffffff",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
-        footerBGColor: "#b284e0"", //footerBGColor
+        footerBGColor: "#b284e0", //footerBGColor
       },
       // Images (Home)
       homeBG: "Aicardi_homeBG.png", //home/homeBG
