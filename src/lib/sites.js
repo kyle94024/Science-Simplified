@@ -20,7 +20,7 @@ export const sites = {
       },
       // Images (Home)
       homeBG: "NF_homeBG.webp", //home/homeBG
-      homeExploreAllBG: "NF_ExploreAllBG.webp", //home/homeExploreAllBG
+      homeExploreAllBG: "NF_ExploreAllBGFull.jpg", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "NF_logoWithText.png", //logoWithText
       articleThumbnailPlaceholder: "NF_articleThumbnailPlaceholder.webp", //articleThumbnailPlaceholder
@@ -386,7 +386,7 @@ export const sites = {
       shortName: "RYR1",
       pathName: "RYR1",
       fullName: "RYR1 Simplified",
-      disease: "RYR1",
+      disease: "RYR1-related diseases",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
 
 
@@ -414,10 +414,10 @@ export const sites = {
       loginBGBottom: "Aicardi_loginBGBottom.webp", //loginBGTop
 
       //Text
-      text_homeTitleDescription: "Collection of simplified Aicardi Syndrome articles certified by experts. ",
+      text_homeTitleDescription: "Collection of simplified RYR1-related disease articles certified by experts. ",
       text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
-      text_exploreAllDescription: "Collection of simplified Aicardi Syndrome articles certified by experts.",
-      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Aicardi Syndrome to patients, families, and caregivers. We aim to empower those affected by Aicardi Syndrome with the knowledge and resources they need to navigate their journey.",
+      text_exploreAllDescription: "Collection of simplified RYR1-related disease articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RYR1-related diseases to patients, families, and caregivers. We aim to empower those affected by RYR1-related diseases with the knowledge and resources they need to navigate their journey.",
 
       // About
       about_teamMember1Image: "kyle.png",
@@ -426,7 +426,7 @@ export const sites = {
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
       
       about_teamMember2Image: "expert-placeholder.png",
-      about_teamMember2Name: "Samantha Bunner",
+      about_teamMember2Name: "Shubhi Nanda",
       about_teamMember2Title: "Medical Outreach Lead",
       about_teamMember2Bio: "Placeholder Bio",
 
