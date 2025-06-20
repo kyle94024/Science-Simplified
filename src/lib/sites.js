@@ -381,5 +381,83 @@ export const sites = {
       
     },
 
+    Aicardi: {
+      name: "Aicardi Simplified",
+      shortName: "Aicardi",
+      pathName: "Aicardi",
+      fullName: "Aicardi Simplified",
+      disease: "Aicardi Syndrome",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+
+
+      theme: { // Theme
+        primary: "#d49bf2",
+        primaryDark: "#6d32a8",
+        lightGrey: "#f5f5f5",
+        text: "#3d2447",
+        background: "#ffffff",
+        contactUsColor: "#c6a5e3", //contactUsColor
+        authorTextColor: "#6d32a8", //authorTextColor
+        footerBGColor: "#b284e0", //footerBGColor
+      },
+      // Images (Home)
+      homeBG: "Aicardi_BG_home.png", //home/homeBG
+      homeExploreAllBG: "Aicardi_ExploreAllBG.png", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "Aicardi_logo_w_text.png", //logoWithText
+      articleThumbnailPlaceholder: "Aicardi_article_placeholder.jpg", //articleThumbnailPlaceholder
+      contactUsBGLeft: "Aicardi_contactUsBGLeft-Enhanced.jpg", //contactUsBGLeft # uses full width background
+      contactUsBGRight: "Aicardi_contactUsBGLeft-Enhanced.jpg", //contactUsBGRight # uses full width background
+
+      
+      loginBGTop: "Aicardi_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "Aicardi_loginBGBottom.webp", //loginBGTop
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Aicardi Syndrome articles certified by experts. ",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Aicardi Syndrome articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Aicardi Syndrome to patients, families, and caregivers. We aim to empower those affected by Aicardi Syndrome with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
+      
+      about_teamMember2Image: "expert-placeholder.png",
+      about_teamMember2Name: "Samantha Bunner",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Placeholder Bio",
+
+      about_teamMember3Image: "expert-placeholder.png",
+      about_teamMember3Name: "Faculty Advisor Name",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Faculty Advisor Bio",
+
+      about_supporter1Logo: "aicardifoundation.jpg",
+      about_supporter1Name: "Aicardi Syndrome Foundation",
+      about_supporter1Width: 300,
+      about_supporter1Height: 300,
+      about_supporter1Link: "https://aicardisyndromefoundation.org/",
+
+      about_supporter2Logo: "aicardifoundation.jpg",
+      about_supporter2Name: "Aicardi Syndrome Foundation",
+      about_supporter2Width: 200,
+      about_supporter2Height: 100,
+      about_supporter2Link: "https://ccrod.cancer.gov/confluence/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "Aicardi Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Aicardi Syndrome.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Aicardi Syndrome research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Aicardi Syndrome community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Aicardi Syndrome community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Aicardi Syndrome with the community.",
+      about_getInvolvedDescription: "Aicardi Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Aicardi Syndrome community",
+
+      about_our_mission: "our-mission.jpg",
+      
+    },
+
   };
   
