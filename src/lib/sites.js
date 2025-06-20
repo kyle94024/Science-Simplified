@@ -326,7 +326,7 @@ export const sites = {
       homeBG: "Aicardi_BG_home.png", //home/homeBG
       homeExploreAllBG: "Aicardi_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
-      logoWithText: "Aicardi_logo_with_text_temp.png", //logoWithText
+      logoWithText: "Aicardi_logo_w_text_temp.png", //logoWithText
       articleThumbnailPlaceholder: "Aicardi_article_placeholder.jpg", //articleThumbnailPlaceholder
       contactUsBGLeft: "Aicardi_contactUsBGLeft-Enhanced.jpg", //contactUsBGLeft # uses full width background
       contactUsBGRight: "Aicardi_contactUsBGLeft-Enhanced.jpg", //contactUsBGRight # uses full width background
