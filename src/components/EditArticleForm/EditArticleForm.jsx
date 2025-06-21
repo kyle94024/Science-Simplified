@@ -72,6 +72,7 @@ const EditArticleForm = ({
             ],
             allowedAttributes: {
                 a: ["href", "target"],
+                "*": ["class"],
             },
         })
     );

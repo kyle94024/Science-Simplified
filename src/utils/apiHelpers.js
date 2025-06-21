@@ -12,8 +12,16 @@ const exampleHtmlPath = path.join(
     "assets",
     "example-output.html"
   );
+
+  const examplecssPath = path.join(
+    process.cwd(),
+    "public",
+    "assets",
+    "example-css.css"
+  );
   // Synchronously load it into memory
   const exampleoutput = fs.readFileSync(exampleHtmlPath, "utf8");
+  const examplecss = fs.readFileSync(examplecssPath, "utf8");
 
 export async function summarizeArticle(content) {
     try {
@@ -44,14 +52,14 @@ export async function simplifyArticle(content, lengthString) {
         Each paragraph should be medium length. Include limitations of the study if applicable.
         
         Respond using HTML formatting, with visually appealing headers and whitespace. 
-        Any CSS classes should be prefixed with "apicss-". 
+        Use only the CSS classes in the example css file, given below, prefixed with "apicss-". 
         Do not start your response with "<!DOCTYPE html>" or markdown fences.
         No copyright sign or extra boilerplate.
             `.trim();
         
             const messages = [
             { role: "system", content: instruction },
-            { role: "assistant", content: exampleoutput },
+            { role: "assistant", content: exampleoutput + examplecss },
             { role: "user", content: `Now simplify this article:\n\n${content}` },
             ];
         
