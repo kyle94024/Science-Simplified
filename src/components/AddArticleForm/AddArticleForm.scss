@@ -154,22 +154,37 @@
         }
     }
 
-    &__authors-list {
+    &__pub-date-field {
+        max-width: 200px;
+        margin-bottom: 1rem;
+      }
+      
+      &__authors-list {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: 0.5rem;
         margin-top: 0.5rem;
       }
-    &__authors-list-item {
+      
+      &__authors-list-item {
+        flex: 1 1 30%;    // stretch up to ~30% width, wrap when needed
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        min-width: 180px;
       }
-    &__add-author {
+      
+      &__add-author {
         display: flex;
         gap: 0.5rem;
         margin-top: 0.5rem;
-    }
+      }
+      
+      &__add-button,
+      &__clear-button {
+        padding: 0.5rem 1rem;
+      }
+      
 }
 
 // media queries for responsiveness

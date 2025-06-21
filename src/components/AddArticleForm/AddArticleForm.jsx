@@ -61,6 +61,7 @@ const AddArticleForm = () => {
 
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
+    const [publicationDate, setPublicationDate] = useState("");
 
 
     const quillRef = useRef(null);
@@ -192,26 +193,48 @@ const AddArticleForm = () => {
 
     };
 
+    // 1) update an existing author in-place
     const updateAuthor = (idx, value) => {
-        setAuthors(a => {
-          const copy = [...a];
-          copy[idx] = value;
-          return copy;
+        setAuthors(list => {
+        const copy = [...list];
+        copy[idx] = value;
+        return copy;
         });
-      };
+    };
     
-      const removeAuthor = idx => {
-        setAuthors(a => a.filter((_, i) => i !== idx));
-      };
+    // 2) remove one author
+    const removeAuthor = idx => {
+        setAuthors(list => list.filter((_, i) => i !== idx));
+    };
     
-      const addAuthors = () => {
-        const parsed = newAuthor
-          .split(",")
-          .map(cleanName)
-          .filter(n => n);
-        setAuthors(a => [...a, ...parsed]);
+    // 3) clear them all
+    const clearAuthors = () => {
+        setAuthors([]);
+    };
+    
+    // 4) “smart” onChange for the bottom input: if the user types or pastes a comma,
+    //    we split right away into multiple authors
+    const handleNewAuthorChange = e => {
+        const val = e.target.value;
+        if (val.includes(",")) {
+        const bits = val
+            .split(",")
+            .map(cleanName)   // your helper that trims + strips trailing digits
+            .filter(Boolean);
+        setAuthors(old => [...old, ...bits]);
         setNewAuthor("");
-      };
+        } else {
+        setNewAuthor(val);
+        }
+    };
+    
+    // 5) manual “Add” button handler for single names
+    const addAuthors = () => {
+        if (!newAuthor.trim()) return;
+        setAuthors(old => [...old, cleanName(newAuthor)]);
+        setNewAuthor("");
+    };
+  
     
 
     // const modules = {
@@ -353,10 +376,25 @@ const AddArticleForm = () => {
                 </Select>
             </div>
 
-            {/* — AUTHORS — */}
+            {/* Publication Date field */}
+            <div className="add-article-form__field add-article-form__pub-date-field">
+                <Label htmlFor="pubDate" className="add-article-form__label">
+                    Publication Date
+                </Label>
+                <Input
+                    id="pubDate"
+                    type="date"
+                    value={publicationDate}
+                    onChange={e => setPublicationDate(e.target.value)}
+                    className="add-article-form__input"
+                />
+            </div>
+
+            {/* Authors editor */}
             <div className="add-article-form__field">
                 <Label className="add-article-form__label">Authors</Label>
 
+                {/* 3a. Editable boxes for each author */}
                 <div className="add-article-form__authors-list">
                     {authors.map((name, i) => (
                     <div key={i} className="add-article-form__authors-list-item">
@@ -378,11 +416,12 @@ const AddArticleForm = () => {
                     ))}
                 </div>
 
+                {/* 3b. Bottom row: paste/type → auto-split, plus Add & Clear */}
                 <div className="add-article-form__add-author">
                     <Input
                     placeholder="Paste or type author(s)…"
                     value={newAuthor}
-                    onChange={e => setNewAuthor(e.target.value)}
+                    onChange={handleNewAuthorChange}
                     onKeyDown={e => {
                         if (e.key === "Enter") {
                         e.preventDefault();
@@ -391,11 +430,23 @@ const AddArticleForm = () => {
                     }}
                     className="add-article-form__input"
                     />
-                    <Button type="button" onClick={addAuthors}>
-                    Add
+                    <Button
+                    type="button"
+                    onClick={addAuthors}
+                    className="add-article-form__add-button"
+                    >
+                    Add Authors
+                    </Button>
+                    <Button
+                    type="button"
+                    onClick={clearAuthors}
+                    className="add-article-form__clear-button"
+                    >
+                    Clear All
                     </Button>
                 </div>
             </div>
+
 
 
             <div className="add-article-form__field">

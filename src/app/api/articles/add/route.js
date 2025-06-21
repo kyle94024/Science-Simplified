@@ -15,7 +15,7 @@ export async function POST(req) {
             role,
             userId,
             authors,
-            publication_date,
+            publicationDate,
         } = await req.json();
 
         // Generate the summary and simplified content
@@ -28,9 +28,9 @@ export async function POST(req) {
         // Insert into the database, including the publisher and image URL
         const result = await query(
             `INSERT INTO pending_article 
-                (title, tags, innertext, summary, article_link, publisher, image_url, authors, publication_date) 
+                (title, tags, innertext, summary, article_link, publisher, image_url, authors, publicationDate) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-             RETURNING id, title, tags, innertext, summary, article_link, publisher, image_url, authors, publication_date;`,
+             RETURNING id, title, tags, innertext, summary, article_link, publisher, image_url, authors, publicationDate;`,
             [
                 title,
                 tags,
@@ -40,7 +40,7 @@ export async function POST(req) {
                 publisher,
                 image_url,
                 authors,
-                publication_date,
+                publicationDate,
             ]
         );
 
