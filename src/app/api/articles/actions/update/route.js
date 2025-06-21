@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 
 // Only allow POST method
 export async function POST(req) {
-    const { id, title, tags, innertext, summary, article_link, image_url } =
+    const { id, title, tags, innertext, summary, article_link, image_url, authors, publication_date } =
         await req.json(); // Parse JSON body from the request
 
     try {
         // Execute the update query, including image_url
         await query(
-            "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6 WHERE id = $7",
-            [title, tags, innertext, summary, article_link, image_url, id]
+            "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6, authors = $7, publication_date = $8 WHERE id = $9",
+            [title, tags, innertext, summary, article_link, image_url, authors, publication_date, id]
         );
 
         return NextResponse.json({

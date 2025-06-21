@@ -7,6 +7,8 @@ import "react-quill/dist/quill.snow.css";
 import "./EditArticleForm.scss";
 import Image from "next/image";
 import sanitizeHtml from "sanitize-html";
+import { cleanName } from "@/lib/utils";
+
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,6 +100,11 @@ const EditArticleForm = ({
         })
     );
     const [imageUrl, setImageUrl] = useState(articleData?.image_url || null);
+    // after your imageUrl state
+    const [authors, setAuthors] = useState(articleData?.authors || []);
+    const [newAuthor, setNewAuthor] = useState("");
+    const [publicationDate, setPublicationDate] = useState(articleData?.publication_date || "");
+
 
     const handleAddTag = (tag) => {
         if (tag && !tags.includes(tag)) {
@@ -114,6 +121,45 @@ const EditArticleForm = ({
         console.log("Image uploaded: ", url);
         setImageUrl(url);
     };
+
+    // update one author’s name
+    const updateAuthor = (idx, value) =>
+        setAuthors(list => {
+        const copy = [...list];
+        copy[idx] = value;
+        return copy;
+        });
+    
+    // remove one author
+    const removeAuthor = idx =>
+        setAuthors(list => list.filter((_, i) => i !== idx));
+    
+    // clear all authors
+    const clearAuthors = () =>
+        setAuthors([]);
+    
+    // onChange for the “new author” input: auto-split on commas
+    const handleNewAuthorChange = e => {
+        const val = e.target.value;
+        if (val.includes(",")) {
+        const bits = val
+            .split(",")
+            .map(cleanName)
+            .filter(Boolean);
+        setAuthors(old => [...old, ...bits]);
+        setNewAuthor("");
+        } else {
+        setNewAuthor(val);
+        }
+    };
+    
+    // manual Add button
+    const addAuthors = () => {
+        if (!newAuthor.trim()) return;
+        setAuthors(old => [...old, cleanName(newAuthor)]);
+        setNewAuthor("");
+    };
+  
 
     const handleSave = () => {
         return {
@@ -165,6 +211,8 @@ const EditArticleForm = ({
             }),
             article_link: sourceLink,
             image_url: imageUrl,
+            authors: authors,
+            publication_date: publicationDate,
         };
     };
 
@@ -250,6 +298,79 @@ const EditArticleForm = ({
                     </SelectContent>
                 </Select>
             </div>
+
+            {/* Publication Date */}
+            <div className="edit-article-form__field edit-article-form__pub-date-field">
+            <Label htmlFor="pubDate" className="edit-article-form__label">
+                Publication Date
+            </Label>
+            <Input
+                id="pubDate"
+                type="text"
+                placeholder="e.g. 2025 January 6"
+                value={publicationDate}
+                onChange={e => setPublicationDate(e.target.value)}
+                className="edit-article-form__input"
+            />
+            </div>
+
+            {/* Authors editor */}
+            <div className="edit-article-form__field">
+            <Label className="edit-article-form__label">Authors</Label>
+
+            {/* existing authors as editable boxes */}
+            <div className="edit-article-form__authors-list">
+                {authors.map((name, i) => (
+                <div key={i} className="edit-article-form__authors-list-item">
+                    <Input
+                    value={name}
+                    onChange={e => updateAuthor(i, e.target.value)}
+                    className="edit-article-form__input"
+                    />
+                    <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeAuthor(i)}
+                    className="edit-article-form__tag-remove"
+                    >
+                    <X size={14} />
+                    </Button>
+                </div>
+                ))}
+            </div>
+
+            {/* bottom row: paste/type, add & clear */}
+            <div className="edit-article-form__add-author">
+                <Input
+                placeholder="Paste or type author(s)…"
+                value={newAuthor}
+                onChange={handleNewAuthorChange}
+                onKeyDown={e => {
+                    if (e.key === "Enter") {
+                    e.preventDefault();
+                    addAuthors();
+                    }
+                }}
+                className="edit-article-form__input"
+                />
+                <Button
+                type="button"
+                onClick={addAuthors}
+                className="edit-article-form__add-button"
+                >
+                Add Authors
+                </Button>
+                <Button
+                type="button"
+                onClick={clearAuthors}
+                className="edit-article-form__clear-button"
+                >
+                Clear All
+                </Button>
+            </div>
+            </div>
+
 
             <div className="edit-article-form__field">
                 <Label className="edit-article-form__label">Summary</Label>

@@ -128,6 +128,60 @@
         justify-content: flex-end;
         gap: 1.6rem;
     }
+    &__pub-date-field {
+        max-width: 200px;
+        margin-bottom: 1rem;
+      }
+      
+    &__authors-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      
+      &__authors-list-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1 1 30%;
+        max-width: 30%;      /* don’t let it grow wider */
+        min-width: 180px;
+      }
+      
+      
+      &__add-author {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        max-width: 80%;  
+
+      }
+      &__add-author .add-article-form__input {
+        flex: 1 1 30%;
+        min-width: 180px;
+      }
+      
+      
+      &__add-button,
+      &__clear-button {
+        flex: 0 0 auto;         /* don’t stretch them */
+        height: 5rem;           /* same as your input’s height */
+        line-height: 5rem;      /* vertically center the text */
+        font-size: 1.6rem;      /* match your input font-size */
+        padding: 0 1.6rem;      /* comfortable left/right padding */
+        border-radius: 10px;    /* same roundness as inputs */
+      }
+      
+      /* your existing colors */
+      &__add-button {
+        background-color: #333; /* or whatever primary you like */
+        color: #fff;
+      }
+      &__clear-button {
+        background-color: #e53e3e;
+        color: #fff;
+      }
 }
 
 // media queries for responsiveness
