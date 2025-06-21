@@ -177,6 +177,7 @@
       
       
       &__add-author {
+        display: flex;
         gap: 0.5rem;
         margin-top: 0.5rem;
         max-width: 50%;  
@@ -188,19 +189,24 @@
       }
       
       
-    &__add-button,
-    &__clear-button {
-        height: 5rem;          // same line-height as inputs
-        line-height: 5rem;
-        padding: 0 1rem;
-        font-size: 1rem;
-    }
-    &__clear-button {
+      &__add-button,
+      &__clear-button {
+        flex: 0 0 auto;         /* don’t stretch them */
+        height: 5rem;           /* same as your input’s height */
+        line-height: 5rem;      /* vertically center the text */
+        font-size: 1.6rem;      /* match your input font-size */
+        padding: 0 1.6rem;      /* comfortable left/right padding */
+        border-radius: 10px;    /* same roundness as inputs */
+      }
+      
+      /* your existing colors */
+      &__add-button {
+        background-color: #333; /* or whatever primary you like */
+        color: #fff;
+      }
+      &__clear-button {
         background-color: #e53e3e;
-        color: white;
-        &:hover {
-          background-color: #c53030;
-        }
+        color: #fff;
       }
       
 

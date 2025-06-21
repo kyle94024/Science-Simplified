@@ -403,7 +403,6 @@ const AddArticleForm = () => {
                         value={name}
                         onChange={e => updateAuthor(i, e.target.value)}
                         className="add-article-form__input"
-                        placeholder="Add in authors and press 'Add Authors' or copy paste in authors separated by commas (ie. Emily Bronte, Anthony Fauci)"
                         />
                         <Button
                         type="button"
@@ -421,7 +420,7 @@ const AddArticleForm = () => {
                 {/* 3b. Bottom row: paste/type → auto-split, plus Add & Clear */}
                 <div className="add-article-form__add-author">
                     <Input
-                    placeholder="Paste or type author(s)…"
+                    placeholder="Add in authors and press 'Add Authors' or copy paste in authors separated by commas (ie. Emily Bronte, Anthony Fauci)"
                     value={newAuthor}
                     onChange={handleNewAuthorChange}
                     onKeyDown={e => {
