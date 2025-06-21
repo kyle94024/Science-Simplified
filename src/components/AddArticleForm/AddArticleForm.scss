@@ -166,20 +166,27 @@
         margin-top: 0.5rem;
       }
       
-    &__authors-list-item {
-        flex: 1 1 30%;    // stretch up to ~30% width, wrap when needed
+      &__authors-list-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        flex: 1 1 30%;
+        max-width: 30%;      /* don’t let it grow wider */
         min-width: 180px;
       }
       
-    &__add-author {
-        flex: 1 1 30%;    // stretch up to ~30% width, wrap when needed
+      
+      &__add-author {
         display: flex;
         gap: 0.5rem;
         margin-top: 0.5rem;
+
       }
+      &__add-author .add-article-form__input {
+        flex: 1 1 30%;
+        min-width: 180px;
+      }
+      
       
     &__add-button,
     &__clear-button {
