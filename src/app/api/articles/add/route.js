@@ -15,7 +15,7 @@ export async function POST(req) {
             role,
             userId,
             authors,
-            publicationDate,
+            publication_date,
         } = await req.json();
 
         // Generate the summary and simplified content
