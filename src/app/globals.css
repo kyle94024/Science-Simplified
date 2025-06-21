@@ -710,162 +710,186 @@ body {
         --radius: 0.5rem;
     }
 }
-@layer base {
-    /* Element fallbacks, scoped under .apicss-body */
-    .apicss-body p {
-      margin-bottom: 1.2rem;
-      line-height: 1.6;
-    }
-    .apicss-body h1,
-    .apicss-body h2,
-    .apicss-body h3,
-    .apicss-body h4,
-    .apicss-body h5,
-    .apicss-body h6 {
-      margin: 1.6rem 0 0.8rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-    .apicss-body h1 { font-size: 2.4rem; }
-    .apicss-body h2 { font-size: 2rem; }
-    .apicss-body h3 { font-size: 1.6rem; }
-    .apicss-body blockquote {
-      margin: 1.5rem 0;
-      padding: 0.8rem 1.2rem;
-      border-left: 4px solid #ccc;
-      background: #f9f9f9;
-      color: #555;
-      font-style: italic;
-    }
-    .apicss-body ul,
-    .apicss-body ol {
-      margin: 1rem 0 1rem 1.5rem;
-    }
-    .apicss-body hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 2rem 0;
-    }
-    .apicss-body img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      margin: 1.5rem auto;
-    }
-    .apicss-body pre {
-      background: #f5f5f5;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      margin: 1rem 0;
-      font-family: Menlo, Consolas, monospace;
-      font-size: 0.9em;
-    }
-    .apicss-body table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-    .apicss-body th,
-    .apicss-body td {
-      border: 1px solid #ddd;
-      padding: 0.75rem;
-      text-align: left;
-    }
-    .apicss-body th {
-      background: #f3f3f3;
-      font-weight: 600;
-    }
+
+
+/* Typography */
+.apicss-paragraph {
+    margin-bottom: 1.2rem;
+    line-height: 1.6;
   }
   
-  @layer components {
-    /* Wrapper */
-    .apicss-body {
-      font-family: sans-serif;
-      line-height: 1.6;
-      margin: 2rem auto;
-      max-width: 800px;
-      padding: 0 1rem;
-    }
+  .apicss-heading-primary {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem;
+  }
   
-    /* Explicit classes */
-    .apicss-paragraph {
-      margin-bottom: 1.2rem;
-      line-height: 1.6;
-    }
-    .apicss-heading-primary {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin: 2rem 0 1rem;
-    }
-    .apicss-heading-secondary {
-      font-size: 2rem;
-      font-weight: 600;
-      margin: 1.6rem 0 0.8rem;
-    }
-    .apicss-heading-tertiary {
-      font-size: 1.6rem;
-      font-weight: 500;
-      margin: 1.2rem 0 0.6rem;
-    }
+  .apicss-heading-secondary {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 1.6rem 0 0.8rem;
+  }
   
-    .apicss-link {
-      color: #3a7bc8;
-      text-decoration: underline;
-    }
-    .apicss-link:hover {
-      color: #2a5a9e;
-    }
+  .apicss-heading-tertiary {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 1.2rem 0 0.6rem;
+  }
   
+  /* Links */
+  .apicss-link {
+    color: #3a7bc8;
+    text-decoration: underline;
+  }
   
-  @layer utilities {
-    /* Colored text */
-    .apicss-text-primary   { color: #4cb19f; }
-    .apicss-text-secondary { color: #3a7bc8; }
-    .apicss-text-success   { color: #2f855a; }
-    .apicss-text-warning   { color: #dd6b20; }
-    .apicss-text-error     { color: #e53e3e; }
-    .apicss-text-info      { color: #3182ce; }
-    .apicss-text-muted     { color: #718096; }
+  .apicss-link:hover {
+    color: #2a5a9e;
+  }
   
-    /* Background highlights */
-    .apicss-bg-primary   { background-color: #4cb19f; color: #fff; padding: 0.2rem 0.4rem; border-radius: 0.5rem; }
-    .apicss-bg-secondary { background-color: #3a7bc8; color: #fff; padding: 0.2rem 0.4rem; border-radius: 0.5rem; }
-    .apicss-bg-success   { background-color: #9ae6b4; }
-    .apicss-bg-warning   { background-color: #fefcbf; }
-    .apicss-bg-error     { background-color: #fed7d7; }
-    .apicss-bg-info      { background-color: #bee3f8; }
+  /* Blockquotes */
+  .apicss-blockquote {
+    margin: 1.5rem 0;
+    padding: 0.8rem 1.2rem;
+    border-left: 4px solid #ccc;
+    background: #f9f9f9;
+    color: #555;
+    font-style: italic;
+  }
   
-    /* Alignment & transform */
-    .apicss-text-center { text-align: center; }
-    .apicss-text-right  { text-align: right; }
-    .apicss-uppercase   { text-transform: uppercase; letter-spacing: 0.05em; }
-    .apicss-small       { font-size: 0.875rem; }
+  /* Lists */
+  .apicss-list {
+    margin: 1rem 0 1rem 1.5rem;
+  }
   
-    /* Spacing helpers */
-    .apicss-spacer-sm { height: 0.5rem; }
-    .apicss-spacer-md { height: 1rem; }
-    .apicss-spacer-lg { height: 2rem; }
+  .apicss-list-item {
+    margin: 0.4rem 0;
+  }
   
-    .apicss-mt-sm { margin-top: 0.5rem; }
-    .apicss-mt-md { margin-top: 1rem; }
-    .apicss-mt-lg { margin-top: 2rem; }
-    .apicss-mb-sm { margin-bottom: 0.5rem; }
-    .apicss-mb-md { margin-bottom: 1rem; }
-    .apicss-mb-lg { margin-bottom: 2rem; }
+  /* Horizontal rule */
+  .apicss-hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+  }
   
-    .apicss-indent    { margin-left: 2rem; }
-    .apicss-indent-lg { margin-left: 4rem; }
+  /* Images and figures */
+  .apicss-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+  }
   
-    /* Borders & emphasis */
-    .apicss-border-primary   { border-left: 4px solid #4cb19f; padding-left: 1rem; }
-    .apicss-border-secondary { border-left: 4px solid #3a7bc8; padding-left: 1rem; }
+  .apicss-figure {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
   
-    .apicss-strong { font-weight: 700; }
-    .apicss-em     { font-style: italic; }
+  .apicss-caption {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
   
-    /* Utility */
-    .apicss-hidden       { display: none !important; }
-    .apicss-inline-block { display: inline-block; }
+  /* Inline and block code */
+  .apicss-code-inline {
+    background: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  
+  .apicss-code-block {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  
+  /* Tables */
+  .apicss-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+  
+  .apicss-table th,
+  .apicss-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  .apicss-table th {
+    background: #f3f3f3;
+    font-weight: 600;
+  }
+  
+  /* Utility spacing */
+  .apicss-spacer {
+    height: 1rem;
+  }
+  
+  /* ---------- Colored Text ---------- */
+.apicss-text-primary   { color: #4cb19f; }  /* your green */
+.apicss-text-secondary { color: #3a7bc8; }  /* your blue */
+.apicss-text-success   { color: #2f855a; }  /* dark green */
+.apicss-text-warning   { color: #dd6b20; }  /* orange */
+.apicss-text-error     { color: #e53e3e; }  /* red */
+.apicss-text-info      { color: #3182ce; }  /* light blue */
+.apicss-text-muted     { color: #718096; }  /* gray */
+
+/* ---------- Background Highlights ---------- */
+.apicss-bg-primary   { background-color: #4cb19f; color: #fff; padding: 0.2rem 0.4rem; border-radius: 0.2rem; }
+.apicss-bg-secondary { background-color: #3a7bc8; color: #fff; padding: 0.2rem 0.4rem; border-radius: 0.2rem; }
+.apicss-bg-success   { background-color: #9ae6b4; }
+.apicss-bg-warning   { background-color: #fefcbf; }
+.apicss-bg-error     { background-color: #fed7d7; }
+.apicss-bg-info      { background-color: #bee3f8; }
+
+/* ---------- Alignment & Transform ---------- */
+.apicss-text-center    { text-align: center; }
+.apicss-text-right     { text-align: right; }
+.apicss-uppercase      { text-transform: uppercase; letter-spacing: 0.05em; }
+.apicss-small          { font-size: 0.875rem; }
+
+/* ---------- Spacing Helpers ---------- */
+.apicss-spacer-sm      { height: 0.5rem; }
+.apicss-spacer-md      { height: 1rem; }
+.apicss-spacer-lg      { height: 2rem; }
+
+.apicss-margin-top-sm     { margin-top: 0.5rem; }
+.apicss-margin-top-md     { margin-top: 1rem; }
+.apicss-margin-top-lg     { margin-top: 2rem; }
+
+.apicss-margin-bottom-sm  { margin-bottom: 0.5rem; }
+.apicss-margin-bottom-md  { margin-bottom: 1rem; }
+.apicss-margin-bottom-lg  { margin-bottom: 2rem; }
+
+.apicss-indent          { margin-left: 2rem; }
+.apicss-indent-lg       { margin-left: 4rem; }
+
+/* ---------- Borders & Emphasis ---------- */
+.apicss-border-primary  { border-left: 4px solid #4cb19f; padding-left: 1rem; }
+.apicss-border-secondary{ border-left: 4px solid #3a7bc8; padding-left: 1rem; }
+
+.apicss-strong          { font-weight: 700; }
+.apicss-em              { font-style: italic; }
+
+/* ---------- Utility ---------- */
+.apicss-hidden          { display: none !important; }
+.apicss-inline-block    { display: inline-block; }
+
+/* in your apicss.css (or wherever you keep the utilities) */
+.apicss-body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 0 1rem;
   }
   
