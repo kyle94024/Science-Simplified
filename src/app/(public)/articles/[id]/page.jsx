@@ -164,14 +164,7 @@ const ArticlePage = ({ params }) => {
                                             Published On:
                                         </h3>
                                         <p className="text-2xl font-bold text-gray-600">
-                                            {article.publication_date
-                                                ? format(
-                                                      new Date(
-                                                          article.publication_date
-                                                      ),
-                                                      "MMMM d, yyyy"
-                                                  )
-                                                : "N/A"}
+                                            {article.publication_date || 'N/A'}
                                         </p>
                                     </div>
                                     <div className="flex">
