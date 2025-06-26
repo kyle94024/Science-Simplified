@@ -11,10 +11,10 @@ function HomeServiceBanner() {
     return (
         <div className={`service-banner ${tenant.shortName === "CF" || tenant.shortName === "ALS" || tenant.shortName === "NF" ||tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" ? "background-alt" : ""}`}>
             <div className="service-banner__content">
-                <h2 className="heading-quaternary">
+                <h2 className={`heading-quaternary ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
                     {tenant.text_exploreAllTitle}{" "}
                 </h2>
-                <p className="body-large color-light-grey w-300">
+                <p className={`body-large color-light-grey w-300 ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
                     {tenant.text_exploreAllDescription}
                 </p>
             </div>

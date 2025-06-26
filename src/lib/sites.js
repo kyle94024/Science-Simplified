@@ -493,8 +493,8 @@ export const sites = {
 
       //Text
       text_homeTitleDescription: "Collection of simplified ALS articles certified by experts. ",
-      text_exploreAllTitle: " \n ",
-      text_exploreAllDescription: " ",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified ALS articles certified by experts.",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about ALS to patients, families, and caregivers. We aim to empower those affected by ALS with the knowledge and resources they need to navigate their journey.",
 
       // About
