@@ -472,7 +472,7 @@ export const sites = {
         primary: "#a0bcfa",
         primaryDark: "#2f99eb",
         lightGrey: "#f5f5f5",
-        text: "#630f0f",
+        text: "#E32636",
         background: "#ffffff",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
