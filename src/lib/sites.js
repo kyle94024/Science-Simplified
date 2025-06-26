@@ -492,10 +492,10 @@ export const sites = {
       loginBGBottom: "ALS_loginBGBottom.webp", //loginBGTop
 
       //Text
-      text_homeTitleDescription: "",
-      text_exploreAllTitle: "",
-      text_exploreAllDescription: "",
-      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RYR1-related diseases to patients, families, and caregivers. We aim to empower those affected by RYR1-related diseases with the knowledge and resources they need to navigate their journey.",
+      text_homeTitleDescription: "Collection of simplified ALS articles certified by experts. ",
+      text_exploreAllTitle: " ",
+      text_exploreAllDescription: " ",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about ALS to patients, families, and caregivers. We aim to empower those affected by ALS with the knowledge and resources they need to navigate their journey.",
 
       // About
       about_teamMember1Image: "kyle.png",
