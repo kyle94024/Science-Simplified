@@ -473,10 +473,10 @@ export const sites = {
         primaryDark: "#E32636",
         lightGrey: "#f5f5f5",
         text: "#3d2447",
-        background: "#d5e4f5",
+        background: "#f5faff",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
-        footerBGColor: "#e08484", //footerBGColor
+        footerBGColor: "#f5c4c4", //footerBGColor
       },
       // Images (Home)
       homeBG: "ALS_bluecornflower.png", //home/homeBG
