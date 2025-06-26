@@ -483,18 +483,18 @@ export const sites = {
       homeExploreAllBG: "ALS_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "ALS_logo_with_text.png", //logoWithText
-      articleThumbnailPlaceholder: "Aicardi_article_placeholder.jpg", //articleThumbnailPlaceholder
+      articleThumbnailPlaceholder: "ALS_article_placeholder.png", //articleThumbnailPlaceholder
       contactUsBGLeft: "ALS_ContactUsBG.png", //contactUsBGLeft # uses full width background
       contactUsBGRight: "ALS_ContactUsBG.png", //contactUsBGRight # uses full width background
 
       
-      loginBGTop: "Aicardi_loginBGTop.webp", //loginBGTop
-      loginBGBottom: "Aicardi_loginBGBottom.webp", //loginBGTop
+      loginBGTop: "ALS_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "ALS_loginBGBottom.webp", //loginBGTop
 
       //Text
-      text_homeTitleDescription: "Collection of simplified RYR1-related disease articles certified by experts. ",
-      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
-      text_exploreAllDescription: "Collection of simplified RYR1-related disease articles certified by experts.",
+      text_homeTitleDescription: "",
+      text_exploreAllTitle: "",
+      text_exploreAllDescription: "",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RYR1-related diseases to patients, families, and caregivers. We aim to empower those affected by RYR1-related diseases with the knowledge and resources they need to navigate their journey.",
 
       // About
@@ -504,34 +504,34 @@ export const sites = {
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
       
       about_teamMember2Image: "expert-placeholder.png",
-      about_teamMember2Name: "Shubhi Nanda",
+      about_teamMember2Name: "Ariba Fatima",
       about_teamMember2Title: "Medical Outreach Lead",
-      about_teamMember2Bio: "Placeholder Bio",
+      about_teamMember2Bio: "Ariba is a striving researcher in interdisciplinary studies between neuroscience and art therapy. Currently, she is a professional idol under Ether Crush Entertainment and advocates on giving accessibility to neuroscience and mental health to a wide audience.",
 
       about_teamMember3Image: "expert-placeholder.png",
-      about_teamMember3Name: "Faculty Advisor Name",
-      about_teamMember3Title: "Faculty Advisor",
-      about_teamMember3Bio: "Faculty Advisor Bio",
+      about_teamMember3Name: "Anagha Doddamane",
+      about_teamMember3Title: "Medical Outreach Lead",
+      about_teamMember3Bio: "Placeholder Bio",
 
-      about_supporter1Logo: "aicardifoundation.jpg",
-      about_supporter1Name: "Aicardi Syndrome Foundation",
+      about_supporter1Logo: "ALS_Association.png",
+      about_supporter1Name: "ALS Association",
       about_supporter1Width: 300,
-      about_supporter1Height: 300,
-      about_supporter1Link: "https://aicardisyndromefoundation.org/",
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://www.alsa.org/",
 
-      about_supporter2Logo: "aicardifoundation.jpg",
-      about_supporter2Name: "Aicardi Syndrome Foundation",
+      about_supporter2Logo: "ALS_Association.png",
+      about_supporter2Name: "ALS Association",
       about_supporter2Width: 200,
       about_supporter2Height: 100,
-      about_supporter2Link: "https://ccrod.cancer.gov/confluence/",
+      about_supporter2Link: "https://www.alsa.org/",
       about_supporter2Hidden: true,
 
-      about_mission1: "Aicardi Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Aicardi Syndrome.",
-      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Aicardi Syndrome research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Aicardi Syndrome community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
-      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Aicardi Syndrome community.",
-      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Aicardi Syndrome with the community.",
-      about_getInvolvedDescription: "Aicardi Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
-      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Aicardi Syndrome community",
+      about_mission1: "ALS Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by ALS.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in ALS research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the ALS community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the ALS community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in ALS with the community.",
+      about_getInvolvedDescription: "ALS Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the ALS community",
 
       about_our_mission: "our-mission.jpg",
       
