@@ -13,8 +13,8 @@ const SubscriptionBanner = () => {
 
     return (
         <div className={`subscription-banner ${tenant.shortName === "CF" || tenant.shortName === "ALS" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" ? "background-alt" : ""}`}>
-            <h2 className={`heading-tertiary w-800 ${tenant.shortName === "ALS" ? "hidden" : ""}`}>Get in Touch</h2>
-            <p className={`body-large color-light-grey ${tenant.shortName === "ALS" ? "hidden" : ""}`}>
+            <h2 className={`heading-tertiary w-800 ${tenant.shortName === "ALS" ? "invisible" : ""}`}>Get in Touch</h2>
+            <p className={`body-large color-light-grey ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
                 Reach out to us for any questions, partnerships, or support.
                 We&apos;re here to help!
             </p>
