@@ -398,7 +398,7 @@ export const sites = {
         background: "#f7ece6",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
-        footerBGColor: "#e0c099", //footerBGColor
+        footerBGColor: "#f5d0c6", //footerBGColor
       },
       // Images (Home)
       homeBG: "RYR1_homeBG.png", //home/homeBG
