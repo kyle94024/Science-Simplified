@@ -769,6 +769,84 @@ export const sites = {
       about_our_mission: "our-mission.jpg",
       
     },
+    
+    Canavan: {
+      name: "Canavan Simplified",
+      shortName: "Canavan",
+      pathName: "Canavan",
+      fullName: "Canavan Simplified",
+      disease: "Canavan Disease",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+
+
+      theme: { // Theme
+        primary: "#ba4e14",
+        primaryDark: "#913f13",
+        lightGrey: "#f5f5f5",
+        text: "#3d2447",
+        background: "#f7ece6",
+        contactUsColor: "#c6a5e3", //contactUsColor
+        authorTextColor: "#6d32a8", //authorTextColor
+        footerBGColor: "#f5d0c6", //footerBGColor
+      },
+      // Images (Home)
+      homeBG: "RYR1_homeBG.png", //home/homeBG
+      homeExploreAllBG: "RYR1_ExploreAllBG.png", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "RYR1_logo_with_text.png", //logoWithText
+      articleThumbnailPlaceholder: "RYR1_article_placeholder.png", //articleThumbnailPlaceholder
+      contactUsBGLeft: "RYR1_contactUsBGLeft-Enhanced.jpg", //contactUsBGLeft # uses full width background
+      contactUsBGRight: "RYR1_contactUsBGLeft-Enhanced.jpg", //contactUsBGRight # uses full width background
+
+      
+      loginBGTop: "RYR1_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "RYR1_loginBGBottom.webp", //loginBGTop
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Canavan Disease articles certified by experts. ",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Canavan Disease articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Canavan Disease to patients, families, and caregivers. We aim to empower those affected by Canavan Disease with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Canavan Disease community.",
+      
+      about_teamMember2Image: "shreyasankar.jpg",
+      about_teamMember2Name: "Shreya Sankar",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Shreya is a first year medical student at Rowan-Virtua School of Osteopathic Medicine. She is dedicated to raising awareness and building a community for Canavan’s Disease.",
+
+      about_teamMember3Image: "expert-placeholder.png",
+      about_teamMember3Name: "Faculty Advisor Name",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Faculty Advisor Bio",
+
+      about_supporter1Logo: "Canavan_researchfoundation.png",
+      about_supporter1Name: "Canavan Research Foundation",
+      about_supporter1Width: 300,
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://www.canavan.org/",
+
+      about_supporter2Logo: "Canavan_researchfoundation.png",
+      about_supporter2Name: "Canavan Research Foundation",
+      about_supporter2Width: 200,
+      about_supporter2Height: 100,
+      about_supporter2Link: "https://www.canavan.org/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "RYR1 Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by RYR1-related diseases.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in RYR1-related diseases research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the RYR1-related diseases community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the RYR1-related diseases community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in RYR1-related diseases with the community.",
+      about_getInvolvedDescription: "RYR1 Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the RYR1-related diseases community",
+
+      about_our_mission: "our-mission.jpg",
+      
+    },
 
   };
   
