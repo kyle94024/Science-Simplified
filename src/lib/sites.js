@@ -706,7 +706,7 @@ export const sites = {
         primaryDark: "#d43ad6",
         lightGrey: "#f5f5f5",
         text: "#140517",
-        background: "#ffffff",
+        background: "#f7fcff",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
         footerBGColor: "#fff7ff", //footerBGColor
