@@ -780,14 +780,14 @@ export const sites = {
 
 
       theme: { // Theme
-        primary: "#ba4e14",
-        primaryDark: "#913f13",
+        primary: "#1493ba",
+        primaryDark: "#135a70",
         lightGrey: "#f5f5f5",
         text: "#3d2447",
-        background: "#f7ece6",
+        background: "#e6f7f0",
         contactUsColor: "#c6a5e3", //contactUsColor
         authorTextColor: "#6d32a8", //authorTextColor
-        footerBGColor: "#f5d0c6", //footerBGColor
+        footerBGColor: "#d3ede2", //footerBGColor
       },
       // Images (Home)
       homeBG: "Canavan_homeBG.png", //home/homeBG
