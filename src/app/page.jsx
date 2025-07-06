@@ -35,7 +35,7 @@ export default function Home() {
 
     return (
         <main className="home">
-            <section className={`home__header ${tenant.shortName === "CF" || tenant.shortName === "Rett" || tenant.shortName === "RYR1" || tenant.shortName === "ALS" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" ? "background-alt" : ""}`}>
+            <section className={`home__header ${tenant.shortName === "CF" || tenant.shortName === "Huntington's" || tenant.shortName === "Rett" || tenant.shortName === "RYR1" || tenant.shortName === "ALS" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" ? "background-alt" : ""}`}>
                 <Navbar />
 
                 <section className="home__hero padding">

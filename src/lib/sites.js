@@ -614,5 +614,83 @@ export const sites = {
       
     },
 
+    HUNTINGTONS: {
+      name: "Huntington's Simplified",
+      shortName: "Huntington's",
+      pathName: "Huntingtons",
+      fullName: "Huntington's Simplified",
+      disease: "Huntington's Disease",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+
+
+      theme: { // Theme
+        primary: "#e2bbf2",
+        primaryDark: "#d43ad6",
+        lightGrey: "#f5f5f5",
+        text: "#140517",
+        background: "#ffffff",
+        contactUsColor: "#c6a5e3", //contactUsColor
+        authorTextColor: "#6d32a8", //authorTextColor
+        footerBGColor: "#fff7ff", //footerBGColor
+      },
+      // Images (Home)
+      homeBG: "HD_homeBG.png", //home/homeBG
+      homeExploreAllBG: "HD_ExploreAllBG.jpg", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "HD_logo_with_text.png", //logoWithText
+      articleThumbnailPlaceholder: "HD.png", //articleThumbnailPlaceholder
+      contactUsBGLeft: "HD_contactUsBGLeft.jpg", //contactUsBGLeft # uses full width background
+      contactUsBGRight: "HD_contactUsBGLeft.jpg", //contactUsBGRight # uses full width background
+
+      
+      loginBGTop: "HD_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "HD_loginBGBottom.webp", //loginBGTop
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Huntington's Disease articles certified by experts. ",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Huntington's Disease articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Huntington's Disease to patients, families, and caregivers. We aim to empower those affected by Huntington's Disease with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Huntington's Disease community.",
+      
+      about_teamMember2Image: "Aditi.jpg",
+      about_teamMember2Name: "Aditi Gaur",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Aditi is a second-year undergraduate student at the University of Delhi, India, studying Biological Sciences. She was born and brought up in New Delhi and has always been passionate about medical science, healthcare innovation , and entrepreneurship. Outside of academics, she enjoys debating, taking part in public speaking events, dancing, writing poetry, and reading.",
+
+      about_teamMember3Image: "expert-placeholder.png",
+      about_teamMember3Name: "Faculty Advisor Name",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Placeholder Bio",
+
+      about_supporter1Logo: "HDSA.webp",
+      about_supporter1Name: "Huntington's Disease Society of America",
+      about_supporter1Width: 400,
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://hdsa.org/",
+
+      about_supporter2Logo: "HDSA.webp",
+      about_supporter2Name: "Huntington's Disease Society of America",
+      about_supporter2Width: 300,
+      about_supporter2Height: 200,
+      about_supporter2Link: "https://hdsa.org/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "Huntington's Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Huntington's Disease.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Huntington's Disease research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Huntington's Disease community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Huntington's Disease community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Huntington's Disease with the community.",
+      about_getInvolvedDescription: "Huntington's Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Huntington's Disease community",
+
+      about_our_mission: "our-mission.jpg",
+      
+    },
+
   };
   
