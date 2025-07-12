@@ -634,7 +634,7 @@ export const sites = {
         footerBGColor: "#fff7ff", //footerBGColor
       },
       // Images (Home)
-      homeBG: "HD_homeBG.png", //home/homeBG
+      homeBG: "huntingtons.png", //home/homeBG
       homeExploreAllBG: "HD_ExploreAllBG.jpg", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "HD_logo_with_text.png", //logoWithText
