@@ -198,10 +198,10 @@ export const sites = {
       about_teamMember2Title: "Medical Outreach Lead",
       about_teamMember2Bio: "Daniel is a rising 3rd year medical student at West Virginia School of Osteopathic Medicine. His goal is to pursue a career in Pathology. In his down time, he enjoys walking, reading and playing basketball with friends. ",
 
-      about_teamMember3Image: "expert-placeholder.png",
-      about_teamMember3Name: "Faculty Advisor Name",
-      about_teamMember3Title: "Faculty Advisor",
-      about_teamMember3Bio: "Faculty Advisor Bio",
+      about_teamMember3Image: "Aahish.jpeg",
+      about_teamMember3Name: "Aahish Chohan",
+      about_teamMember3Title: "Medical Outreach Lead",
+      about_teamMember3Bio: "Aahish is a rising 4th-year medical student at West Virginia School of Osteopathic Medicine. His goal is to pursue a career in psychiatry. In his down time, he enjoys working on his car, watching movies, and collecting Pokémon cards. ",
 
       about_supporter1Logo: "CFF.jpg",
       about_supporter1Name: "CFF",
