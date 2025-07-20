@@ -7,7 +7,7 @@ import { serialize } from "cookie";
 
 export async function POST(req) {
     try {
-        const { email, password } = await req.json();
+        let { email, password } = await req.json();
 
         // Get user from the database
         email = email.toLowerCase();                     // ← normalize input
