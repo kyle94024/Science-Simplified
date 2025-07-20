@@ -10,10 +10,16 @@ export async function POST(req) {
         const { email, password } = await req.json();
 
         // Get user from the database
+        email = email.toLowerCase();                     // ← normalize input
+
+        // Now compare against a lower‑cased column value
         const userResult = await query(
-            "SELECT * FROM email_credentials WHERE email = $1",
-            [email]
+        `SELECT * 
+            FROM email_credentials 
+            WHERE LOWER(email) = $1`,
+        [email]
         );
+
 
         if (userResult.rows.length === 0) {
             return NextResponse.json(
@@ -37,7 +43,7 @@ export async function POST(req) {
 
         // Check if user is admin
         const adminResult = await query(
-            "SELECT * FROM admin_users WHERE email = $1",
+            "SELECT * FROM admin_users WHERE LOWER(email) = $1",
             [email]
         );
         const isAdmin = adminResult.rows.length > 0;
