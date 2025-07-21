@@ -1,5 +1,5 @@
 "use client";
-import "./CreateEditorPage.scss";
+import "./create-editor-page.scss";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
