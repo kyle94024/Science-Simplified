@@ -29,6 +29,7 @@ function Navbar() {
                   { name: "Pending Articles", path: "/pending-articles" },
                   { name: "Assign Articles", path: "/assign-articles" },
                   { name: "Featured", path: "/featured" },
+                  { name: "Create Editor", path: "/create-editor" },
               ]
             : []),
         ...(role === "editor"
