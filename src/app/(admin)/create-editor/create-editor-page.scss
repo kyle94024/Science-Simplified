@@ -109,4 +109,39 @@
       font-size: 1.6rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      margi
+      margin-top: 1.6rem;
+      height: 5rem;
+
+      &:hover {
+        background-color: #333;
+      }
+    }
+  }
+}
+
+// Responsive tweaks (same as signup)
+@media only screen and (max-width: 850px) {
+  .create-editor-page {
+    &__body {
+      padding-block: 4rem;
+      padding-inline: 2rem;
+    }
+    .create-editor {
+      transform: translateY(0);
+      padding: 3rem 2rem;
+      width: 100%;
+      &__form {
+        width: 100%;
+      }
+      &__input-group {
+        width: 100%;
+        &--half {
+          flex-direction: column;
+        }
+      }
+      &__input-wrapper {
+        /* already flex:1 */
+      }
+    }
+  }
+}
