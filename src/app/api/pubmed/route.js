@@ -88,13 +88,24 @@ export async function POST(req) {
             title = meta?.["title-group"]?.["article-title"] || "";
 
             // Authors
-            const contribs = meta?.["contrib-group"]?.contrib;
-            if (contribs) {
-                const contribArray = Array.isArray(contribs) ? contribs : [contribs];
-                authors = contribArray.map(c => {
-                    const name = c?.name || {};
-                    return `${name["given-names"] || ""} ${name.surname || ""}`.trim();
-                });
+            // Authors (normalize to array)
+            let authors = [];
+            if (db === "pubmed") {
+                if (article.AuthorList?.Author) {
+                    const authorData = Array.isArray(article.AuthorList.Author)
+                        ? article.AuthorList.Author
+                        : [article.AuthorList.Author];
+                    authors = authorData.map(a => `${a.ForeName || ""} ${a.LastName || ""}`.trim());
+                }
+            } else if (db === "pmc") {
+                const contribs = parsed?.["pmc-articleset"]?.article?.front?.["article-meta"]?.["contrib-group"]?.contrib;
+                if (contribs) {
+                    const contribArray = Array.isArray(contribs) ? contribs : [contribs];
+                    authors = contribArray.map(c => {
+                        const name = c?.name || {};
+                        return `${name["given-names"] || ""} ${name.surname || ""}`.trim();
+                    });
+                }
             }
 
             // Date
@@ -134,4 +145,23 @@ export async function POST(req) {
         console.error("PubMed fetch error:", err);
         return NextResponse.json({ error: "Failed to fetch PubMed data" }, { status: 500 });
     }
+}// Authors (normalize to array)
+let authors = [];
+if (db === "pubmed") {
+    if (article.AuthorList?.Author) {
+        const authorData = Array.isArray(article.AuthorList.Author)
+            ? article.AuthorList.Author
+            : [article.AuthorList.Author];
+        authors = authorData.map(a => `${a.ForeName || ""} ${a.LastName || ""}`.trim());
+    }
+} else if (db === "pmc") {
+    const contribs = parsed?.["pmc-articleset"]?.article?.front?.["article-meta"]?.["contrib-group"]?.contrib;
+    if (contribs) {
+        const contribArray = Array.isArray(contribs) ? contribs : [contribs];
+        authors = contribArray.map(c => {
+            const name = c?.name || {};
+            return `${name["given-names"] || ""} ${name.surname || ""}`.trim();
+        });
+    }
 }
+
