@@ -132,20 +132,20 @@ const AddArticleForm = () => {
             return;
         }
 
-        if (tags.length === 0) {
-            toast.error("Please add at least one tag");
-            return;
-        }
+        // if (tags.length === 0) {
+        //     toast.error("Please add at least one tag");
+        //     return;
+        // }
 
-        if (!simplifyLength || simplifyLength <= 0) {
-            toast.error("Please enter a valid simplification length");
-            return;
-        }
+        // if (!simplifyLength || simplifyLength <= 0) {
+        //     toast.error("Please enter a valid simplification length");
+        //     return;
+        // }
 
-        if (!simplifyUnit) {
-            toast.error("Please select a simplification unit");
-            return;
-        }
+        // if (!simplifyUnit) {
+        //     toast.error("Please select a simplification unit");
+        //     return;
+        // }
 
         setIsLoading(true);
 
