@@ -17,16 +17,24 @@ const collectTextWithHeadings = (node, paragraphs = []) => {
     if (!node) return paragraphs;
 
     if (typeof node === "string") {
-        paragraphs.push(node);
+        if (node.trim()) paragraphs.push(node.trim());
     } else if (Array.isArray(node)) {
         node.forEach(n => collectTextWithHeadings(n, paragraphs));
     } else if (typeof node === "object") {
+        // Section title
         if (node.title) {
             paragraphs.push(`\n\n## ${getText(node.title)}\n`);
         }
-        if (node.p) collectTextWithHeadings(node.p, paragraphs);
+        // Paragraphs
+        if (node.p) {
+            const ps = Array.isArray(node.p) ? node.p : [node.p];
+            ps.forEach(p => {
+                const text = typeof p === "string" ? p : getText(p) || getText(p?.["#text"]);
+                if (text.trim()) paragraphs.push(text.trim());
+            });
+        }
+        // Recurse into nested sections
         if (node.sec) collectTextWithHeadings(node.sec, paragraphs);
-        if (node["#text"]) paragraphs.push(getText(node["#text"]));
     }
 
     return paragraphs;
