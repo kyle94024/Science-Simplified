@@ -242,10 +242,12 @@ const AddArticleForm = () => {
     const [fetchingPubmed, setFetchingPubmed] = useState(false);
 
     const handleFetchPubmed = async () => {
-        if (!pubmedUrl.includes("pubmed")) {
+        const validPattern = /(pubmed\.ncbi\.nlm\.nih\.gov\/\d+)|(pmc\.ncbi\.nlm\.nih\.gov\/articles\/PMC\d+)/i;
+        if (!validPattern.test(pubmedUrl)) {
             toast.error("Please enter a valid PubMed or PubMed Central URL");
             return;
         }
+
         setFetchingPubmed(true);
         try {
             const res = await fetch("/api/pubmed", {
@@ -317,6 +319,25 @@ const AddArticleForm = () => {
                     <Label htmlFor="title" className="add-article-form__label">
                         Upload PDF (Optional)
                     </Label>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "1rem",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Input
+                            id="pdfUpload"
+                            type="file"
+                            accept="application/pdf"
+                            className="add-article-form__input"
+                            onChange={handlePDFUpload}
+                        />
+                        {pdfLoader && (
+                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                        )}
+                    </div>
+
                     <Label htmlFor="pubmedLink" className="add-article-form__label">
                         Fetch from PubMed (or PMC)
                     </Label>
@@ -344,24 +365,7 @@ const AddArticleForm = () => {
                             )}
                         </Button>
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            gap: "1rem",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Input
-                            id="pdfUpload"
-                            type="file"
-                            accept="application/pdf"
-                            className="add-article-form__input"
-                            onChange={handlePDFUpload}
-                        />
-                        {pdfLoader && (
-                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                        )}
-                    </div>
+                    
                 </div>
             </div>
             <div className="add-article-form__row">
