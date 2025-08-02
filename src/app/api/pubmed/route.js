@@ -2,50 +2,75 @@
 import { NextResponse } from "next/server";
 import xml2js from "xml2js";
 
+export const runtime = "nodejs"; // ensure full Node.js runtime (not edge)
+
 export async function POST(req) {
     try {
         const { url } = await req.json();
-        if (!url || !url.includes("pubmed")) {
-            return NextResponse.json({ error: "Invalid PubMed/PubMed Central URL" }, { status: 400 });
+
+        // Accept PubMed and PubMed Central links
+        const validPattern = /(pubmed\.ncbi\.nlm\.nih\.gov\/\d+)|(pmc\.ncbi\.nlm\.nih\.gov\/articles\/PMC\d+)/i;
+        if (!url || !validPattern.test(url)) {
+            return NextResponse.json(
+                { error: "Invalid PubMed or PubMed Central URL" },
+                { status: 400 }
+            );
         }
 
-        // Extract numeric ID (works for pubmed.ncbi.nlm.nih.gov or ncbi.nlm.nih.gov/pmc)
-        const idMatch = url.match(/(\d+)/);
+        // Extract numeric ID
+        const idMatch = url.match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)|PMC(\d+)/i);
         if (!idMatch) {
             return NextResponse.json({ error: "Could not extract ID" }, { status: 400 });
         }
-        const id = idMatch[1];
+        const id = idMatch[1] || idMatch[2];
 
-        // Use PubMed E-utilities
+        // Fetch from E-utilities
         const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${id}&retmode=xml`;
         const response = await fetch(efetchUrl);
+        if (!response.ok) {
+            return NextResponse.json({ error: "Failed to fetch from PubMed" }, { status: 502 });
+        }
         const xml = await response.text();
-
         const parsed = await xml2js.parseStringPromise(xml, { explicitArray: false });
+
         const article = parsed?.PubmedArticleSet?.PubmedArticle?.MedlineCitation?.Article;
         if (!article) {
             return NextResponse.json({ error: "Article not found" }, { status: 404 });
         }
 
-        // Extract fields
+        // Title
         const title = article.ArticleTitle || "";
-        const abstract = Array.isArray(article.Abstract?.AbstractText)
-            ? article.Abstract.AbstractText.map(obj => obj._ || obj).join("\n\n")
-            : (article.Abstract?.AbstractText?._ || article.Abstract?.AbstractText || "");
 
-        const authors = (article.AuthorList?.Author || []).map(a => {
-            const first = a.ForeName || "";
-            const last = a.LastName || "";
-            return `${first} ${last}`.trim();
-        });
+        // Abstract (normalize to array)
+        let abstract = "";
+        if (article.Abstract?.AbstractText) {
+            const absData = Array.isArray(article.Abstract.AbstractText)
+                ? article.Abstract.AbstractText
+                : [article.Abstract.AbstractText];
+            abstract = absData.map(obj => obj._ || obj).join("\n\n");
+        }
 
+        // Authors (normalize to array)
+        let authors = [];
+        if (article.AuthorList?.Author) {
+            const authorData = Array.isArray(article.AuthorList.Author)
+                ? article.AuthorList.Author
+                : [article.AuthorList.Author];
+            authors = authorData.map(a => {
+                const first = a.ForeName || "";
+                const last = a.LastName || "";
+                return `${first} ${last}`.trim();
+            });
+        }
+
+        // Date
         const pubDate = article.Journal?.JournalIssue?.PubDate || {};
         const date = [pubDate.Year, pubDate.Month, pubDate.Day].filter(Boolean).join(" ");
 
-        // Get DOI
+        // DOI
         const ids = parsed?.PubmedArticleSet?.PubmedArticle?.PubmedData?.ArticleIdList?.ArticleId || [];
         const doi = Array.isArray(ids)
-            ? ids.find(i => i.$?.IdType === "doi")?._ 
+            ? ids.find(i => i.$?.IdType === "doi")?._
             : ids._;
 
         return NextResponse.json({
@@ -57,8 +82,5 @@ export async function POST(req) {
             abstract
         });
     } catch (err) {
-        console.error(err);
-        return NextResponse.json({ error: "Failed to fetch PubMed data" }, { status: 500 });
-    }
-}
-
+        console.error("PubMed fetch error:", err);
+        retur

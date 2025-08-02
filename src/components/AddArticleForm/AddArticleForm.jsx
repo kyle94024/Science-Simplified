@@ -242,13 +242,14 @@ const AddArticleForm = () => {
     const [fetchingPubmed, setFetchingPubmed] = useState(false);
 
     const handleFetchPubmed = async () => {
-        if (
-            !pubmedUrl.includes("pubmed.ncbi.nlm.nih.gov") &&
-            !pubmedUrl.includes("pmc.ncbi.nlm.nih.gov")
-        ) {
-            toast.error("Please enter a valid PubMed or PubMed Central URL");
+        // Extract ID (numeric or PMC)
+        let idMatch = pubmedUrl.match(/(?:pubmed\.ncbi\.nlm\.nih\.gov\/(\d+))|(?:PMC(\d+))/i);
+        if (!idMatch) {
+            toast.error("Could not extract PubMed/PMC ID");
             return;
         }
+        const id = idMatch[1] || idMatch[2];  // Use whichever matched
+
 
 
         setFetchingPubmed(true);
