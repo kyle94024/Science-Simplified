@@ -165,15 +165,20 @@ export default function ArticlesListPaginated({
 
                     return (
                         <ArticleCard
+                            pageType={pageType}                         // ← keep LHS so Review button shows
+                            key={article.id || article.title}           // ← keep robust key
                             id={article.id}
-                            key={article.title}
                             imageUrl={article.image_url}
-                            date={article.date}
+                            date={article.publication_date ?? article.date ?? ""} // handles both shapes
                             title={article.title}
                             summary={article.summary}
-                            authorImageUrl={article.photo}
-                            authorName={authorName} // Pass the author's name
-                            authorCreds={article.degree}
+                            authorImageUrl={article.photo}              // from profile
+                            authorName={authorName}
+                            authorCreds={
+                                article.degree && article.degree !== "No Degree"
+                                ? article.degree
+                                : null
+                            }
                             authorInstitution={article.university}
                         />
                     );
