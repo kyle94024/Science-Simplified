@@ -21,7 +21,6 @@ const ArticleSearchPage = () => {
                 const response = await fetch("/api/articles");
                 if (!response.ok) throw new Error("Failed to fetch articles");
                 const data = await response.json();
-                console.log('API /api/articles sample:', data[0]);
                 setArticles(data);
             } catch (error) {
                 console.error("Error fetching articles:", error);
