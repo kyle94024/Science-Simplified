@@ -165,15 +165,16 @@ export default function ArticlesListPaginated({
 
                     return (
                         <ArticleCard
-                            pageType={pageType}
-                            key={article.id || article.title}
                             id={article.id}
+                            key={article.title}
                             imageUrl={article.image_url}
                             date={article.date}
                             title={article.title}
                             summary={article.summary}
                             authorImageUrl={article.photo}
-                            authorName={authorName}
+                            authorName={authorName} // Pass the author's name
+                            authorCreds={article.degree}
+                            authorInstitution={article.university}
                         />
                     );
                 })}

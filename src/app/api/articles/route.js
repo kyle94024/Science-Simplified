@@ -5,19 +5,19 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const result = await query(
-            `
-            SELECT 
-                a.*, 
-                p.photo,
-                p.name
+        const result = await query(`
+            SELECT
+              a.*,
+              p.photo,
+              p.name,
+              p.degree,
+              p.university
             FROM article a
-            LEFT JOIN profile p 
-            ON (a.certifiedby->>'userId')::INTEGER = p.user_id
+            LEFT JOIN profile p
+              ON (a.certifiedby->>'userId')::INT = p.user_id
             ORDER BY a.id DESC
-            `
-        );
-
+          `);
+          
         return NextResponse.json(result.rows); // Return articles with user photos and names
     } catch (error) {
         console.error("Error executing query", error);

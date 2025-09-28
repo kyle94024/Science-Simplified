@@ -35,10 +35,16 @@ function ArticleCard({
     summary,
     authorImageUrl,
     authorName,
+    authorCreds,
+    authorInstitution,
     pageType,
 }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const displayName = authorName && authorName.trim() ? authorName : "Anonymous";
+    const showDegree =
+    authorCreds && authorCreds.trim() && authorCreds !== "No Degree";
+
 
     const handleFeatureStatus = async (shouldBeFeatured) => {
         setIsLoading(true);
@@ -186,22 +192,35 @@ function ArticleCard({
                 <div className="article-card__author">
                     {authorImageUrl ? (
                         <Image
-                            src={authorImageUrl}
-                            alt={`Author image for ${authorName}`}
-                            className="article-card__author-image"
-                            width={50}
-                            height={50}
-                            objectFit="cover"
-                            objectPosition="center"
-                            loading="lazy"
+                        src={authorImageUrl}
+                        alt={`Author image for ${displayName}`}
+                        className="article-card__author-image"
+                        width={50}
+                        height={50}
+                        objectFit="cover"
+                        objectPosition="center"
+                        loading="lazy"
                         />
                     ) : (
-                        <FallbackAuthorImage authorName={authorName} />
+                        <FallbackAuthorImage authorName={displayName} />
                     )}
-                    <span className="article-card__author-name">
-                        {authorName || "Anonymous"}
-                    </span>
+
+                    <div className="article-card__author-text">
+                        {/* name + inline degree */}
+                        <span className="article-card__author-name">
+                        {displayName}
+                        {showDegree ? `, ${authorCreds}` : ""}
+                        </span>
+
+                        {/* university on the next line */}
+                        {authorInstitution && (
+                        <span className="article-card__author-institution">
+                            {authorInstitution}
+                        </span>
+                        )}
+                    </div>
                 </div>
+
             </div>
         </article>
     );

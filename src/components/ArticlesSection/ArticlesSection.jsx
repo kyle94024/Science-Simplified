@@ -54,6 +54,8 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
                                     summary={article.summary}
                                     authorImageUrl={article.photo}
                                     authorName={authorName} // Pass the author's name
+                                    authorCreds={article.degree}
+                                    authorInstitution={article.university}
                                 />
                             );
                         })}
