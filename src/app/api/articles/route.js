@@ -1,38 +1,30 @@
-export const revalidate = 0;
+export const revalidate = 0; // Disable caching for this API route
 
 import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  try {
-    const sql = `
-      SELECT
-        a.id,
-        a.image_url,
-        a.publication_date,
-        a.title,
-        a.summary,
-        a.tags,
-        a.innertext,
-        a.article_link,
-        a.publisher,
-        a.certifiedby,
+    try {
+        const result = await query(
+            `
+            SELECT 
+                a.*, 
+                p.photo,
+                p.name
+            FROM article a
+            LEFT JOIN profile p 
+            ON (a.certifiedby->>'userId')::INTEGER = p.user_id
+            ORDER BY a.id DESC
+            `
+        );
 
-        -- author fields from profile
-        p.photo      AS author_image_url,
-        p.name       AS author_name,
-        p.degree     AS author_degree,      -- ← degree
-        p.university AS author_university   -- ← university
+        return NextResponse.json(result.rows); // Return articles with user photos and names
+    } catch (error) {
+        console.error("Error executing query", error);
 
-      FROM article a
-      LEFT JOIN profile p
-        ON COALESCE((a.certifiedby->0->>'userId'), (a.certifiedby->>'userId'))::INT = p.user_id
-      ORDER BY a.id DESC
-    `;
-    const { rows } = await query(sql);
-    return NextResponse.json(rows);
-  } catch (err) {
-    console.error("Error executing query", err);
-    return NextResponse.json({ message: "Error executing query" }, { status: 500 });
-  }
+        return NextResponse.json(
+            { message: "Error executing query" },
+            { status: 500 }
+        );
+    }
 }

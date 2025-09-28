@@ -108,27 +108,4 @@
         aspect-ratio: 1/1;
         background-color: #0b1618;
     }
-    
 }
-
-.article-card__author {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  
-    .article-card__author-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-  
-    .article-card__author-name {
-      font-weight: 600;
-    }
-  
-    .article-card__author-meta {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-  }
-  
