@@ -174,8 +174,6 @@ export default function ArticlesListPaginated({
                             summary={article.summary}
                             authorImageUrl={article.photo}
                             authorName={authorName}
-                            authorCreds={article.author_degree}
-                            authorInstitution={article.author_university}
                         />
                     );
                 })}
