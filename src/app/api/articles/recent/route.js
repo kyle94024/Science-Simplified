@@ -8,17 +8,20 @@ export async function GET() {
         // Fetch recent 6 articles along with profile photos and names
         const result = await query(
             `
-            SELECT 
-                a.*, 
-                p.photo, 
-                p.name 
+            SELECT
+              a.*,
+              p.photo,
+              p.name,
+              p.degree,
+              p.university
             FROM article a
-            LEFT JOIN profile p 
-            ON (a.certifiedby->>'userId')::INTEGER = p.user_id
+            LEFT JOIN profile p
+              ON (a.certifiedby->>'userId')::INT = p.user_id
             ORDER BY a.id DESC
-            LIMIT 6
+            LIMIT 6;
             `
-        );
+          );
+          
 
         return NextResponse.json(result.rows); // Return recent articles with user photos and names
     } catch (error) {

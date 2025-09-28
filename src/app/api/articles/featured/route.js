@@ -17,18 +17,22 @@ export async function GET() {
             // Fetch articles along with profile photos and names based on the fetched IDs
             const articlesResult = await query(
                 `
-                SELECT 
-                    a.*, 
-                    p.photo, 
-                    p.name 
+                SELECT
+                  a.*,
+                  p.photo,
+                  p.name,
+                  p.degree,
+                  p.university
                 FROM article a
-                LEFT JOIN profile p 
-                ON (a.certifiedby->>'userId')::INTEGER = p.user_id
-                WHERE a.id = ANY($1)
+                LEFT JOIN profile p
+                  ON (a.certifiedby->>'userId')::INT = p.user_id
+                WHERE a.id = ANY($1::int[])
+                ORDER BY array_position($1::int[], a.id);
                 `,
                 [articleIds]
-            );
-            articles = articlesResult.rows;
+              );
+              articles = articlesResult.rows;
+
         }
 
         return NextResponse.json(articles); // Return articles with user photos and names
