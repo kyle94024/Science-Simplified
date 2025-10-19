@@ -926,5 +926,83 @@ export const sites = {
       
     },
 
+    HS: {
+      name: "HS Simplified",
+      shortName: "HS",
+      pathName: "HS",
+      fullName: "HS Simplified",
+      disease: "HS",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+
+
+      theme: { // Theme
+        primary: "#a319b3",
+        primaryDark: "#221152",
+        lightGrey: "#f5f5f5",
+        text: "#3d2447",
+        background: "#f8f0fa",
+        contactUsColor: "#c6a5e3", //contactUsColor
+        authorTextColor: "#6d32a8", //authorTextColor
+        footerBGColor: "#eae1f5", //footerBGColor
+      },
+      // Images (Home)
+      homeBG: "DeerVitiligo.png", //home/homeBG
+      homeExploreAllBG: "Vitiligo_ExploreAllBG.png", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "hslogo.png", //logoWithText
+      articleThumbnailPlaceholder: "ArticlePlaceholderDeerVitiligo.png", //articleThumbnailPlaceholder
+      contactUsBGLeft: "Vitiligo_contactUsBGLeft.jpg", //contactUsBGLeft # uses full width background
+      contactUsBGRight: "Vitiligo_contactUsBGLeft.jpg", //contactUsBGRight # uses full width background
+
+      
+      loginBGTop: "Vitiligo_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "Vitiligo_loginBGBottom.webp", //loginBGTop
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Vitiligo articles certified by experts. ",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Vitiligo articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Vitiligo to patients, families, and caregivers. We aim to empower those affected by Vitiligo with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Canavan Disease community.",
+      
+      about_teamMember2Image: "kimiya.png",
+      about_teamMember2Name: "Kimiya Aframian",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Kimiya is a medical student at Stanford University highly interested in Dermatology and currently leads the BE rare dermatologic disease team. She was born and raised in Los Angeles and graduated from UCLA studying Psychobiology and Disability Studies. In her free time, Kimiya enjoys the outdoors, cooking, music, travel, and spending time with family and friends.",
+
+      about_teamMember3Image: "Narala.jpg",
+      about_teamMember3Name: "Saisindhu Narala",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Dr. Narala completed her dermatology residency at the University of Texas at Houston and MD Anderson Cancer Center. She then completed a fellowship in dermatopathology at Stanford. Her clinical interests include general medical dermatology, dermatology in skin of color, and pigmentary disorders. She also has an interest in medical education.",
+
+      about_supporter1Logo: "vitiligofoundation.png",
+      about_supporter1Name: "Global Vitiligo Foundation",
+      about_supporter1Width: 300,
+      about_supporter1Height: 300,
+      about_supporter1Link: "https://globalvitiligofoundation.org/",
+
+      about_supporter2Logo: "vitiligofoundation.png",
+      about_supporter2Name: "Global Vitiligo Foundation",
+      about_supporter2Width: 300,
+      about_supporter2Height: 300,
+      about_supporter2Link: "https://globalvitiligofoundation.org/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "Vitiligo Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Vitiligo.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Vitiligo research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Vitiligo community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Vitiligo community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Vitiligo with the community.",
+      about_getInvolvedDescription: "Vitiligo Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Vitiligo community",
+
+      about_our_mission: "our-mission.jpg",
+      
+    },
+
   };
   
