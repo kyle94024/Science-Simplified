@@ -935,16 +935,17 @@ export const sites = {
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
 
 
-      theme: { // Theme
-        primary: "#a319b3",
-        primaryDark: "#221152",
-        lightGrey: "#f5f5f5",
-        text: "#3d2447",
-        background: "#f8f0fa",
-        contactUsColor: "#c6a5e3", //contactUsColor
-        authorTextColor: "#6d32a8", //authorTextColor
-        footerBGColor: "#eae1f5", //footerBGColor
+      theme: {
+        primary: "#7B2CBF",          // foundation purple
+        primaryDark: "#5A189A",      // deeper purple
+        lightGrey: "#f9f9f9",
+        text: "#333333",
+        background: "#ffffff",
+        contactUsColor: "#7B2CBF",
+        authorTextColor: "#7B2CBF",
+        footerBGColor: "#f2e6ff",    // light purple tint for footer
       },
+      
       // Images (Home)
       homeBG: "DeerVitiligo.png", //home/homeBG
       homeExploreAllBG: "Vitiligo_ExploreAllBG.png", //home/homeExploreAllBG

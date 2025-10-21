@@ -39,3 +39,55 @@
         }
     }
 }
+
+/* =========================================
+   HS Foundation–Style Enhancements
+   ========================================= */
+
+   .article-search-page.hs-mode {
+    background: #faf9ff; // soft lavender tint
+    color: #2a1338;
+  
+    .hs-header {
+      background: linear-gradient(90deg, #F6C441, #E0509C, #7B2CBF);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+  
+    .hs-search-bar {
+      input {
+        border-radius: 10px;
+        border: 2px solid #7b2cbf;
+        transition: box-shadow 0.2s ease;
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
+        }
+      }
+    }
+  
+    .articles-list,
+    .article-card {
+      border-radius: 16px !important;
+      background-color: #fff;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      }
+    }
+  
+    .article-card__title {
+      color: #7b2cbf;
+    }
+  
+    .article-card__description {
+      color: #3d2a47;
+    }
+  
+    .footer {
+      background: #f5ecff;
+    }
+  }
+  
