@@ -211,7 +211,7 @@ header {
       align-items: center;
       justify-content: space-between;
       gap: 1.5rem;
-      padding-right: 5rem;
+      
     }
   
     .nav-links {
@@ -221,6 +221,7 @@ header {
       list-style: none;
    
       font-size: 1.8rem;  //   top ones
+      padding-right: 5rem;
 
   
       li {
