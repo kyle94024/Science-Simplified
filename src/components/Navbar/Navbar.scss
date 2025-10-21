@@ -1,6 +1,7 @@
 // Navigation bar
 .navbar {
     font-family: var(--font-onest);
+    padding-block: 3rem;
 }
 header {
     width: 100%;
@@ -189,68 +190,130 @@ header {
     }
 }
 
-/* -------------------------
-   REFINED NAVBAR SCALE (2025)
--------------------------- */
-/* -------------------------
-   ENHANCED NAVBAR SCALE
--------------------------- */
-
 .navbar {
-    font-size: 1.05rem; /* slightly larger text */
-    .navbar-inner {
-      padding-top: 1.2rem;
-      padding-bottom: 1.2rem;
-    }
+    position: relative;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 100;
   
-    .navbrand-img {
-      height: 54px; /* larger logo */
-      width: auto;
-    }
-  
-    .nav-links {
-      gap: 2.25rem;
-  
-      li a,
-      li span {
-        font-weight: 500;
-        font-size: 1.05rem;
-        letter-spacing: 0.02em;
+    &.hs-mode {
+      background: linear-gradient(90deg, #f6c441, #e0509c, #7b2cbf);
+      .nav-links > li > a,
+      .dropdown > span {
+        color: #fff;
       }
     }
   
-    .auth-buttons {
-      gap: 1.25rem;
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
   
-      .btn {
-        font-size: 0.95rem;
-        padding: 0.55rem 1.25rem;
-        border-radius: 8px;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
   
-        &.btn-primary {
-          background: #111;
-          color: #fff;
-          font-weight: 600;
+      li {
+        position: relative;
+        font-weight: 500;
+  
+        a,
+        span {
+          color: #333;
+          text-decoration: none;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+  
+        &:hover > a,
+        &:hover > span {
+          color: var(--accent-color, #7b2cbf);
+        }
+  
+        &.dropdown {
+          &:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+  
+          .dropdown-menu {
+            position: absolute;
+            top: 2.2rem;
+            left: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            padding: 0.5rem 0;
+            list-style: none;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.25s ease;
+  
+            li {
+              a,
+              button {
+                display: block;
+                width: 100%;
+                padding: 0.65rem 1rem;
+                text-align: left;
+                color: #444;
+                font-size: 0.95rem;
+                background: none;
+                border: none;
+                cursor: pointer;
+  
+                &:hover {
+                  background: rgba(123, 44, 191, 0.07);
+                  color: #7b2cbf;
+                }
+              }
+            }
+          }
         }
       }
     }
   
-    /* Make dropdown menus feel roomier */
-    .dropdown-menu {
-      min-width: 220px;
-      li a,
-      li button {
-        padding: 0.8rem 1.2rem;
-        font-size: 0.95rem;
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+  
+    .mobile-toggle {
+      display: none;
+      cursor: pointer;
+    }
+  
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+  
+      a, button {
+        text-align: center;
+        color: #333;
       }
     }
   
-    /* Add soft shadow for depth */
-    background: #fff;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
-  
-    &.hs-mode {
-      box-shadow: 0 4px 16px rgba(123, 44, 191, 0.12);
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-toggle {
+        display: block;
+      }
+      .mobile-menu {
+        display: flex;
+      }
     }
   }
   
