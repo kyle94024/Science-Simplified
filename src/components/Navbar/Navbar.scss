@@ -317,3 +317,127 @@ header {
     }
   }
   
+  /* -------------------------
+   ENHANCED NAVBAR SCALE
+-------------------------- */
+
+.navbar {
+  font-size: 1.05rem; /* slightly larger text */
+  .navbar-inner {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+  }
+
+  .navbrand-img {
+    height: 54px; /* larger logo */
+    width: auto;
+  }
+
+  .nav-links {
+    gap: 2.25rem;
+
+    li a,
+    li span {
+      font-weight: 500;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  .auth-buttons {
+    gap: 1.25rem;
+
+    .btn {
+      font-size: 0.95rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+
+      &.btn-primary {
+        background: #111;
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+  }
+
+  /* Make dropdown menus feel roomier */
+  .dropdown-menu {
+    min-width: 220px;
+    li a,
+    li button {
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Add soft shadow for depth */
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+
+  &.hs-mode {
+    box-shadow: 0 4px 16px rgba(123, 44, 191, 0.12);
+  }
+}
+
+/* -------------------------
+   ENHANCED NAVBAR SCALE
+-------------------------- */
+
+.navbar {
+    font-size: 1.05rem; /* slightly larger text */
+    .navbar-inner {
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+    }
+  
+    .navbrand-img {
+      height: 54px; /* larger logo */
+      width: auto;
+    }
+  
+    .nav-links {
+      gap: 2.25rem;
+  
+      li a,
+      li span {
+        font-weight: 500;
+        font-size: 1.05rem;
+        letter-spacing: 0.02em;
+      }
+    }
+  
+    .auth-buttons {
+      gap: 1.25rem;
+  
+      .btn {
+        font-size: 0.95rem;
+        padding: 0.55rem 1.25rem;
+        border-radius: 8px;
+  
+        &.btn-primary {
+          background: #111;
+          color: #fff;
+          font-weight: 600;
+        }
+      }
+    }
+  
+    /* Make dropdown menus feel roomier */
+    .dropdown-menu {
+      min-width: 220px;
+      li a,
+      li button {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+  
+    /* Add soft shadow for depth */
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  
+    &.hs-mode {
+      box-shadow: 0 4px 16px rgba(123, 44, 191, 0.12);
+    }
+  }
+  
