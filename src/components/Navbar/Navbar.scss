@@ -189,3 +189,131 @@ header {
         gap: 1rem;
     }
 }
+
+.navbar {
+    position: relative;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 100;
+  
+    &.hs-mode {
+      background: linear-gradient(90deg, #f6c441, #e0509c, #7b2cbf);
+      .nav-links > li > a,
+      .dropdown > span {
+        color: #fff;
+      }
+    }
+  
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+  
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
+  
+      li {
+        position: relative;
+        font-weight: 500;
+  
+        a,
+        span {
+          color: #333;
+          text-decoration: none;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+  
+        &:hover > a,
+        &:hover > span {
+          color: var(--accent-color, #7b2cbf);
+        }
+  
+        &.dropdown {
+          &:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+  
+          .dropdown-menu {
+            position: absolute;
+            top: 2.2rem;
+            left: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            padding: 0.5rem 0;
+            list-style: none;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.25s ease;
+  
+            li {
+              a,
+              button {
+                display: block;
+                width: 100%;
+                padding: 0.65rem 1rem;
+                text-align: left;
+                color: #444;
+                font-size: 0.95rem;
+                background: none;
+                border: none;
+                cursor: pointer;
+  
+                &:hover {
+                  background: rgba(123, 44, 191, 0.07);
+                  color: #7b2cbf;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+  
+    .mobile-toggle {
+      display: none;
+      cursor: pointer;
+    }
+  
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+  
+      a, button {
+        text-align: center;
+        color: #333;
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-toggle {
+        display: block;
+      }
+      .mobile-menu {
+        display: flex;
+      }
+    }
+  }
+  

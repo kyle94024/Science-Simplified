@@ -1,172 +1,117 @@
 "use client";
-import { useEffect, useState } from "react";
+import "./Navbar.scss";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
+import { tenant } from "@/lib/config";
 import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
-import "./Navbar.scss";
-import Link from "next/link";
-import { tenant } from "@/lib/config";
-import Image from "next/image";
-import { Menu, X, ArrowRight } from "lucide-react";
 
-function Navbar() {
-    const [navbar, setNavbar] = useState(false);
-    const { user, isAdmin, role } = useAuthStore(); // Access user and admin state from Zustand
-    const { logout } = useAuth();
-    const toggleNavbar = () => setNavbar(!navbar);
+export default function Navbar() {
+  const { user, isAdmin, role } = useAuthStore();
+  const { logout } = useAuth();
+  const [navbarOpen, setNavbarOpen] = useState(false);
 
-    const navbrand = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
+  const toggleNavbar = () => setNavbarOpen(!navbarOpen);
+  const navbrand = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 
-    // Define the navigation links based on authentication and admin status
-    const navLinks = [
-        { name: "Home", path: "/" },
-        { name: "Articles", path: "/articles" },
-        { name: "About", path: "/about" },
-        { name: "Contact Us", path: "/contact" },
+  return (
+    <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : ""}`}>
+      <div className="navbar-inner boxed padding">
+        {/* Left logo */}
+        <Link href="/" className="navbrand">
+          <Image src={navbrand} alt="Logo" className="navbrand-img" />
+        </Link>
 
-        ...(user ? [{ name: "Add Articles", path: "/add-article" }] : []), // Show Add Articles link if logged in
-        ...(isAdmin
-            ? [
-                  { name: "Pending Articles", path: "/pending-articles" },
-                  { name: "Assign Articles", path: "/assign-articles" },
-                  { name: "Featured", path: "/featured" },
-                  { name: "Create Editor", path: "/create-editor" },
-              ]
-            : []),
-        ...(role === "editor"
-            ? [{ name: "Assigned Articles", path: "/assigned-articles" }]
-            : []), // Show Assigned Articles link if the role is editor
-        ...(user
-            ? [
-                  { name: "Profile", path: "/profile" },
-                  { name: "Favorited Articles", path: "/favorited-articles" },
-              ]
-            : []), // Show Profile link if logged in
-    ];
+        {/* Main nav */}
+        <ul className="nav-links">
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/articles">Articles</Link></li>
+          <li><Link href="/about">About</Link></li>
+          <li><Link href="/contact">Contact Us</Link></li>
 
-    return (
-        <div className="navbar">
-            <header className="padding">
-                <div className="boxed">
-                    <div className="header-content">
-                        <Link className="navbrand" href="/">
-                            <Image
-                                src={navbrand}
-                                alt="Logo"
-                                className="navbrand-img"
-                            />
-                        </Link>
-                        <div className="header-left">
-                            {navLinks.map((link) => (
-                                <Link
-                                    href={link.path}
-                                    className="nav-link"
-                                    key={link.name}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
-                        <div className="header-right">
-                            {!user ? ( // Show login/signup if not authenticated
-                                <>
-                                    <Link
-                                        href="/login"
-                                        rel="noopener noreferrer"
-                                        className="btn"
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link
-                                        href="/signup"
-                                        rel="noopener noreferrer"
-                                        className="btn btn-primary"
-                                    >
-                                        Sign Up
-                                    </Link>
-                                </>
-                            ) : (
-                                <button
-                                    className="btn btn-outlined"
-                                    onClick={() => logout()}
-                                >
-                                    Logout
-                                </button> // Add logout functionality
-                            )}
-                        </div>
-                        <div className="header-right-mob">
-                            <div className="open-header" onClick={toggleNavbar}>
-                                <Menu className="icon-menu" size={25} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div
-                className="header-mob padding"
-                style={{ display: navbar ? "block" : "none" }}
-            >
-                <div className="box">
-                    <div className="header-mob-head padding">
-                        <Link className="navbrand" href="/">
-                            <Image
-                                src={navbrand}
-                                alt="Logo"
-                                className="navbrand-img"
-                            />
-                        </Link>
-                        <div className="header-mob-head-right">
-                            <div
-                                className="close-header"
-                                onClick={toggleNavbar}
-                            >
-                                <X className="close-icon" size={25} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="header-mob-body">
-                        {navLinks.map((link) => (
-                            <Link
-                                href={link.path}
-                                className="nav-link"
-                                key={link.name}
-                                onClick={toggleNavbar}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                        {!user ? ( // Show login/signup if not authenticated
-                            <>
-                                <Link
-                                    href="/login"
-                                    className="btn btn-primary"
-                                    rel="noopener noreferrer"
-                                    onClick={toggleNavbar}
-                                >
-                                    <span className="text">Login</span>
-                                    <ArrowRight className="icon" />
-                                </Link>
-                                <Link
-                                    href="/signup"
-                                    className="btn btn-primary"
-                                    rel="noopener noreferrer"
-                                    onClick={toggleNavbar}
-                                >
-                                    Sign Up
-                                </Link>
-                            </>
-                        ) : (
-                            <button
-                                className="btn btn-outlined"
-                                onClick={() => logout()}
-                            >
-                                Logout
-                            </button> // Add logout functionality
-                        )}
-                    </div>
-                </div>
-            </div>
+          {/* Editor dropdown */}
+          {(role === "editor" || isAdmin) && (
+            <li className="dropdown">
+              <span>Editor Tools ▾</span>
+              <ul className="dropdown-menu">
+                {role === "editor" && (
+                  <li><Link href="/assigned-articles">Assigned Articles</Link></li>
+                )}
+                {user && <li><Link href="/add-article">Add Article</Link></li>}
+                {isAdmin && (
+                  <>
+                    <li><Link href="/pending-articles">Pending Articles</Link></li>
+                    <li><Link href="/assign-articles">Assign Articles</Link></li>
+                  </>
+                )}
+              </ul>
+            </li>
+          )}
+
+          {/* Admin dropdown */}
+          {isAdmin && (
+            <li className="dropdown">
+              <span>Admin Tools ▾</span>
+              <ul className="dropdown-menu">
+                <li><Link href="/featured">Featured Articles</Link></li>
+                <li><Link href="/create-editor">Create Editor</Link></li>
+              </ul>
+            </li>
+          )}
+
+          {/* Profile dropdown */}
+          {user && (
+            <li className="dropdown">
+              <span>Profile ▾</span>
+              <ul className="dropdown-menu">
+                <li><Link href="/profile">View Profile</Link></li>
+                <li><Link href="/favorited-articles">Favorited Articles</Link></li>
+                <li>
+                  <button onClick={logout} className="logout-btn">
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </li>
+          )}
+        </ul>
+
+        {/* Auth buttons */}
+        {!user && (
+          <div className="auth-buttons">
+            <Link href="/login" className="btn">Login</Link>
+            <Link href="/signup" className="btn btn-primary">Sign Up</Link>
+          </div>
+        )}
+
+        {/* Mobile menu toggle */}
+        <div className="mobile-toggle" onClick={toggleNavbar}>
+          {navbarOpen ? <X size={24} /> : <Menu size={24} />}
         </div>
-    );
-}
+      </div>
 
-export default Navbar;
+      {/* Mobile dropdown fallback */}
+      {navbarOpen && (
+        <div className="mobile-menu">
+          {[ "Home", "Articles", "About", "Contact Us" ].map((name) => (
+            <Link key={name} href={`/${name === "Home" ? "" : name.toLowerCase().replace(" ", "-")}`} onClick={toggleNavbar}>
+              {name}
+            </Link>
+          ))}
+          {user ? (
+            <button onClick={logout} className="btn btn-outlined mt-2">
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link href="/login" className="btn mt-2">Login</Link>
+              <Link href="/signup" className="btn btn-primary mt-2">Sign Up</Link>
+            </>
+          )}
+        </div>
+      )}
+    </nav>
+  );
+}
