@@ -133,3 +133,71 @@
         }
     }
 }
+
+/* =========================================
+   HS-Simplified Styling Layer
+   ========================================= */
+
+   .article-list.hs-mode {
+    background: #faf8ff;
+    padding-bottom: 4rem;
+  
+    .article-list__items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+    }
+  
+    .article-card {
+      border-radius: 18px;
+      border: 1px solid rgba(123, 44, 191, 0.15);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      background-color: #fff;
+  
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+      }
+  
+      .article-card__title {
+        color: #7b2cbf;
+      }
+  
+      .article-card__summary {
+        color: #4a2f63;
+      }
+    }
+  
+    .pagination {
+      margin-top: 3rem;
+    }
+  
+    .pagination__link {
+      border: 1px solid #7b2cbf;
+      color: #7b2cbf;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+  
+      &:hover {
+        background: linear-gradient(90deg, #f6c441, #e0509c, #7b2cbf);
+        color: #fff;
+        border-color: transparent;
+      }
+    }
+  
+    .pagination__link--active {
+      background: linear-gradient(90deg, #f6c441, #e0509c, #7b2cbf);
+      color: #fff;
+      font-weight: 600;
+    }
+  
+    .article-list__empty-state,
+    .article-list__error {
+      color: #7b2cbf;
+      svg {
+        stroke: #e0509c;
+      }
+    }
+  }
+  
