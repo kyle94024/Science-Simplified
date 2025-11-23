@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { tenantQuery } from "@/lib/tenantDb";
 import { sign } from "jsonwebtoken";
+import { serialize } from "cookie";
+
 
 
 // Tenant → Domain mapping (final)
@@ -74,7 +76,7 @@ export async function GET(req) {
     const adminResult = await tenantQuery(
       tenant,
       "SELECT * FROM admin_users WHERE LOWER(email) = $1",
-      [user.email]
+      [user.email.toLowerCase()]
     );
     const isAdmin = adminResult.rows.length > 0;
 
