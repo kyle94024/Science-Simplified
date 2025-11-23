@@ -11,8 +11,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { tenant } from "@/lib/config";
+import { withAuth } from "@/components/withAuth/withAuth";
 
-export default function CreateEditorPage() {
+
+export default withAuth(function CreateEditorPage() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -168,4 +170,4 @@ export default function CreateEditorPage() {
       <Footer />
     </main>
   );
-}
+}, { adminOnly: true });

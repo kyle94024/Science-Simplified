@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { tenantQuery } from "@/lib/tenantDb";
 import { tenant } from "@/lib/config";
 import { sites } from "@/lib/sites";
+import { requireAdmin } from "@/lib/adminGuard";
 
 export async function GET() {
+
+    const adminCheck = requireAdmin();
+    if (adminCheck instanceof NextResponse) return adminCheck;
 
     // const TENANT_DOMAINS = {
     //     NF: "https://nfsimplified.com",

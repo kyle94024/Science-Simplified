@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { tenantQuery, getTenantPool } from "@/lib/tenantDb";
 import { sendMagicLinkEmail } from "@/lib/email";
 import { tenant as defaultTenant } from "@/lib/config";
+import { requireAdmin } from "@/lib/adminGuard";
 
 // Tenant → Domain Map (final)
 // const TENANT_DOMAINS = {
@@ -24,6 +25,9 @@ import { tenant as defaultTenant } from "@/lib/config";
 const tenant_domain = defaultTenant.domain;
 
 export async function POST(req) {
+  const adminCheck = requireAdmin();
+  if (adminCheck instanceof NextResponse) return adminCheck;
+
   try {
     const body = await req.json();
 

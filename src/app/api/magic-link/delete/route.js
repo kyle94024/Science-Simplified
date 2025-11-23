@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { tenantQuery } from "@/lib/tenantDb";
+import { requireAdmin } from "@/lib/adminGuard";
 
 export async function DELETE(req) {
+    const adminCheck = requireAdmin();
+    if (adminCheck instanceof NextResponse) return adminCheck;
+
     try {
         const url = new URL(req.url);
         const id = url.searchParams.get("id");

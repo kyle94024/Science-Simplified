@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { siteKeys } from "@/lib/siteKeys";
 import { tenant as defaultTenant } from "@/lib/config";
+import { withAuth } from "@/components/withAuth/withAuth";
 
 // Tenant → Domain mapping
 // const TENANT_DOMAINS = {
@@ -22,7 +23,7 @@ import { tenant as defaultTenant } from "@/lib/config";
 // };
 const tenant_domain = defaultTenant.domain;
 
-export default function MagicLinksAdminPage() {
+export default withAuth(function MagicLinksAdminPage() {
   // 👇 Correct local state for tenant
   const [tenantName, setTenantName] = useState(defaultTenant.shortName);  
   const [email, setEmail] = useState("");
@@ -184,4 +185,4 @@ export default function MagicLinksAdminPage() {
       </div>
     </div>
   );
-}
+});
