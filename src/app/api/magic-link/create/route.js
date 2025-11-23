@@ -62,17 +62,17 @@ export async function POST(req) {
     const apiBase = process.env.APIHOSTNAME?.replace(/\/$/, "") || "http://localhost:3000";
     const magicUrl = `${apiBase}/api/magic-link/verify?tenant=${tenant}&token=${rawToken}`;
 
-    // Send email
-    try {
-      await sendMagicLinkEmail({
-        tenant,
-        email,
-        url: magicUrl,
-      });
-      console.log("Magic link sent:", email);
-    } catch (err) {
-      console.error("Email sending failed:", err);
-    }
+    // // Send email
+    // try {
+    //   await sendMagicLinkEmail({
+    //     tenant,
+    //     email,
+    //     url: magicUrl,
+    //   });
+    //   console.log("Magic link sent:", email);
+    // } catch (err) {
+    //   console.error("Email sending failed:", err);
+    // }
 
     return NextResponse.json({
       success: true,
