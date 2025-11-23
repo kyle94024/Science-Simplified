@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-import dotenv from "dotenv";
 import path from "path";
 
 const pools = {};
@@ -9,13 +8,13 @@ export function getTenantPool(tenant) {
     return pools[tenant];
   }
 
-  // Load tenant-specific env file
-  dotenv.config({
-    path: path.join(process.cwd(), `.env.${tenant}`),
-    override: true, // <--- THIS IS WHAT MAKES ENV SWITCH
-  });
+  // // Load tenant-specific env file
+  // dotenv.config({
+  //   path: path.join(process.cwd(), `.env.${tenant}`),
+  //   override: true, // <--- THIS IS WHAT MAKES ENV SWITCH
+  // });
 
-  console.log(`🔄 Loaded env for tenant: ${tenant}`);
+  // console.log(`🔄 Loaded env for tenant: ${tenant}`);
   console.log("→ Using DB:", {
     host: process.env.PGHOST,
     user: process.env.PGUSER,
