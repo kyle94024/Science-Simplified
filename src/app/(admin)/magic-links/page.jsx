@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { siteKeys } from "@/lib/siteKeys";
 import { tenant as defaultTenant } from "@/lib/config";
 import { withAuth } from "@/components/withAuth/withAuth";
+import Navbar from "@/components/Navbar/Navbar";
+import { toast } from "react-toastify";
 
 // Tenant → Domain mapping
 // const TENANT_DOMAINS = {
@@ -84,7 +86,9 @@ async function generateLink() {
   }
 
   return (
+
     <div className="space-y-8">
+      <Navbar />
       <h1 className="text-3xl font-bold text-gray-800">Magic Link Admin</h1>
 
       {newMagicUrl && (
