@@ -57,6 +57,7 @@ export default function Navbar() {
               <ul className="dropdown-menu">
                 <li><Link href="/featured">Featured Articles</Link></li>
                 <li><Link href="/create-editor">Create Editor</Link></li>
+                <li><Link href="/magic-links">Magic Links</Link></li>
               </ul>
             </li>
           )}
