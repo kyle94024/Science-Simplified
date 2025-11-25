@@ -935,7 +935,7 @@ export const sites = {
       fullName: "HS Simplified",
       disease: "HS",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
-      domain: "https://science-simplified-mu.vercel.app/",
+      domain: "https://hssimplified.org",
 
       theme: {
         primary: "#7B2CBF",          // foundation purple
