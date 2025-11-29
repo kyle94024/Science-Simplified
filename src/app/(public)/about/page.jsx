@@ -9,7 +9,6 @@ import { tenant } from "@/lib/config";
 
 import { query } from "@/lib/db";
 
-
 // images
 // const kyle = `/assets/${tenant.pathName}/about/kyle.png`;
 // const vanessa = `/assets/${tenant.pathName}/about/vanessa.png`;
@@ -20,7 +19,7 @@ const expertPlaceholder = `/assets/${tenant.pathName}/about/expert-placeholder.p
 const joinUsIllustration = `/assets/${tenant.pathName}/about/our-mission.jpg`;
 const getInvolvedIllustration = `/assets/${tenant.pathName}/about/get-involved.jpg`;
 
-// Fetch editors from the API
+// Fetch editors from the DB who have at least one article assigned
 async function fetchEditors() {
     const result = await query(`
       SELECT
@@ -34,11 +33,15 @@ async function fetchEditors() {
       LEFT JOIN profile p
         ON ec.id = p.user_id
       WHERE ec.role = 'editor'
+        AND EXISTS (
+          SELECT 1
+          FROM article_assignments aa
+          WHERE aa.editor_id = ec.id
+        )
       ORDER BY p.name
     `);
     return result.rows;
-  }
-  
+}
 
 // Function to get the first initial from a name
 function getInitial(name) {
@@ -53,6 +56,7 @@ export default async function AboutPage() {
 
     // Fetch editors data
     let experts = [];
+
     try {
         const editorsData = await fetchEditors();
         experts = editorsData
@@ -65,6 +69,9 @@ export default async function AboutPage() {
                 university: editor.university || "N/A",
             }))
             .filter((expert) => expert.name !== "N/A" && expert.name); // Skip experts with no name
+
+        // Log experts for verification (server-side log)
+        console.log("AboutPage – experts with at least one article:", experts);
     } catch (error) {
         console.error("Error fetching editors:", error);
         experts = [];
@@ -389,7 +396,7 @@ export default async function AboutPage() {
                                     height={tenant.about_supporter1Height}
                                     className={`${aboutPageClass}__logo-image`}
                                 />
-                                
+
                                 <div className={`${aboutPageClass}__logo-link`}>
                                     <p
                                         className={`${aboutPageClass}__logo-name`}
@@ -409,25 +416,28 @@ export default async function AboutPage() {
                                     rel="noopener noreferrer"
                                     className={`${aboutPageClass}__supporter-logo`}
                                 >
-                                    <Image 
-                                    src={`/assets/${tenant.pathName}/about/${tenant.about_supporter2Logo}`}
-                                    alt={tenant.about_supporter2Name}
-                                    width={tenant.about_supporter2Width}
-                                    height={tenant.about_supporter2Height}
-                                    className={`${aboutPageClass}__logo-image`}
+                                    <Image
+                                        src={`/assets/${tenant.pathName}/about/${tenant.about_supporter2Logo}`}
+                                        alt={tenant.about_supporter2Name}
+                                        width={tenant.about_supporter2Width}
+                                        height={tenant.about_supporter2Height}
+                                        className={`${aboutPageClass}__logo-image`}
                                     />
-                                    <div className={`${aboutPageClass}__logo-link`}>
-                                    <p className={`${aboutPageClass}__logo-name`}>
-                                        {tenant.about_supporter2Name}
-                                    </p>
-                                    <ExternalLink
-                                        size={16}
-                                        className={`${aboutPageClass}__external-icon`}
-                                    />
+                                    <div
+                                        className={`${aboutPageClass}__logo-link`}
+                                    >
+                                        <p
+                                            className={`${aboutPageClass}__logo-name`}
+                                        >
+                                            {tenant.about_supporter2Name}
+                                        </p>
+                                        <ExternalLink
+                                            size={16}
+                                            className={`${aboutPageClass}__external-icon`}
+                                        />
                                     </div>
                                 </Link>
-                                )}
-
+                            )}
                         </div>
                     </section>
                 </div>

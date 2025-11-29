@@ -4,12 +4,22 @@
     display: flex;
     flex-direction: column;
 
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+
+        border-radius: 15px;
+    }
+
     &__image-container {
         width: 100%;
         position: relative;
 
         border-radius: 15px;
         border: 1px solid rgba(0, 0, 0, 0.05);
+
+        background-color: rgba(0, 0, 0, 0.05);
 
         width: 100%;
         height: 320px;
@@ -20,7 +30,7 @@
     &__image {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     .fallback-author-image {
@@ -115,20 +125,19 @@
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
-  }
-  
-  .article-card__author-text {
+}
+
+.article-card__author-text {
     display: flex;
     flex-direction: column;
     line-height: 1.2;
-  }
-  
-  .article-card__author-name {
+}
+
+.article-card__author-name {
     font-weight: 600; /* degree inherits same style since it's inline */
-  }
-  
-  .article-card__author-institution {
+}
+
+.article-card__author-institution {
     font-size: 1.2rem;
     opacity: 0.85;
-  }
-  
+}

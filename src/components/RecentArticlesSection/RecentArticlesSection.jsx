@@ -31,7 +31,7 @@ const RecentArticlesSection = () => {
             articles={articles}
             loading={loading}
             error={error}
-            sectionTitle={"Recent Articles"}
+            sectionTitle={"Recently Added Articles"}
         />
     );
 };

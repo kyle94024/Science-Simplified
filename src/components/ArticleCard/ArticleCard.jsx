@@ -26,7 +26,6 @@ const FallbackAuthorImage = ({ authorName }) => {
 
 const articleThumbnailPlaceholder = `/assets/${tenant.pathName}/${tenant.articleThumbnailPlaceholder}`;
 
-
 function ArticleCard({
     id,
     imageUrl,
@@ -41,10 +40,10 @@ function ArticleCard({
 }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const displayName = authorName && authorName.trim() ? authorName : "Anonymous";
+    const displayName =
+        authorName && authorName.trim() ? authorName : "Anonymous";
     const showDegree =
-    authorCreds && authorCreds.trim() && authorCreds !== "No Degree";
-
+        authorCreds && authorCreds.trim() && authorCreds !== "No Degree";
 
     const handleFeatureStatus = async (shouldBeFeatured) => {
         setIsLoading(true);
@@ -155,74 +154,82 @@ function ArticleCard({
     };
 
     return (
-        <article className="article-card">
-            <div className="article-card__image-container">
-                <Image
-                    src={imageUrl || articleThumbnailPlaceholder}
-                    alt={`Article image for ${title}`}
-                    className="article-card__image"
-                    layout="responsive"
-                    width={420}
-                    height={290}
-                    loading="lazy"
-                />
-                {renderButton()}
-            </div>
-            <div className="article-card__content">
-                <time className="article-card__date">{date}</time>
-                <h2 className="article-card__title">
-                    {truncateText(title, 80)}
-                </h2>
-                <p className="article-card__summary">
-                    <span
-                        dangerouslySetInnerHTML={{
-                            __html: truncateText(summary, 180),
-                        }}
-                    ></span>
-                    {pageType !== "pending" && pageType !== "assigned" && (
-                        <a
-                            href={`/articles/${id}`}
-                            className="article-card__read-more"
-                        >
-                            read more
-                        </a>
-                    )}
-                </p>
+        <>
+            {pageType !== "pending" && pageType !== "assigned" && (
+                <a href={`/articles/${id}`}>
+                    <article className="article-card">
+                        <div className="article-card__image-container">
+                            <Image
+                                src={imageUrl || articleThumbnailPlaceholder}
+                                alt={`Article image for ${title}`}
+                                className="article-card__image"
+                                layout="responsive"
+                                width={420}
+                                height={290}
+                                loading="lazy"
+                            />
+                            {renderButton()}
+                        </div>
+                        <div className="article-card__content">
+                            <time className="article-card__date">{date}</time>
+                            <h2 className="article-card__title">
+                                {truncateText(title, 80)}
+                            </h2>
+                            <p className="article-card__summary">
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: truncateText(summary, 180),
+                                    }}
+                                ></span>
+                                {pageType !== "pending" &&
+                                    pageType !== "assigned" && (
+                                        <a
+                                            href={`/articles/${id}`}
+                                            className="article-card__read-more"
+                                        >
+                                            read more
+                                        </a>
+                                    )}
+                            </p>
 
-                <div className="article-card__author">
-                    {authorImageUrl ? (
-                        <Image
-                        src={authorImageUrl}
-                        alt={`Author image for ${displayName}`}
-                        className="article-card__author-image"
-                        width={50}
-                        height={50}
-                        objectFit="cover"
-                        objectPosition="center"
-                        loading="lazy"
-                        />
-                    ) : (
-                        <FallbackAuthorImage authorName={displayName} />
-                    )}
+                            <div className="article-card__author">
+                                {authorImageUrl ? (
+                                    <Image
+                                        src={authorImageUrl}
+                                        alt={`Author image for ${displayName}`}
+                                        className="article-card__author-image"
+                                        width={50}
+                                        height={50}
+                                        objectFit="cover"
+                                        objectPosition="center"
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <FallbackAuthorImage
+                                        authorName={displayName}
+                                    />
+                                )}
 
-                    <div className="article-card__author-text">
-                        {/* name + inline degree */}
-                        <span className="article-card__author-name">
-                        {displayName}
-                        {showDegree ? `, ${authorCreds}` : ""}
-                        </span>
+                                <div className="article-card__author-text">
+                                    {/* name + inline degree */}
+                                    <span className="article-card__author-name">
+                                        {displayName}
+                                        {showDegree ? `, ${authorCreds}` : ""}
+                                    </span>
 
-                        {/* university on the next line */}
-                        {authorInstitution && (
-                        <span className="article-card__author-institution">
-                            {authorInstitution}
-                        </span>
-                        )}
-                    </div>
-                </div>
-
-            </div>
-        </article>
+                                    {/* university on the next line */}
+                                    {authorInstitution && (
+                                        <span className="article-card__author-institution">
+                                            {authorInstitution}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+            )}
+        </>
     );
 }
 
