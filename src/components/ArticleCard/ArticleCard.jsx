@@ -154,6 +154,7 @@ function ArticleCard({
         return null;
     };
 
+    
     return (
         <article className="article-card">
             <div className="article-card__image-container">
