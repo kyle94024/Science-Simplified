@@ -441,11 +441,11 @@ const EditArticleForm = ({
 
                 {/* MANUAL UPLOAD (force update imageUrl immediately) */}
                 <ImageUpload
-                    onImageUpload={(url) => {
-                        setImageUrl(url);     // <-- ensures imageUrl updates on manual upload
-                        toast.success("Image uploaded");
-                    }}
-                    initialImageUrl={articleData?.image_url}
+                  onImageUpload={(url) => {
+                  setImageUrl(url);
+                  toast.success("Image uploaded");
+                  }}
+               initialImageUrl={imageUrl}   // <-- use LOCAL STATE, not articleData
                 />
 
                 {/* GENERATE AI IMAGE — white button */}
@@ -465,19 +465,7 @@ const EditArticleForm = ({
                     )}
                 </Button>
 
-                {/* REMOVE IMAGE (now works for BOTH manual + AI uploads) */}
-                {imageUrl && (
-                    <Button
-                        type="button"
-                        className="btn btn-primary-red"
-                        onClick={() => {
-                            setImageUrl(null);
-                            toast.success("Image removed");
-                        }}
-                    >
-                        Remove Image
-                    </Button>
-                )}
+                
             </div>
 
             {/* Preview */}

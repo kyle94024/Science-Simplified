@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 const ImageUpload = ({
@@ -15,14 +14,14 @@ const ImageUpload = ({
     const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
 
-    // Handle initial image URL changes from parent
+    // ✅ Make sure uploadedUrl updates when AI generates an image
     useEffect(() => {
-        setUploadedUrl(initialImageUrl);
+        setUploadedUrl(initialImageUrl || null);
     }, [initialImageUrl]);
 
     const handleChange = (event) => {
         setFile(event.target.files[0]);
-        setError(null); // Reset error on file selection
+        setError(null);
     };
 
     const handleUpload = async () => {
@@ -34,7 +33,7 @@ const ImageUpload = ({
         setUploading(true);
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("imageType", imageType); // Add image type for backend routing
+        formData.append("imageType", imageType);
 
         try {
             const response = await fetch(uploadUrl, {
@@ -43,19 +42,15 @@ const ImageUpload = ({
             });
 
             if (!response.ok) {
-                const error = await response.text();
-                console.error("Upload failed:", error);
                 setError("Upload failed. Please try again.");
                 return;
             }
 
             const data = await response.json();
-            console.log("Uploaded image URL:", data.url);
             setUploadedUrl(data.url);
             onImageUpload(data.url);
-            setFile(null); // Reset file input after successful upload
-        } catch (uploadError) {
-            console.error("Error during upload:", uploadError);
+            setFile(null);
+        } catch {
             setError("An error occurred during upload.");
         } finally {
             setUploading(false);
@@ -69,33 +64,26 @@ const ImageUpload = ({
         setError(null);
 
         try {
-            // Extract the public ID from the URL (between the last "/" and the first ".")
             const publicId = uploadedUrl.split("/").pop().split(".")[0];
 
             const response = await fetch(deleteUrl, {
                 method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     public_id: publicId,
-                    imageType: imageType, // Add image type for backend routing
+                    imageType,
                 }),
             });
 
             if (!response.ok) {
-                const error = await response.text();
-                console.error("Delete failed:", error);
                 setError("Delete failed. Please try again.");
                 return;
             }
 
-            console.log("Image deleted successfully.");
             setUploadedUrl(null);
             setFile(null);
-            onImageUpload(null); // Notify parent that image was deleted
-        } catch (deleteError) {
-            console.error("Error during deletion:", deleteError);
+            onImageUpload(null);
+        } catch {
             setError("An error occurred during deletion.");
         } finally {
             setDeleting(false);
@@ -104,14 +92,18 @@ const ImageUpload = ({
 
     return (
         <div className="flex flex-col gap-4">
+
+            {/* File input — enabled only when no image exists */}
             <input
                 type="file"
                 onChange={handleChange}
-                className="image-upload__input w-full md:w-max file:mr-2.4rem file:py-[2rem] file:mr-8 file:mb-8 file:px-[3.5rem] file:rounded-[10px] file:border-0 file:text-2.1rem file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                className="image-upload__input w-full md:w-max file:py-[2rem] file:px-[3.5rem] file:rounded-[10px] file:border-0 file:text-2.1rem file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                 accept="image/*"
-                disabled={uploading || uploadedUrl} // Only disable during upload, not when image exists
+                disabled={uploading || !!uploadedUrl}
             />
-            {!uploadedUrl ? (
+
+            {/* Upload button */}
+            {!uploadedUrl && (
                 <Button
                     className="btn btn-primary"
                     type="button"
@@ -120,7 +112,10 @@ const ImageUpload = ({
                 >
                     {uploading ? "Uploading..." : "Upload Image to Cloud"}
                 </Button>
-            ) : (
+            )}
+
+            {/* Delete button — ALWAYS appears when uploadedUrl exists */}
+            {uploadedUrl && (
                 <Button
                     className="btn btn-primary-red"
                     type="button"
@@ -130,6 +125,7 @@ const ImageUpload = ({
                     {deleting ? "Deleting..." : "Delete Image"}
                 </Button>
             )}
+
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );
