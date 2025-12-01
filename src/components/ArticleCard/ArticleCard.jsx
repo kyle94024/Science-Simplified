@@ -156,80 +156,78 @@ function ArticleCard({
     
     return (
         <>
-            {pageType !== "pending" && pageType !== "assigned" && (
-                <a href={`/articles/${id}`}>
-                    <article className="article-card">
-                        <div className="article-card__image-container">
-                            <Image
-                                src={imageUrl || articleThumbnailPlaceholder}
-                                alt={`Article image for ${title}`}
-                                className="article-card__image"
-                                layout="responsive"
-                                width={420}
-                                height={290}
-                                loading="lazy"
-                            />
-                            {renderButton()}
-                        </div>
-                        <div className="article-card__content">
-                            <time className="article-card__date">{date}</time>
-                            <h2 className="article-card__title">
-                                {truncateText(title, 80)}
-                            </h2>
-                            <p className="article-card__summary">
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: truncateText(summary, 180),
-                                    }}
-                                ></span>
-                                {pageType !== "pending" &&
-                                    pageType !== "assigned" && (
-                                        <a
-                                            href={`/articles/${id}`}
-                                            className="article-card__read-more"
-                                        >
-                                            read more
-                                        </a>
-                                    )}
-                            </p>
+            <a
+    href={
+        pageType === "pending"
+            ? `/pending-articles/${id}`
+            : pageType === "assigned"
+            ? `/assigned-articles/${id}`
+            : `/articles/${id}`
+    }
+>
+    <article className="article-card">
+        <div className="article-card__image-container">
+            <Image
+                src={imageUrl || articleThumbnailPlaceholder}
+                alt={`Article image for ${title}`}
+                className="article-card__image"
+                layout="responsive"
+                width={420}
+                height={290}
+                loading="lazy"
+            />
+            {renderButton()}
+        </div>
 
-                            <div className="article-card__author">
-                                {authorImageUrl ? (
-                                    <Image
-                                        src={authorImageUrl}
-                                        alt={`Author image for ${displayName}`}
-                                        className="article-card__author-image"
-                                        width={50}
-                                        height={50}
-                                        objectFit="cover"
-                                        objectPosition="center"
-                                        loading="lazy"
-                                    />
-                                ) : (
-                                    <FallbackAuthorImage
-                                        authorName={displayName}
-                                    />
-                                )}
+        <div className="article-card__content">
+            <time className="article-card__date">{date}</time>
+            <h2 className="article-card__title">
+                {truncateText(title, 80)}
+            </h2>
 
-                                <div className="article-card__author-text">
-                                    {/* name + inline degree */}
-                                    <span className="article-card__author-name">
-                                        {displayName}
-                                        {showDegree ? `, ${authorCreds}` : ""}
-                                    </span>
+            <p className="article-card__summary">
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: truncateText(summary, 180),
+                    }}
+                ></span>
 
-                                    {/* university on the next line */}
-                                    {authorInstitution && (
-                                        <span className="article-card__author-institution">
-                                            {authorInstitution}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </a>
-            )}
+                {pageType !== "pending" && pageType !== "assigned" && (
+                    <a href={`/articles/${id}`} className="article-card__read-more">
+                        read more
+                    </a>
+                )}
+            </p>
+
+            <div className="article-card__author">
+                {authorImageUrl ? (
+                    <Image
+                        src={authorImageUrl}
+                        alt={`Author image for ${displayName}`}
+                        className="article-card__author-image"
+                        width={50}
+                        height={50}
+                    />
+                ) : (
+                    <FallbackAuthorImage authorName={displayName} />
+                )}
+
+                <div className="article-card__author-text">
+                    <span className="article-card__author-name">
+                        {displayName}
+                        {showDegree ? `, ${authorCreds}` : ""}
+                    </span>
+
+                    {authorInstitution && (
+                        <span className="article-card__author-institution">
+                            {authorInstitution}
+                        </span>
+                    )}
+                </div>
+            </div>
+        </div>
+    </article>
+</a>
         </>
     );
 }
