@@ -465,19 +465,7 @@ const EditArticleForm = ({
                     )}
                 </Button>
 
-                {/* REMOVE IMAGE (now works for BOTH manual + AI uploads) */}
-                {imageUrl && (
-                    <Button
-                        type="button"
-                        className="btn btn-primary-red"
-                        onClick={() => {
-                            setImageUrl(null);
-                            toast.success("Image removed");
-                        }}
-                    >
-                        Remove Image
-                    </Button>
-                )}
+                
             </div>
 
             {/* Preview */}
