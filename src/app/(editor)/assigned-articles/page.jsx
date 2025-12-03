@@ -28,7 +28,7 @@ const EditorAssignedArticles = () => {
             try {
                 // Correct endpoint (exists in your API structure)
                 const response = await fetch(
-                    `/api/articles/pending?editorId=${user.userId}`
+                    `/api/editors/assigned-articles?editorId=${user.userId}`
                 );
 
                 if (!response.ok) throw new Error("Failed to fetch assigned articles");
