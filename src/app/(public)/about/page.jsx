@@ -19,27 +19,23 @@ const expertPlaceholder = `/assets/${tenant.pathName}/about/expert-placeholder.p
 const joinUsIllustration = `/assets/${tenant.pathName}/about/our-mission.jpg`;
 const getInvolvedIllustration = `/assets/${tenant.pathName}/about/get-involved.jpg`;
 
-// Fetch editors from the DB who have at least one article assigned
+// Fetch unique contributors based on the `certifiedby` field in `article`
 async function fetchEditors() {
     const result = await query(`
-      SELECT
-        ec.id,
+      SELECT DISTINCT
+        p.user_id AS id,
         p.name,
         p.photo,
         p.title,
         p.degree,
         p.university
-      FROM email_credentials ec
-      LEFT JOIN profile p
-        ON ec.id = p.user_id
-      WHERE ec.role = 'editor'
-        AND EXISTS (
-          SELECT 1
-          FROM article_assignments aa
-          WHERE aa.editor_id = ec.id
-        )
+      FROM article a
+      JOIN profile p
+        ON (a.certifiedby->>'userId')::INT = p.user_id
+      WHERE a.certifiedby IS NOT NULL
       ORDER BY p.name
     `);
+
     return result.rows;
 }
 
@@ -71,7 +67,10 @@ export default async function AboutPage() {
             .filter((expert) => expert.name !== "N/A" && expert.name); // Skip experts with no name
 
         // Log experts for verification (server-side log)
-        console.log("AboutPage – experts with at least one article:", experts);
+        console.log(
+            "AboutPage – experts with at least one *published* article:",
+            experts
+        );
     } catch (error) {
         console.error("Error fetching editors:", error);
         experts = [];
