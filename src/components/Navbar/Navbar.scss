@@ -174,13 +174,12 @@ header {
     }
 
     .navbar-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding: 2rem 1rem; // ⬅️ adds left & right padding
-    max-width: 100%;
-}
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding: 2rem 2rem; // ✅ RESTORED DESKTOP SPACING
+    }
 
     .nav-links {
         display: flex;
@@ -218,6 +217,10 @@ header {
     }
 
     @media (max-width: 768px) {
+        .navbar-inner {
+            padding: 2rem 1rem; // ✅ MOBILE ONLY
+        }
+
         .nav-links {
             display: none;
             padding-right: 0;
@@ -230,11 +233,11 @@ header {
 
         .mobile-toggle {
             display: block;
+            padding-right: 0.25rem;
         }
 
         .mobile-menu {
             display: flex;
         }
     }
-    
 }
