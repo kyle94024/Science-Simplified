@@ -4,7 +4,7 @@ import { tenant } from "@/lib/config";
 import { sites } from "@/lib/sites";
 import { requireAdmin } from "@/lib/adminGuard";
 
-export async function GET() {
+export async function GET(req) {
 
     const adminCheck = requireAdmin(req);
     if (adminCheck instanceof NextResponse) return adminCheck;
