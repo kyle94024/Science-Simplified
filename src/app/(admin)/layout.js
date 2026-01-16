@@ -14,6 +14,13 @@ export default function AdminLayout({ children }) {
                     </a>
 
                     <a
+                        href="/admin/clinical-trials"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+                    >
+                        Clinical Trials
+                    </a>
+
+                    <a
                         href="/admin/users"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
                     >

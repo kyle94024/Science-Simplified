@@ -39,11 +39,16 @@ export default function Navbar() {
                         <Link href="/articles">Articles</Link>
                     </li>
                     <li>
+                        <Link href="/clinical-trials">Clinical Trials</Link>
+                    </li>
+
+                    <li>
                         <Link href="/about">About</Link>
                     </li>
                     <li>
                         <Link href="/contact">Contact Us</Link>
                     </li>
+                    
 
                     {/* Editor dropdown */}
                     {(role === "editor" || isAdmin) && (
@@ -151,7 +156,7 @@ export default function Navbar() {
             {/* Mobile dropdown fallback */}
             {navbarOpen && (
                 <div className="mobile-menu">
-                    {["Home", "Articles", "About", "Contact Us"].map((name) => (
+                    {["Home", "Articles", "Clinical Trials", "About", "Contact Us"].map((name) => (
                         <Link
                             key={name}
                             href={`/${

@@ -1,0 +1,84 @@
+.trial-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.trial-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trial-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.trial-card__location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: #6b7280;
+
+  svg {
+    color: #0a0a0a;
+  }
+}
+
+.trial-card__summary {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.55;
+  margin-top: 4px;
+}
+
+.trial-card__details-label {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.trial-card__pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.trial-card__pill {
+  background: var(--color-footer-bg);
+  color: #0f172a;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.trial-card__cta {
+  margin-top: 16px;
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(180deg, #111827, #020617);
+  color: #fff;
+  padding: 12px 0;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.trial-card__icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
