@@ -3,20 +3,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import "react-toastify/dist/ReactToastify.css";
 import { tenant } from "@/lib/config";
-import { Loader2, User } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import "./ArticleCard.scss";
 
-// Truncate helper function
-const truncateText = (text, maxLength) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-};
+// Truncate helper
+const truncateText = (text, maxLength) =>
+    text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
-// Fallback Author Image Component
+// Fallback Author Image
 const FallbackAuthorImage = ({ authorName }) => {
-    const firstLetter = authorName ? authorName.charAt(0).toUpperCase() : "A"; // Default to "A" if name is not provided
+    const firstLetter = authorName ? authorName.charAt(0).toUpperCase() : "A";
     return (
         <div className="fallback-author-image">
             <p className="body-small">{firstLetter}</p>
@@ -40,19 +39,30 @@ function ArticleCard({
 }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+
     const displayName =
         authorName && authorName.trim() ? authorName : "Anonymous";
+
     const showDegree =
         authorCreds && authorCreds.trim() && authorCreds !== "No Degree";
+
+    const articleUrl =
+        pageType === "pending"
+            ? `/pending-articles/${id}`
+            : pageType === "assigned"
+            ? `/assigned-articles/${id}`
+            : `/articles/${id}`;
+
+    const handleCardClick = () => {
+        router.push(articleUrl);
+    };
 
     const handleFeatureStatus = async (shouldBeFeatured) => {
         setIsLoading(true);
         try {
             const response = await fetch("/api/articles/actions/feature", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ articleId: id, shouldBeFeatured }),
             });
 
@@ -62,27 +72,22 @@ function ArticleCard({
             toast.success("Featured status updated successfully!");
             window.location.reload();
         } catch (error) {
-            console.error("Error updating featured status:", error);
+            console.error(error);
             toast.error("Error updating featured status");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handlePendingArticle = () => {
-        router.push(`/pending-articles/${id}`);
-    };
-
-    const handleAssignedArticles = () => {
-        router.push(`/assigned-articles/${id}`);
-    };
-
     const renderButton = () => {
-        if (pageType === "featured") {
+        if (pageType === "featured" || pageType === "unfeatured") {
             return (
                 <Button
                     className="article-card__button btn btn-primary-green"
-                    onClick={() => handleFeatureStatus(false)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleFeatureStatus(pageType === "unfeatured");
+                    }}
                     disabled={isLoading}
                 >
                     {isLoading ? (
@@ -90,145 +95,101 @@ function ArticleCard({
                             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
                             Please wait
                         </>
-                    ) : (
+                    ) : pageType === "featured" ? (
                         "Unfeature"
-                    )}
-                </Button>
-            );
-        }
-        if (pageType === "unfeatured") {
-            return (
-                <Button
-                    className="article-card__button btn btn-primary-green"
-                    onClick={() => handleFeatureStatus(true)}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        <>
-                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                            Please wait
-                        </>
                     ) : (
                         "Feature"
                     )}
                 </Button>
             );
         }
-        if (pageType === "pending") {
+
+        if (pageType === "pending" || pageType === "assigned") {
             return (
                 <Button
                     className="article-card__button btn btn-primary-green"
-                    onClick={handlePendingArticle}
-                    disabled={isLoading}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(articleUrl);
+                    }}
                 >
-                    {isLoading ? (
-                        <>
-                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                            Please wait
-                        </>
-                    ) : (
-                        "Review"
-                    )}
+                    Review
                 </Button>
             );
         }
-        if (pageType === "assigned") {
-            return (
-                <Button
-                    className="article-card__button btn btn-primary-green"
-                    onClick={handleAssignedArticles}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        <>
-                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                            Please wait
-                        </>
-                    ) : (
-                        "Review"
-                    )}
-                </Button>
-            );
-        }
+
         return null;
     };
 
-    
     return (
-        <>
-            <a
-    href={
-        pageType === "pending"
-            ? `/pending-articles/${id}`
-            : pageType === "assigned"
-            ? `/assigned-articles/${id}`
-            : `/articles/${id}`
-    }
->
-    <article className="article-card">
-        <div className="article-card__image-container">
-            <Image
-                src={imageUrl || articleThumbnailPlaceholder}
-                alt={`Article image for ${title}`}
-                className="article-card__image"
-                layout="responsive"
-                width={420}
-                height={290}
-                loading="lazy"
-            />
-            {renderButton()}
-        </div>
+        <article className="article-card" onClick={handleCardClick}>
+            <div className="article-card__image-container">
+                <Image
+                    src={imageUrl || articleThumbnailPlaceholder}
+                    alt={`Article image for ${title}`}
+                    className="article-card__image"
+                    layout="responsive"
+                    width={420}
+                    height={290}
+                    loading="lazy"
+                />
+                {renderButton()}
+            </div>
 
-        <div className="article-card__content">
-            <time className="article-card__date">{date}</time>
-            <h2 className="article-card__title">
-                {truncateText(title, 80)}
-            </h2>
+            <div className="article-card__content">
+                <time className="article-card__date">{date}</time>
 
-            <p className="article-card__summary">
-                <span
-                    dangerouslySetInnerHTML={{
-                        __html: truncateText(summary, 180),
-                    }}
-                ></span>
+                <h2 className="article-card__title">
+                    {truncateText(title, 80)}
+                </h2>
 
-                {pageType !== "pending" && pageType !== "assigned" && (
-                    <a href={`/articles/${id}`} className="article-card__read-more">
-                        read more
-                    </a>
-                )}
-            </p>
-
-            <div className="article-card__author">
-                {authorImageUrl ? (
-                    <Image
-                        src={authorImageUrl}
-                        alt={`Author image for ${displayName}`}
-                        className="article-card__author-image"
-                        width={50}
-                        height={50}
+                <p className="article-card__summary">
+                    <span
+                        dangerouslySetInnerHTML={{
+                            __html: truncateText(summary, 180),
+                        }}
                     />
-                ) : (
-                    <FallbackAuthorImage authorName={displayName} />
-                )}
-
-                <div className="article-card__author-text">
-                    <span className="article-card__author-name">
-                        {displayName}
-                        {showDegree ? `, ${authorCreds}` : ""}
-                    </span>
-
-                    {authorInstitution && (
-                        <span className="article-card__author-institution">
-                            {authorInstitution}
+                    {pageType !== "pending" && pageType !== "assigned" && (
+                        <span
+                            className="article-card__read-more"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/articles/${id}`);
+                            }}
+                        >
+                            read more
                         </span>
                     )}
+                </p>
+
+                <div className="article-card__author">
+                    {authorImageUrl ? (
+                        <Image
+                            src={authorImageUrl}
+                            alt={`Author image for ${displayName}`}
+                            width={50}
+                            height={50}
+                            className="article-card__author-image"
+                        />
+                    ) : (
+                        <FallbackAuthorImage authorName={displayName} />
+                    )}
+
+                    <div className="article-card__author-text">
+                        <span className="article-card__author-name">
+                            {displayName}
+                            {showDegree ? `, ${authorCreds}` : ""}
+                        </span>
+
+                        {authorInstitution && (
+                            <span className="article-card__author-institution">
+                                {authorInstitution}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
-    </article>
-</a>
-        </>
+        </article>
     );
 }
 

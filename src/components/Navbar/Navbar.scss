@@ -169,19 +169,30 @@ header {
 }
 
 @media screen and (max-width: 600px) {
-    .navbrand img {
-        width: 5rem;
+    /* Reduce Login text size */
+    .header-right-mob .nav-link {
+        font-size: 1.4rem; // smaller than desktop
+        line-height: 1;
     }
 
+    /* Reduce Sign Up button size */
+    .header-right-mob button,
+    .header-right-mob .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 1.3rem;
+        height: auto;
+    }
+
+    /* Pull auth + hamburger LEFT slightly */
     .header-right-mob {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+        margin-right: -0.75rem; // 👈 KEY FIX
+        gap: 0.6rem;
     }
 
-    .header-mob-head-right {
-        display: flex;
-        gap: 1rem;
+    /* Ensure hamburger never overflows */
+    .header-right-mob .icon-menu {
+        font-size: 2.4rem;
+        flex-shrink: 0;
     }
 }
 
@@ -317,5 +328,43 @@ header {
         .mobile-menu {
             display: flex;
         }
+    }
+}
+/* =========================
+   MOBILE NAVBAR FIX (ONLY)
+   ========================= */
+
+@media (max-width: 768px) {
+    .navbar-inner {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Shrink auth buttons container */
+    .auth-buttons {
+        gap: 0.4rem;
+        margin-right: 0.25rem;
+    }
+
+    /* Login text smaller */
+    .auth-buttons .btn {
+        font-size: 1.85rem;
+        padding: 0.4rem 0.6rem;
+        white-space: nowrap;
+    }
+
+    /* Sign Up button smaller */
+    .auth-buttons .btn-primary {
+        padding: 1.4rem 2.2rem;
+        font-size: 1.5rem;
+    }
+
+    /* Ensure hamburger is always visible */
+    .mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.15rem;
+        flex-shrink: 0;
     }
 }

@@ -47,17 +47,29 @@ export async function summarizeArticle(content) {
 export async function simplifyArticle(content, lengthString) {
     try {
         const instruction = `
-        You simplify scientific articles into a science article understandable by an 8th grader, with medical terms explained at least once. 
-        Don’t include the title or authors at the beginning, but refer to experimenters by their last name. 
-        Each paragraph should be medium length. Include limitations of the study if applicable.
-        
-        Respond using HTML formatting, with visually appealing headers and whitespace. 
-        Use only the CSS classes in the example css file, given below, prefixed with "apicss-".
-        Return it in a div with the class "apicss-body".
-        Use (darker) apicss colors for important words and phrases.
-        Do not start your response with "<!DOCTYPE html>" or markdown fences.
-        No copyright sign or extra boilerplate.
-        An example output is provided. Make your output simpler in language than the example.
+        You simplify scientific articles into a patient-friendly science summary for readers who already have basic familiarity with the condition being discussed. Assume an informed patient or caregiver audience. Do NOT explain what the condition is or provide broad medical background unless a single short sentence is essential to interpret the study.
+
+Tone requirements:
+• warm, human-centered, and respectful
+• clear, steady, and accessible (≈ 8th grade reading level)
+• medically accurate, non-promotional, and evidence-based
+• no hype or exaggerated language
+
+Do NOT use marketing-style adjectives such as “exciting,” “groundbreaking,” “promising,” or “revolutionary.” 
+Do NOT imply treatment effectiveness for everyone unless the study design directly supports it. If results are uncertain, early-stage, or small-scale, say so clearly.
+
+Content rules:
+• Explain medical terms the first time they appear, in plain language.
+• Do NOT include the study title, authors list, affiliations, or citations as a header.
+• Refer to researchers by last name only: “Smith and colleagues” or “the research team.”
+• Each paragraph should be medium length — not one sentence, not a long block.
+• Include limitations, uncertainties, or missing information when applicable.
+• If the article does not report something, write “Not reported” or “Unclear from the paper.”
+
+Respond using HTML formatting, with visually appealing headers and whitespace. Use only the CSS classes in the example css file, given below, prefixed with "apicss-". Return it in a div with the class "apicss-body". Use (darker) apicss colors for important words and phrases. Do not start your response with "<!DOCTYPE html>" or markdown fences. No copyright sign or extra boilerplate. An example output is provided. Make your output simpler in language than the example.
+
+Make your output simpler in language than the example provided.
+
             `.trim();
         
             const messages = [

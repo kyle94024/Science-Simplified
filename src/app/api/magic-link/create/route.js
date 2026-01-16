@@ -1,7 +1,7 @@
 // src/app/api/magic-link/create/route.js
 import crypto from "crypto";
 import { NextResponse } from "next/server";
-import { sql } from "@/lib/neon"; // ✅ CHANGED
+import { tenantQuery, getTenantPool } from "@/lib/tenantDb";
 import { sendMagicLinkEmail } from "@/lib/email";
 import { tenant as defaultTenant } from "@/lib/config";
 import { requireAdmin } from "@/lib/adminGuard";
@@ -22,7 +22,6 @@ import { requireAdmin } from "@/lib/adminGuard";
 //   Canavan: "https://sscanavan.vercel.app",
 //   HUNTINGTONS: "https://sshuntingtons.vercel.app", 
 // };
-
 const tenant_domain = defaultTenant.domain;
 
 export async function POST(req) {
@@ -33,37 +32,41 @@ export async function POST(req) {
     const body = await req.json();
 
     const tenant = defaultTenant.shortName; // Force tenant to current panel
+
     const email = (body?.email || "").toLowerCase();
 
     if (!tenant || !email) {
-      return NextResponse.json(
-        { error: "Missing tenant or email" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing tenant or email" }, { status: 400 });
     }
+
+    // Load tenant env
+    getTenantPool(tenant);
 
     const redirectUrl = "/assigned-articles";
 
     // Generate raw + hashed token
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto
-      .createHash("sha256")
-      .update(rawToken)
-      .digest("hex");
+    const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
 
     // 30 days from now
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    // Store into DB with expiration
-    const result = await sql`
+    // Store into tenant DB with expiration
+    const insertSQL = `
       INSERT INTO magic_links (email, token_hash, redirect_url, expires_at)
-      VALUES (${email}, ${tokenHash}, ${redirectUrl}, ${expiresAt})
+      VALUES ($1, $2, $3, $4)
       RETURNING id, created_at
     `;
 
+    const result = await tenantQuery(tenant, insertSQL, [
+      email,
+      tokenHash,
+      redirectUrl,
+      expiresAt,
+    ]);
+
     // Construct verify URL
-    const apiBase =
-      tenant_domain?.replace(/\/$/, "") || "http://localhost:3000";
+    const apiBase = tenant_domain?.replace(/\/$/, "") || "http://localhost:3000";
     const magicUrl = `${apiBase}/api/magic-link/verify?token=${rawToken}`;
 
     console.log("Magic URL:", magicUrl);
@@ -82,16 +85,14 @@ export async function POST(req) {
 
     return NextResponse.json({
       success: true,
-      id: result[0].id,
-      created_at: result[0].created_at,
+      id: result.rows[0].id,
+      created_at: result.rows[0].created_at,
       token: rawToken,
-      magicUrl,
+      magicUrl: magicUrl,
     });
+
   } catch (err) {
     console.error("MAGIC CREATE ERROR:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
