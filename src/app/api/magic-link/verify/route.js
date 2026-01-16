@@ -1,93 +1,92 @@
 // src/app/api/magic-link/verify/route.js
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { sql } from "@/lib/neon";
+import { tenantQuery } from "@/lib/tenantDb";
 import { sign } from "jsonwebtoken";
 import { serialize } from "cookie";
 import { tenant as defaultTenant } from "@/lib/config";
 
+
+
+
+// Tenant → Domain mapping (final)
+// const TENANT_DOMAINS = {
+//   NF: "https://nfsimplified.com",
+//   EB: "https://sseb.vercel.app",
+//   Vitiligo: "https://ssvitiligo.vercel.app",
+//   CF: "https://sscf-coral.vercel.app",
+//   ALS: "https://ssals-ten.vercel.app",
+//   HS: "https://science-simplified-mu.vercel.app/",
+//   Ashermans: "https://ssashermans.vercel.app",
+//   RYR1: "https://ssryr1.vercel.app",
+//   Aicardi: "https://ssaicardi.vercel.app",
+//   Progeria: "https://ssprogeria.vercel.app",
+//   RETT: "https://ssrett.vercel.app",
+//   Canavan: "https://sscanavan.vercel.app",
+//   HUNTINGTONS: "https://sshuntingtons.vercel.app", 
+// };
 const tenant_domain = defaultTenant.domain;
 
 export const dynamic = "force-dynamic";
-
 export async function GET(req) {
+
+
   try {
     const { searchParams } = new URL(req.url);
-    const tenant = defaultTenant.shortName; // still correct (panel context)
+    const tenant = defaultTenant.shortName; // Force tenant to current panel
     const token = searchParams.get("token");
 
     if (!tenant || !token) {
-      return NextResponse.json(
-        { error: "Missing tenant or token" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing tenant or token" }, { status: 400 });
     }
 
     // Hash token
-    const tokenHash = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
 
     // Get magic link row
-    const magicLinks = await sql`
-      SELECT *
-      FROM magic_links
-      WHERE token_hash = ${tokenHash}
+    const sql = `
+      SELECT * 
+      FROM magic_links 
+      WHERE token_hash = $1
     `;
+    const { rows } = await tenantQuery(tenant, sql, [tokenHash]);
 
-    if (magicLinks.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid or used token" },
-        { status: 400 }
-      );
+    if (rows.length === 0) {
+      return NextResponse.json({ error: "Invalid or used token" }, { status: 400 });
     }
 
-    const magicLink = magicLinks[0];
+    const magicLink = rows[0];
 
     // Check expiration
-    if (
-      magicLink.expires_at &&
-      new Date() > new Date(magicLink.expires_at)
-    ) {
-      return NextResponse.json(
-        { error: "Token expired" },
-        { status: 400 }
-      );
+    if (magicLink.expires_at && new Date() > new Date(magicLink.expires_at)) {
+      return NextResponse.json({ error: "Token expired" }, { status: 400 });
     }
 
     // Mark token as used
-    await sql`
-      UPDATE magic_links
-      SET used = true
-      WHERE token_hash = ${tokenHash}
-    `;
+    await tenantQuery(tenant, `UPDATE magic_links SET used = true WHERE token_hash = $1`, [tokenHash]);
 
-    // Fetch user
-    const users = await sql`
-      SELECT *
-      FROM email_credentials
-      WHERE LOWER(email) = ${magicLink.email.toLowerCase()}
-    `;
+     // ---------------------- 🔥 NEW: Fetch full user details ----------------------
+     const userResult = await tenantQuery(
+      tenant,
+      `SELECT * FROM email_credentials WHERE LOWER(email) = $1`,
+      [magicLink.email.toLowerCase()]
+    );
 
-    if (users.length === 0) {
-      return NextResponse.json(
-        { error: "No user for this email" },
-        { status: 404 }
-      );
+    if (userResult.rows.length === 0) {
+      return NextResponse.json({ error: "No user for this email" }, { status: 404 });
     }
 
-    const user = users[0];
+    const user = userResult.rows[0];
 
-    // Check admin
-    const admins = await sql`
-      SELECT 1
-      FROM admin_users
-      WHERE LOWER(email) = ${user.email.toLowerCase()}
-    `;
-    const isAdmin = admins.length > 0;
+    // Check if admin
+    const adminResult = await tenantQuery(
+      tenant,
+      "SELECT * FROM admin_users WHERE LOWER(email) = $1",
+      [user.email.toLowerCase()]
+    );
+    const isAdmin = adminResult.rows.length > 0;
 
-    // Generate JWT
+    // Generate JWT (same as login)
     const jwt = sign(
       {
         email: user.email,
@@ -100,7 +99,7 @@ export async function GET(req) {
       { expiresIn: "1d" }
     );
 
-    // Set auth cookie
+    // Set auth cookie (same)
     const cookie = serialize("auth", jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -109,7 +108,7 @@ export async function GET(req) {
       path: "/",
     });
 
-    // Redirect
+    // Redirect to frontend
     const domain = tenant_domain || "http://localhost:3000";
     const finalUrl = `${domain}/assigned-articles`;
 
@@ -119,9 +118,6 @@ export async function GET(req) {
 
   } catch (err) {
     console.error("VERIFY ERROR:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
