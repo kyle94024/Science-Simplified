@@ -3,7 +3,7 @@ export const revalidate = 0; // Disable caching for this API route
 import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request) {
     try {
         // Fetch pending articles from the database
         const result = await query(

@@ -23,6 +23,11 @@ import {
 import ImageUpload from "../ImageUpload/ImageUpload";
 import Editor from "../ContentEditor";
 
+// ADDED: export to word
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph, TextRun } from "docx";
+// End
+
 const predefinedTags = [
     "Clinical Trial",
     "Meta-Analysis",
@@ -261,6 +266,112 @@ const EditArticleForm = ({
         await onPublishOrRetract(updatedArticle);
     };
 
+   // ADDED: Export article to Word
+const handleExportToWord = async () => {
+    if (!articleData) return;
+
+    const doc = new Document({
+        sections: [
+            {
+                children: [
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: title,
+                                bold: true,
+                                size: 36,
+                            }),
+                        ],
+                        spacing: { after: 300 },
+                    }),
+
+                    publicationDate &&
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Publication Date: ${publicationDate}`,
+                                    italics: true,
+                                }),
+                            ],
+                            spacing: { after: 200 },
+                        }),
+
+                    authors.length > 0 &&
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Authors: ${authors.join(", ")}`,
+                                }),
+                            ],
+                            spacing: { after: 200 },
+                        }),
+
+                    tags.length > 0 &&
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Tags: ${tags.join(", ")}`,
+                                }),
+                            ],
+                            spacing: { after: 300 },
+                        }),
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Summary",
+                                bold: true,
+                                size: 28,
+                            }),
+                        ],
+                        spacing: { after: 200 },
+                    }),
+
+                    ...summary
+                        .replace(/<[^>]+>/g, "")
+                        .split("\n")
+                        .map(
+                            line =>
+                                new Paragraph({
+                                    children: [new TextRun(line)],
+                                })
+                        ),
+
+                    new Paragraph({
+                        text: "",
+                        spacing: { after: 300 },
+                    }),
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Article Content",
+                                bold: true,
+                                size: 28,
+                            }),
+                        ],
+                        spacing: { after: 200 },
+                    }),
+
+                    ...content
+                        .replace(/<[^>]+>/g, "")
+                        .split("\n")
+                        .map(
+                            line =>
+                                new Paragraph({
+                                    children: [new TextRun(line)],
+                                })
+                        ),
+                ].filter(Boolean),
+            },
+        ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `${title || "article"}.docx`);
+};
+
+
     return (
         <form className="edit-article-form">
             <div className="edit-article-form__row">
@@ -485,6 +596,19 @@ const EditArticleForm = ({
             {/* Button actions */}
             
             <div className="edit-article-form__actions">
+
+          {/* ADDED: Export to Word (review only) */}
+            {formType === "review" && (
+            <Button
+                 type="button"
+                 className="btn btn-primary"
+                 onClick={handleExportToWord}
+            >
+                 Export to Word
+                </Button>
+    )}
+         {/* END ADDED */}
+
                 <Button
                     type="button"
                     className="btn btn-primary"

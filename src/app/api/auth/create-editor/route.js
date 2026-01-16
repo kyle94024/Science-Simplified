@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/adminGuard"; // or adminGuard you already ha
 
 export async function POST(request) {
   // 1) block non‑admins
-  const guard = requireAdmin(req);
+  const guard = requireAdmin(request);
   if (guard instanceof NextResponse) return guard;
 
   // 2) pull the new user data + role

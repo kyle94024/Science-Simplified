@@ -36,6 +36,8 @@
     "cookie": "^1.0.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "docx": "^9.5.1",
+    "file-saver": "^2.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.451.0",
     "marked": "^15.0.0",

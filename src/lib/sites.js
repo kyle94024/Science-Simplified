@@ -952,7 +952,7 @@ export const sites = {
       homeBG: "birdsofparadiselogo.jpg", //home/homeBG
       homeExploreAllBG: "Vitiligo_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
-      logoWithText: "hssimplified_nobg.png", //logoWithText
+      logoWithText: "HSSimplifiedLogo.png", //logoWithText
       articleThumbnailPlaceholder: "ArticlePlaceholderBirdOfParadise.png", //articleThumbnailPlaceholder
       contactUsBGLeft: "HS_contactUsBGLeft.jpg", //contactUsBGLeft # uses full width background
       contactUsBGRight: "HS_contactUsBGLeft.jpg", //contactUsBGRight # uses full width background
@@ -989,7 +989,7 @@ export const sites = {
       about_supporter1Height: 300,
       about_supporter1Link: "https://www.hs-foundation.org/",
 
-      about_supporter2Logo: "HS_foundation_logo.webp",
+      about_supporter2Logo: "hsfoundationlogo.png",
       about_supporter2Name: "HS Foundation",
       about_supporter2Width: 300,
       about_supporter2Height: 300,
