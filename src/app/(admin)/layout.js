@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function AdminLayout({ children }) {
     return (
         <div className="min-h-screen flex bg-gray-100">
@@ -6,33 +8,33 @@ export default function AdminLayout({ children }) {
                 <div className="p-6 text-xl font-bold">Admin Panel</div>
 
                 <nav className="px-4 space-y-2">
-                    <a
+                    <Link
                         href="/magic-links"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
                     >
                         Magic Links
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/admin/clinical-trials"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
                     >
                         Clinical Trials
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/admin/users"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
                     >
                         Users (future)
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/admin/settings"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
                     >
                         Settings (future)
-                    </a>
+                    </Link>
                 </nav>
             </aside>
 
