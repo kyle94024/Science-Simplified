@@ -105,8 +105,12 @@ export default function Navbar() {
                                 <li>
                                     <Link href="/magic-links">Magic Links</Link>
                                 </li>
+                                <li>
+                                    <Link href="/admin/sync">Sync Trials</Link>
+                                </li>
                             </ul>
                         </li>
+                        
                     )}
 
                     {/* Profile dropdown */}
