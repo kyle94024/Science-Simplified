@@ -21,24 +21,27 @@ Do NOT define neurofibromatosis, schwannomatosis, hidradenitis, or epidermolysis
 `;
 
 const TENANT_CONFIG = {
+
   HS: {
-    required: ["hidradenitis suppurativa", "hidradenitis"],
+    required: ["hidradenitis suppurativa", "hidradenitis", ],
     exclude: ["mood", "parkinson", "glioblastoma"],
   },
+
   NF: {
     required: ["neurofibromatosis", "nf1", "nf2", "schwannomatosis"],
     exclude: [],
   },
+  
   EB: {
     required: ["epidermolysis bullosa"],
     exclude: [],
   },
 
-  // // FUTURE TENANTS
-  // CF: {
-  //   required: ["cystic fibrosis"],
-  //   exclude: [],
-  // },
+  // FUTURE TENANTS
+  CF: {
+    required: ["cystic fibrosis"],
+    exclude: [],
+  },
 };
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -604,19 +607,40 @@ export async function GET(req, context) {
 
   const SEARCH_TERMS = TENANT_CONFIG[TENANT].required;
 
+  // ---- NEW: pagination + safety cap ----
+  const BASE_URL = "https://clinicaltrials.gov/api/v2/studies";
+  const PAGE_SIZE = 50;
+  const MAX_STUDIES = 500;
+
+  let allStudies = [];
+  let pageToken = null;
+
   try {
-    const url = new URL("https://clinicaltrials.gov/api/v2/studies");
-    url.searchParams.set("query.cond", SEARCH_TERMS.join(" OR "));
-    url.searchParams.set("pageSize", "50");
-
-    const res = await fetch(url.toString());
-    const { studies = [] } = await res.json();
-
-    for (const study of studies) {
-      const p = study.protocolSection;
-      if (!trialMatchesTenant(study, TENANT)) {
-        continue;
+    do {
+      const url = new URL(BASE_URL);
+      url.searchParams.set("query.cond", SEARCH_TERMS.join(" OR "));
+      url.searchParams.set("pageSize", PAGE_SIZE.toString());
+      if (pageToken) {
+        url.searchParams.set("pageToken", pageToken);
       }
+
+      const res = await fetch(url.toString());
+      const data = await res.json();
+
+      const studies = data.studies || [];
+      allStudies.push(...studies);
+
+      pageToken = data.nextPageToken || null;
+
+    } while (pageToken && allStudies.length < MAX_STUDIES);
+
+    // hard safety cap
+    allStudies = allStudies.slice(0, MAX_STUDIES);
+
+    for (const study of allStudies) {
+      const p = study.protocolSection;
+      if (!trialMatchesTenant(study, TENANT)) continue;
+
       const nctId = p?.identificationModule?.nctId;
       if (!nctId) continue;
 
@@ -624,21 +648,21 @@ export async function GET(req, context) {
 
       const existing = await sql`
         SELECT
-  source_hash,
-  last_synced_at,
-  ai_purpose,
-  ai_treatments,
-  ai_design,
-  ai_eligibility,
-  ai_participation,
-  ai_leadership,
-  ai_prior_research,
-  ai_locations
-FROM clinical_trials
-WHERE nct_id = ${nctId}
-LIMIT 1
+          source_hash,
+          last_synced_at,
+          ai_purpose,
+          ai_treatments,
+          ai_design,
+          ai_eligibility,
+          ai_participation,
+          ai_leadership,
+          ai_prior_research,
+          ai_locations
+        FROM clinical_trials
+        WHERE nct_id = ${nctId}
+        LIMIT 1
       `;
-
+      
       const hasAllAI =
         existing[0]?.ai_purpose &&
         existing[0]?.ai_treatments &&
