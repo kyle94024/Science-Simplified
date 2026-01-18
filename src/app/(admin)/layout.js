@@ -35,6 +35,12 @@ export default function AdminLayout({ children }) {
                     >
                         Settings (future)
                     </Link>
+                    <Link
+                        href="/admin/sync"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+                        >
+                        Sync Trials
+                    </Link>
                 </nav>
             </aside>
 
