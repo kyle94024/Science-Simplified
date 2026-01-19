@@ -108,6 +108,9 @@ export default function Navbar() {
                                 <li>
                                     <Link href="/admin/sync">Sync Trials</Link>
                                 </li>
+                                <li>
+                                    <Link href="/admin/clinical-trials">Edit Trials</Link>
+                                </li>
                             </ul>
                         </li>
                         
