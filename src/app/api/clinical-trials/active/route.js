@@ -8,7 +8,7 @@ export async function GET() {
     if (!tenant) {
       return NextResponse.json(
         { success: false, error: "Missing site tenant" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,6 +29,8 @@ export async function GET() {
           AS location_state,
         raw_data->'protocolSection'->'contactsLocationsModule'->'locations'->0->>'country'
           AS location_country,
+          raw_data->'protocolSection'->'contactsLocationsModule'->'locations'
+  AS locations,
 
         raw_data->'protocolSection'->'eligibilityModule'->>'minimumAge' AS min_age,
         raw_data->'protocolSection'->'eligibilityModule'->>'maximumAge' AS max_age,
@@ -54,7 +56,7 @@ export async function GET() {
     console.error("ACTIVE TRIALS ERROR:", err);
     return NextResponse.json(
       { success: false, error: String(err) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -10,6 +10,26 @@ import TrialsListPaginated from "@/components/TrialsListPaginated/TrialsListPagi
 import useSearchStore from "@/store/useSearchStore";
 import "./ClinicalTrialsPage.scss";
 
+const CONTINENT_MAP = {
+  "united states": "north_america",
+  canada: "north_america",
+  mexico: "north_america",
+
+  brazil: "south_america",
+  argentina: "south_america",
+
+  germany: "europe",
+  france: "europe",
+  italy: "europe",
+  "united kingdom": "europe",
+
+  china: "asia",
+  japan: "asia",
+  india: "asia",
+
+  australia: "australia",
+};
+
 const TENANT = process.env.NEXT_PUBLIC_TENANT;
 
 const ClinicalTrialsPage = () => {
@@ -76,12 +96,10 @@ const ClinicalTrialsPage = () => {
 
     const matchesLocation =
       locationFilter === "all" ||
-      (locationFilter === "us" && country === "united states") ||
-      (locationFilter === "canada" && country === "canada") ||
-      (locationFilter === "other" &&
-        country &&
-        country !== "united states" &&
-        country !== "canada");
+      trial.locations?.some((loc) => {
+        const continent = CONTINENT_MAP[loc.country?.toLowerCase()] || "other";
+        return continent === locationFilter;
+      });
 
     /* ---------- TRIAL TYPE ---------- */
     const type = trial.study_type; // already lowercase from API
@@ -136,8 +154,11 @@ const ClinicalTrialsPage = () => {
                 onChange={(e) => setLocationFilter(e.target.value)}
               >
                 <option value="all">All Locations</option>
-                <option value="us">United States</option>
-                <option value="canada">Canada</option>
+                <option value="north_america">North America</option>
+                <option value="south_america">South America</option>
+                <option value="europe">Europe</option>
+                <option value="asia">Asia</option>
+                <option value="australia">Australia</option>
                 <option value="other">Other</option>
               </select>
             </div>
