@@ -68,3 +68,16 @@
 .accordion.open .accordion__icon {
   transform: rotate(180deg);
 }
+.accordion__content {
+  padding: 1.6rem;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #475569;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.trial-content {
+  max-width: 100%;
+}

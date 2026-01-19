@@ -31,13 +31,15 @@ export default function TrialCard({ trial }) {
         </h3>
 
         {/* LOCATION */}
-        {(trial.location_city || trial.location_state) && (
+        {Array.isArray(trial.locations) && trial.locations.length > 0 && (
           <div className="trial-card__location">
             <MapPin size={14} />
             <span>
-              {[trial.location_city, trial.location_state]
-                .filter(Boolean)
-                .join(", ")}
+              {trial.locations.length > 1
+                ? "Multiple Locations"
+                : [trial.locations[0]?.city, trial.locations[0]?.state]
+                    .filter(Boolean)
+                    .join(", ")}
             </span>
           </div>
         )}
