@@ -119,7 +119,7 @@ export default function AdminTrialEditPage() {
           <div className="admin-edit__field">
             <label>Title</label>
             <input
-              value={trial.short_title_manual ?? ""}
+              value={trial.short_title_manual ?? trial.short_title ?? ""}
               onChange={(e) =>
                 setTrial({ ...trial, short_title_manual: e.target.value })
               }
@@ -138,7 +138,7 @@ export default function AdminTrialEditPage() {
             <label>Summary</label>
             <textarea
               rows={6}
-              value={trial.ai_summary_manual ?? ""}
+              value={trial.ai_summary_manual ?? trial.ai_summary ?? ""}
               onChange={(e) =>
                 setTrial({ ...trial, ai_summary_manual: e.target.value })
               }
@@ -157,12 +157,12 @@ export default function AdminTrialEditPage() {
             Questions About This Study
           </h2>
 
-          {QUESTION_FIELDS.map(({ key, label }) => (
+          {QUESTION_FIELDS.map(({ key, label, base }) => (
             <div className="admin-edit__field" key={key}>
               <label>{label}</label>
               <textarea
                 rows={5}
-                value={trial[key] ?? ""}
+                value={trial[key] ?? trial[base] ?? ""}
                 onChange={(e) => setTrial({ ...trial, [key]: e.target.value })}
               />
               <button
