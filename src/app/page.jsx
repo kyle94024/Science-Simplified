@@ -83,7 +83,7 @@ export default function Home() {
             </section>
 
             {/* Featured articles section */}
-            <FeaturedArticlesSection />
+            {/* <FeaturedArticlesSection /> */}
 
             <section className="home__cta-1 padding">
                 <div className="boxed">
