@@ -13,7 +13,7 @@ const RecentArticlesSection = () => {
                 const response = await fetch("/api/articles/recent");
                 if (!response.ok) throw new Error("Failed to fetch articles");
                 const data = await response.json();
-                setArticles(data.slice(0, 3)); // Show only the first 3 articles
+                setArticles(data.slice(0, 6)); // Show only the first 3 articles
                 setError(false); // Reset error if the fetch is successful
             } catch (error) {
                 console.error("Error fetching articles:", error);

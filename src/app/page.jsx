@@ -70,9 +70,9 @@ export default function Home() {
                             </div>
                             <p className="body-large">
                                 {tenant.text_homeTitleDescription}{" "}
-                                <span className="w-700 color-green-dark">
+                                {/* <span className="w-700 color-green-dark">
                                     Powered by Innovation.
-                                </span>
+                                </span> */}
                             </p>
                             <SearchArticles
                                 setSearchQuery={handleSearchSubmit}
@@ -85,20 +85,26 @@ export default function Home() {
             {/* Featured articles section */}
             {/* <FeaturedArticlesSection /> */}
 
+            {/* <section className="home__cta-1 padding">
+                <div className="boxed">
+                    <HomeServiceBanner />
+                </div>
+            </section> */}
+
+            {/* Recent articles section */}
+            <RecentArticlesSection />
+
             <section className="home__cta-1 padding">
                 <div className="boxed">
                     <HomeServiceBanner />
                 </div>
             </section>
 
-            {/* Recent articles section */}
-            <RecentArticlesSection />
-
-            <section className="home__subscription-cta padding">
+            {/* <section className="home__subscription-cta padding">
                 <div className="boxed">
                     <SubscriptionBanner />
                 </div>
-            </section>
+            </section> */}
 
             <Footer />
         </main>
