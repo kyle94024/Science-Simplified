@@ -24,9 +24,8 @@ export async function POST(req) {
         }
 
         // Step 2: Insert article into pending_article table, including the image_url field
-        // Step 2: Insert article into pending_article table, including the image_url field
         await query(
-            "INSERT INTO pending_article (title, tags, innertext, summary, article_link, publisher, image_url, authors, publication_date, source_publication, image_credit) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+            "INSERT INTO pending_article (title, tags, innertext, summary, article_link, publisher, image_url, authors, publication_date, source_publication, image_credit, additional_editors) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
             [
                 article.title,
                 article.tags,
@@ -39,6 +38,7 @@ export async function POST(req) {
                 article.publication_date,
                 article.source_publication,
                 article.image_credit,
+                article.additional_editors,
             ]
         );
 

@@ -117,6 +117,10 @@ const EditArticleForm = ({
 
     const [sourcePublication, setSourcePublication] = useState(articleData?.source_publication || "");
     const [imageCredit, setImageCredit] = useState(articleData?.image_credit || "");
+
+    // Additional editors state
+    const [additionalEditors, setAdditionalEditors] = useState(articleData?.additional_editors || []);
+    const [newAdditionalEditor, setNewAdditionalEditor] = useState("");
  
     // Generate image button
     const handleGenerateAIImage = async () => {
@@ -205,6 +209,40 @@ const EditArticleForm = ({
         setAuthors(old => [...old, cleanName(newAuthor)]);
         setNewAuthor("");
     };
+
+    // Additional editors management functions
+    const updateAdditionalEditor = (idx, value) =>
+        setAdditionalEditors(list => {
+            const copy = [...list];
+            copy[idx] = value;
+            return copy;
+        });
+
+    const removeAdditionalEditor = idx =>
+        setAdditionalEditors(list => list.filter((_, i) => i !== idx));
+
+    const clearAdditionalEditors = () =>
+        setAdditionalEditors([]);
+
+    const handleNewAdditionalEditorChange = e => {
+        const val = e.target.value;
+        if (val.includes(",")) {
+            const bits = val
+                .split(",")
+                .map(cleanName)
+                .filter(Boolean);
+            setAdditionalEditors(old => [...old, ...bits]);
+            setNewAdditionalEditor("");
+        } else {
+            setNewAdditionalEditor(val);
+        }
+    };
+
+    const addAdditionalEditors = () => {
+        if (!newAdditionalEditor.trim()) return;
+        setAdditionalEditors(old => [...old, cleanName(newAdditionalEditor)]);
+        setNewAdditionalEditor("");
+    };
   
 
     const handleSave = () => {
@@ -263,6 +301,7 @@ const EditArticleForm = ({
             publication_date: publicationDate,
             source_publication: sourcePublication,
             image_credit: imageCredit,
+            additional_editors: additionalEditors,
         };
     };
 
@@ -632,7 +671,64 @@ const handleExportToWord = async () => {
             />
         </div>
 
-        
+        {/* Additional Editors Field */}
+        <div className="edit-article-form__field">
+            <Label className="edit-article-form__label">Additional Editors</Label>
+
+            {/* existing additional editors as editable boxes */}
+            <div className="edit-article-form__authors-list">
+                {additionalEditors.map((name, i) => (
+                    <div key={i} className="edit-article-form__authors-list-item">
+                        <Input
+                            value={name}
+                            onChange={e => updateAdditionalEditor(i, e.target.value)}
+                            className="edit-article-form__input"
+                        />
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeAdditionalEditor(i)}
+                            className="edit-article-form__tag-remove"
+                        >
+                            <X size={14} />
+                        </Button>
+                    </div>
+                ))}
+            </div>
+
+            {/* bottom row: paste/type, add & clear */}
+            <div className="edit-article-form__add-author">
+                <Input
+                    placeholder="Paste or type editor(s)…"
+                    value={newAdditionalEditor}
+                    onChange={handleNewAdditionalEditorChange}
+                    onKeyDown={e => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            addAdditionalEditors();
+                        }
+                    }}
+                    className="edit-article-form__input"
+                />
+                <Button
+                    type="button"
+                    onClick={addAdditionalEditors}
+                    className="edit-article-form__add-button"
+                >
+                    Add Editors
+                </Button>
+                <Button
+                    type="button"
+                    onClick={clearAdditionalEditors}
+                    className="edit-article-form__clear-button"
+                >
+                    Clear All
+                </Button>
+            </div>
+        </div>
+
+
             {/* Button actions */}
             
             <div className="edit-article-form__actions">

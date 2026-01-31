@@ -159,7 +159,7 @@ const ArticlePage = ({ params }) => {
                                     <h1 className="article-page__title heading-tertiary">
                                         {article.title}
                                     </h1>
-                                    <div className="flex items-center justify-start w-full gap-2 mb-8">
+                                    <div className="flex items-center justify-start w-full gap-2 mb-4">
                                         <h3 className="text-xl font-semibold text-gray-500 w-700">
                                             Original Paper Published:
                                         </h3>
@@ -167,10 +167,20 @@ const ArticlePage = ({ params }) => {
                                             {article.publication_date || 'N/A'}{article.source_publication ? `, ${article.source_publication}` : ''}
                                         </p>
                                     </div>
+                                    {article.authors && article.authors.length > 0 && (
+                                        <div className="flex items-center justify-start w-full gap-2 mb-8">
+                                            <h3 className="text-xl font-semibold text-gray-500 w-700">
+                                                Original Paper Authors:
+                                            </h3>
+                                            <p className="text-2xl font-bold text-gray-600">
+                                                {article.authors.join(', ')}
+                                            </p>
+                                        </div>
+                                    )}
                                     <div className="flex">
                                         <div className="article-page__meta hidden">
                                             <h3 className="body-lg w-700">
-                                                Edited By:
+                                                Summary Prepared By:
                                             </h3>
                                             {article.photo && (
                                                 <div className="article-page__photo">
@@ -201,6 +211,15 @@ const ArticlePage = ({ params }) => {
                                                     <p className="article-page__university">
                                                         {article.university}
                                                     </p>
+                                                )}
+                                                {article.additional_editors && article.additional_editors.length > 0 && (
+                                                    <div className="article-page__additional-editors mt-2">
+                                                        {article.additional_editors.map((editor, index) => (
+                                                            <p key={index} className="article-page__additional-editor">
+                                                                {editor}
+                                                            </p>
+                                                        ))}
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -293,7 +312,7 @@ const ArticlePage = ({ params }) => {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        Read original article
+                                        Read Original Paper
                                     </Link>
                                 )}
                                 {isAdmin && (

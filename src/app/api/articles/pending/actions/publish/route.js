@@ -29,9 +29,9 @@ export async function POST(req) {
         // Insert the article into the article table, including the certifiedby, image_url, and publication_date fields
         // Insert the article into the article table, now including authors
         await query(
-            `INSERT INTO article 
-            (title, tags, innertext, summary, article_link, publisher, authors, certifiedby, image_url, publication_date, source_publication, image_credit) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7::text[], $8::jsonb, $9, $10, $11, $12)`,
+            `INSERT INTO article
+            (title, tags, innertext, summary, article_link, publisher, authors, certifiedby, image_url, publication_date, source_publication, image_credit, additional_editors)
+            VALUES ($1, $2, $3, $4, $5, $6, $7::text[], $8::jsonb, $9, $10, $11, $12, $13)`,
             [
                 article.title,
                 article.tags,
@@ -45,6 +45,7 @@ export async function POST(req) {
                 article.publication_date,
                 article.source_publication,
                 article.image_credit,
+                article.additional_editors ?? [],
             ]
         );
         
