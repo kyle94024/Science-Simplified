@@ -63,6 +63,7 @@ const AddArticleForm = () => {
     const [newAuthor, setNewAuthor] = useState("");
     const [publicationDate, setPublicationDate] = useState("");
     const [sourcePublication, setSourcePublication] = useState("");
+    const [imageCredit, setImageCredit] = useState("");
 
 
     const quillRef = useRef(null);
@@ -170,6 +171,7 @@ const AddArticleForm = () => {
                     authors: authors,
                     publication_date: publicationDate,
                     source_publication: sourcePublication,
+                    image_credit: imageCredit,
                 }),
             });
 
@@ -655,6 +657,22 @@ const AddArticleForm = () => {
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* Image Credit Field */}
+            <div className="add-article-form__field">
+                <Label htmlFor="imageCredit" className="add-article-form__label">
+                    Image Credit
+                </Label>
+                <Input
+                    id="imageCredit"
+                    type="text"
+                    placeholder="e.g. Getty Images, unsplash.com"
+                    value={imageCredit}
+                    onChange={e => setImageCredit(e.target.value)}
+                    className="add-article-form__input"
+                    style={{ maxWidth: "400px" }}
+                />
             </div>
 
             <div className="add-article-form__actions">

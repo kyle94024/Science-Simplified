@@ -17,6 +17,7 @@ export async function POST(req) {
             authors,
             publication_date,
             source_publication,
+            image_credit,
         } = await req.json();
 
         // Generate the summary and simplified content
@@ -43,6 +44,7 @@ export async function POST(req) {
                 authors,
                 publication_date,
                 source_publication || null,
+                image_credit || null,
             ]
         );
 

@@ -116,6 +116,7 @@ const EditArticleForm = ({
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
     const [sourcePublication, setSourcePublication] = useState(articleData?.source_publication || "");
+    const [imageCredit, setImageCredit] = useState(articleData?.image_credit || "");
  
     // Generate image button
     const handleGenerateAIImage = async () => {
@@ -261,6 +262,7 @@ const EditArticleForm = ({
             authors: authors,
             publication_date: publicationDate,
             source_publication: sourcePublication,
+            image_credit: imageCredit,
         };
     };
 
@@ -608,9 +610,29 @@ const handleExportToWord = async () => {
                 />
             )}
 
+            
+
         </div>
     </div>
 </div>
+
+        {/* Image Credit Field */}
+        <div className="edit-article-form__field">
+            <Label htmlFor="imageCredit" className="edit-article-form__label">
+                Image Credit
+            </Label>
+            <Input
+                id="imageCredit"
+                type="text"
+                placeholder="e.g. Getty Images, unsplash.com"
+                value={imageCredit}
+                onChange={e => setImageCredit(e.target.value)}
+                className="edit-article-form__input"
+                style={{ maxWidth: "400px" }}
+            />
+        </div>
+
+        
             {/* Button actions */}
             
             <div className="edit-article-form__actions">

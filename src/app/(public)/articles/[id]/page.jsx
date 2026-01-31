@@ -233,6 +233,7 @@ const ArticlePage = ({ params }) => {
                                         </div>
                                     </div>
                                     {article.image_url && (
+                                    <div className="article-page__image-container">
                                         <Image
                                             className="article-page__image"
                                             src={article.image_url}
@@ -243,7 +244,13 @@ const ArticlePage = ({ params }) => {
                                             objectPosition="center"
                                             loading="lazy"
                                         />
-                                    )}
+                                        {article.image_credit && (
+                                            <p className="article-page__image-credit">
+                                                Image Credit: {article.image_credit}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                                     <div className="article-page__tags">
                                         {article.tags &&
                                         article.tags.length > 0 ? (
