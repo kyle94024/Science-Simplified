@@ -12,6 +12,20 @@
         padding-bottom: 8rem;
     }
 
+    &__image-container {
+      width: 50%;
+      margin-inline: auto;
+      margin-bottom: 2.4rem;
+  }
+
+  &__image-credit {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #666;
+      text-align: center;
+      margin-top: 0.8rem;
+  }
+
     &__loader {
         padding-block: 24rem;
         display: flex;
@@ -362,16 +376,4 @@
   }
   
 
-  &__image-container {
-    width: 50%;
-    margin-inline: auto;
-    margin-bottom: 2.4rem;
-}
 
-&__image-credit {
-    font-size: 1.2rem;
-    font-style: italic;
-    color: #666;
-    text-align: center;
-    margin-top: 0.8rem;
-}
