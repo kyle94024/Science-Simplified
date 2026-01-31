@@ -7,12 +7,12 @@ const { NextResponse } = require("next/server");
 export async function GET(req, { params }) {
     try {
         const url = new URL(req.url);
-        const userId = url.searchParams.get("userId");
+        const userId = parseInt(url.searchParams.get("userId"), 10);
         const articleId = parseInt(params.id, 10);
 
         console.log("GET - userId:", userId, "articleId:", articleId); // Debugging
 
-        if (!userId || isNaN(articleId)) {
+        if (isNaN(userId) || isNaN(articleId)) {
             return NextResponse.json(
                 { success: false, message: "Invalid user ID or article ID" },
                 { status: 400 }
@@ -43,7 +43,7 @@ export async function POST(req, { params }) {
     let userId;
     try {
         const body = await req.json();
-        userId = body.userId;
+        userId = parseInt(body.userId, 10);
     } catch (e) {
         console.error("Error parsing request body:", e);
         return NextResponse.json(
@@ -57,7 +57,7 @@ export async function POST(req, { params }) {
     console.log("POST - userId:", userId, "articleId:", articleId); // Debugging
 
     try {
-        if (!userId || isNaN(articleId)) {
+        if (isNaN(userId) || isNaN(articleId)) {
             return NextResponse.json(
                 { success: false, message: "Invalid user ID or article ID" },
                 { status: 400 }
@@ -103,7 +103,7 @@ export async function DELETE(req, { params }) {
     let userId;
     try {
         const body = await req.json();
-        userId = body.userId;
+        userId = parseInt(body.userId, 10);
     } catch (e) {
         console.error("Error parsing request body:", e);
         return NextResponse.json(
@@ -117,7 +117,7 @@ export async function DELETE(req, { params }) {
     console.log("DELETE - userId:", userId, "articleId:", articleId); // Debugging
 
     try {
-        if (!userId || isNaN(articleId)) {
+        if (isNaN(userId) || isNaN(articleId)) {
             return NextResponse.json(
                 { success: false, message: "Invalid user ID or article ID" },
                 { status: 400 }

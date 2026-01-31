@@ -5,7 +5,7 @@ import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import SectionLoader from "@/components/SectionLoader/SectionLoader";
 import { Button } from "@/components/ui/button";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart, Loader2, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
@@ -27,6 +27,7 @@ const ArticlePage = ({ params }) => {
     // Favorite state
     const [isFavorited, setIsFavorited] = useState(false);
     const [favoriting, setFavoriting] = useState(false);
+    const [authorsExpanded, setAuthorsExpanded] = useState(false);
 
     const { isAdmin, user } = useAuthStore(); // Access user and admin state from Zustand
     const { email, userId, name } = user || {};
@@ -168,13 +169,37 @@ const ArticlePage = ({ params }) => {
                                         </p>
                                     </div>
                                     {article.authors && article.authors.length > 0 && (
-                                        <div className="flex items-center justify-start w-full gap-2 mb-8">
-                                            <h3 className="text-xl font-semibold text-gray-500 w-700">
+                                        <div className="flex items-start justify-start w-full gap-2 mb-8">
+                                            <h3 className="text-xl font-semibold text-gray-500 w-700 whitespace-nowrap pt-1">
                                                 Original Paper Authors:
                                             </h3>
-                                            <p className="text-2xl font-bold text-gray-600">
-                                                {article.authors.join(', ')}
-                                            </p>
+                                            <div className="flex-1">
+                                                {article.authors.length <= 3 ? (
+                                                    <p className="text-2xl font-bold text-gray-600">
+                                                        {article.authors.join(', ')}
+                                                    </p>
+                                                ) : (
+                                                    <div className="flex items-start gap-2">
+                                                        <div className="flex-1">
+                                                            <p className="text-2xl font-bold text-gray-600">
+                                                                {authorsExpanded
+                                                                    ? article.authors.join(', ')
+                                                                    : `${article.authors.slice(0, 3).join(', ')}...`
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setAuthorsExpanded(!authorsExpanded)}
+                                                            className="p-1 hover:bg-gray-100 rounded transition-transform duration-200"
+                                                            aria-label={authorsExpanded ? "Collapse authors" : "Expand authors"}
+                                                        >
+                                                            <ChevronDown
+                                                                className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${authorsExpanded ? 'rotate-180' : ''}`}
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                     <div className="flex">
