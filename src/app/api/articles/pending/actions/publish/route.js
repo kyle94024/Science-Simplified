@@ -30,19 +30,20 @@ export async function POST(req) {
         // Insert the article into the article table, now including authors
         await query(
             `INSERT INTO article 
-            (title, tags, innertext, summary, article_link, publisher, authors, certifiedby, image_url, publication_date) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7::text[], $8::jsonb, $9, $10)`,
+            (title, tags, innertext, summary, article_link, publisher, authors, certifiedby, image_url, publication_date, source_publication) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7::text[], $8::jsonb, $9, $10, $11)`,
             [
-            article.title,          // $1
-            article.tags,           // $2
-            article.innertext,      // $3
-            article.summary,        // $4
-            article.article_link,   // $5
-            article.publisher,      // $6
-            article.authors ?? [],  // $7  -> ensure array; cast as text[] above
-            JSON.stringify(certifiedby), // $8
-            article.image_url,      // $9
-            article.publication_date // $10
+                article.title,
+                article.tags,
+                article.innertext,
+                article.summary,
+                article.article_link,
+                article.publisher,
+                article.authors ?? [],
+                JSON.stringify(certifiedby),
+                article.image_url,
+                article.publication_date,
+                article.source_publication, 
             ]
         );
         

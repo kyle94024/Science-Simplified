@@ -114,6 +114,8 @@ const EditArticleForm = ({
 
     // AI Generation loading state
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+    const [sourcePublication, setSourcePublication] = useState(articleData?.source_publication || "");
  
     // Generate image button
     const handleGenerateAIImage = async () => {
@@ -258,6 +260,7 @@ const EditArticleForm = ({
             image_url: imageUrl,
             authors: authors,
             publication_date: publicationDate,
+            source_publication: sourcePublication,
         };
     };
 
@@ -392,7 +395,7 @@ const handleExportToWord = async () => {
                         htmlFor="sourceLink"
                         className="edit-article-form__label"
                     >
-                        Source Link (optional)
+                        Source Link
                     </Label>
                     <Input
                         id="sourceLink"
@@ -450,24 +453,39 @@ const handleExportToWord = async () => {
                 </Select>
             </div>
 
-            {/* Publication Date */}
-            <div className="edit-article-form__field edit-article-form__pub-date-field">
-            <Label htmlFor="pubDate" className="edit-article-form__label">
-                Publication Date
-            </Label>
-            <Input
-                id="pubDate"
-                type="text"
-                placeholder="e.g. 2025 January 6"
-                value={publicationDate}
-                onChange={e => setPublicationDate(e.target.value)}
-                className="edit-article-form__input"
-            />
+            {/* Source Publication Date + Source Publication (side by side) */}
+            <div className="edit-article-form__row">
+                <div className="edit-article-form__field">
+                    <Label htmlFor="pubDate" className="edit-article-form__label">
+                        Source Publication Date
+                    </Label>
+                    <Input
+                        id="pubDate"
+                        type="text"
+                        placeholder="e.g. 2025 January 6"
+                        value={publicationDate}
+                        onChange={e => setPublicationDate(e.target.value)}
+                        className="edit-article-form__input"
+                    />
+                </div>
+                <div className="edit-article-form__field">
+                    <Label htmlFor="sourcePublication" className="edit-article-form__label">
+                        Source Publication
+                    </Label>
+                    <Input
+                        id="sourcePublication"
+                        type="text"
+                        placeholder="e.g. JAMA Dermatology"
+                        value={sourcePublication}
+                        onChange={e => setSourcePublication(e.target.value)}
+                        className="edit-article-form__input"
+                    />
+                </div>
             </div>
 
             {/* Authors editor */}
             <div className="edit-article-form__field">
-            <Label className="edit-article-form__label">Authors</Label>
+            <Label className="edit-article-form__label">Source Authors</Label>
 
             {/* existing authors as editable boxes */}
             <div className="edit-article-form__authors-list">

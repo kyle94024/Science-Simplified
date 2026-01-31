@@ -164,7 +164,7 @@ const ArticlePage = ({ params }) => {
                                             Original Paper Published:
                                         </h3>
                                         <p className="text-2xl font-bold text-gray-600">
-                                            {article.publication_date || 'N/A'}
+                                            {article.publication_date || 'N/A'}{article.source_publication ? `, ${article.source_publication}` : ''}
                                         </p>
                                     </div>
                                     <div className="flex">

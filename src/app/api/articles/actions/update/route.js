@@ -7,14 +7,14 @@ export async function POST(req) {
     const adminCheck = requireAdmin(req);
     if (adminCheck instanceof NextResponse) return adminCheck;
     
-    const { id, title, tags, innertext, summary, article_link, image_url, authors, publication_date } =
-        await req.json(); // Parse JSON body from the request
+    const { id, title, tags, innertext, summary, article_link, image_url, authors, publication_date, source_publication } =
+    await req.json();
 
     try {
         // Execute the update query, including image_url
         await query(
-            "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6, authors = $7, publication_date = $8 WHERE id = $9",
-            [title, tags, innertext, summary, article_link, image_url, authors, publication_date, id]
+            "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6, authors = $7, publication_date = $8, source_publication = $9 WHERE id = $10",
+            [title, tags, innertext, summary, article_link, image_url, authors, publication_date, source_publication || null, id]
         );
 
         return NextResponse.json({

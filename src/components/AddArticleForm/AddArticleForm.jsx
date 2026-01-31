@@ -62,6 +62,7 @@ const AddArticleForm = () => {
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
     const [publicationDate, setPublicationDate] = useState("");
+    const [sourcePublication, setSourcePublication] = useState("");
 
 
     const quillRef = useRef(null);
@@ -168,6 +169,7 @@ const AddArticleForm = () => {
                     userId: user.userId,
                     authors: authors,
                     publication_date: publicationDate,
+                    source_publication: sourcePublication,
                 }),
             });
 
@@ -395,7 +397,7 @@ const AddArticleForm = () => {
                         htmlFor="sourceLink"
                         className="add-article-form__label"
                     >
-                        Source Link (optional)
+                        Source Link
                     </Label>
                     <Input
                         id="sourceLink"
@@ -453,24 +455,39 @@ const AddArticleForm = () => {
                 </Select>
             </div>
 
-            {/* Publication Date field */}
-            <div className="add-article-form__field add-article-form__pub-date-field">
-                <Label htmlFor="pubDate" className="add-article-form__label">
-                    Publication Date
-                </Label>
-                <Input
-                id="pubDate"
-                type="text"
-                placeholder="e.g. 2025 April 12"
-                value={publicationDate}
-                onChange={e => setPublicationDate(e.target.value)}
-                className="add-article-form__input"
-                />
+            {/* Source Publication Date + Source Publication (side by side) */}
+            <div className="add-article-form__row">
+                <div className="add-article-form__field">
+                    <Label htmlFor="pubDate" className="add-article-form__label">
+                        Source Publication Date
+                    </Label>
+                    <Input
+                        id="pubDate"
+                        type="text"
+                        placeholder="e.g. 2025 April 12"
+                        value={publicationDate}
+                        onChange={e => setPublicationDate(e.target.value)}
+                        className="add-article-form__input"
+                    />
+                </div>
+                <div className="add-article-form__field">
+                    <Label htmlFor="sourcePublication" className="add-article-form__label">
+                        Source Publication
+                    </Label>
+                    <Input
+                        id="sourcePublication"
+                        type="text"
+                        placeholder="e.g. JAMA Dermatology"
+                        value={sourcePublication}
+                        onChange={e => setSourcePublication(e.target.value)}
+                        className="add-article-form__input"
+                    />
+                </div>
             </div>
 
             {/* Authors editor */}
             <div className="add-article-form__field">
-                <Label className="add-article-form__label">Authors</Label>
+                <Label className="add-article-form__label">Source Authors</Label>
 
                 {/* 3a. Editable boxes for each author */}
                 <div className="add-article-form__authors-list">
