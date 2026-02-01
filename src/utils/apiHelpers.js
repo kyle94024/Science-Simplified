@@ -84,7 +84,6 @@ Make your output simpler in language than the example provided.
                 model: "gpt-5-nano",   // Fast, lightweight model for article simplification
                 messages,
                 max_completion_tokens: 32768,
-                temperature: 0.7,
                 stream: true,
             },
             { responseType: "stream" }
