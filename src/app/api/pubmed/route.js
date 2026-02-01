@@ -12,6 +12,45 @@ const getText = (val) => {
     return "";
 };
 
+// Month name mapping
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthMap = {
+    "1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "May", "6": "Jun",
+    "7": "Jul", "8": "Aug", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
+    "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
+    "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
+    "january": "Jan", "february": "Feb", "march": "Mar", "april": "Apr",
+    "may": "May", "june": "Jun", "july": "Jul", "august": "Aug",
+    "september": "Sep", "october": "Oct", "november": "Nov", "december": "Dec",
+    "jan": "Jan", "feb": "Feb", "mar": "Mar", "apr": "Apr", "jun": "Jun",
+    "jul": "Jul", "aug": "Aug", "sep": "Sep", "oct": "Oct", "nov": "Nov", "dec": "Dec"
+};
+
+// Format date as "YYYY Mon DD" (e.g., "2025 Oct 22")
+const formatDate = (year, month, day) => {
+    const y = getText(year);
+    const m = getText(month);
+    const d = getText(day);
+
+    if (!y) return "";
+
+    // Convert month to 3-letter abbreviation
+    let monthStr = "";
+    if (m) {
+        const mLower = m.toLowerCase();
+        monthStr = monthMap[mLower] || m.slice(0, 3);
+        // Capitalize first letter
+        monthStr = monthStr.charAt(0).toUpperCase() + monthStr.slice(1).toLowerCase();
+    }
+
+    // Build date string: "YYYY Mon DD" or "YYYY Mon" or just "YYYY"
+    const parts = [y];
+    if (monthStr) parts.push(monthStr);
+    if (d) parts.push(d);
+
+    return parts.join(" ");
+};
+
 // Recursive function to collect text with headings
 const collectTextWithHeadings = (node, paragraphs = []) => {
     if (!node) return paragraphs;
@@ -114,20 +153,12 @@ export async function POST(req) {
 
             // Date
             const pubDate = article.Journal?.JournalIssue?.PubDate || {};
-            date = [
-                getText(pubDate.Year),
-                getText(pubDate.Month),
-                getText(pubDate.Day)
-            ].filter(Boolean).join(" ");
+            date = formatDate(pubDate.Year, pubDate.Month, pubDate.Day);
 
             // If no date from JournalIssue, try ArticleDate
             if (!date && article.ArticleDate) {
                 const artDate = Array.isArray(article.ArticleDate) ? article.ArticleDate[0] : article.ArticleDate;
-                date = [
-                    getText(artDate?.Year),
-                    getText(artDate?.Month),
-                    getText(artDate?.Day)
-                ].filter(Boolean).join(" ");
+                date = formatDate(artDate?.Year, artDate?.Month, artDate?.Day);
             }
 
             // Journal name
@@ -196,11 +227,11 @@ export async function POST(req) {
                     || pubDates[0];
 
                 if (preferredDate) {
-                    date = [
-                        getText(preferredDate.year) || getText(preferredDate.Year),
-                        getText(preferredDate.month) || getText(preferredDate.Month),
-                        getText(preferredDate.day) || getText(preferredDate.Day)
-                    ].filter(Boolean).join(" ");
+                    date = formatDate(
+                        preferredDate.year || preferredDate.Year,
+                        preferredDate.month || preferredDate.Month,
+                        preferredDate.day || preferredDate.Day
+                    );
                 }
             }
 
