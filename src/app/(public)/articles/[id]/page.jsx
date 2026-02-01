@@ -160,53 +160,45 @@ const ArticlePage = ({ params }) => {
                                     <h1 className="article-page__title heading-tertiary">
                                         {article.title}
                                     </h1>
-                                    <div className="flex">
-                                        <div className="article-page__meta hidden">
-                                            <h3 className="body-lg w-700">
-                                                Summary Prepared By:
-                                            </h3>
-                                            {article.photo && (
-                                                <div className="article-page__photo">
-                                                    <Image
-                                                        src={article.photo}
-                                                        alt={article.name}
-                                                        width={50}
-                                                        height={50}
-                                                        objectFit="cover"
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="article-page__meta__description">
-                                                <div className="flex items-center gap-[10px]">
-                                                    {article.name && (
-                                                        <p className="article-page__name">
-                                                            {article.name},
-                                                        </p>
-                                                    )}
-                                                    {article.degree && (
-                                                        <p className="article-page__degree">
-                                                            {article.degree}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                {article.university && (
-                                                    <p className="article-page__university">
-                                                        {article.university}
-                                                    </p>
-                                                )}
-                                                {article.additional_editors && article.additional_editors.length > 0 && (
-                                                    <div className="article-page__additional-editors mt-2">
-                                                        {article.additional_editors.map((editor, index) => (
-                                                            <p key={index} className="article-page__additional-editor">
-                                                                {editor}
-                                                            </p>
-                                                        ))}
+                                    <div className="mb-4">
+                                        <div className="flex">
+                                            <div className="article-page__meta hidden">
+                                                <h3 className="body-lg w-700">
+                                                    Summary Prepared By:
+                                                </h3>
+                                                {article.photo && (
+                                                    <div className="article-page__photo">
+                                                        <Image
+                                                            src={article.photo}
+                                                            alt={article.name}
+                                                            width={50}
+                                                            height={50}
+                                                            objectFit="cover"
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     </div>
                                                 )}
+                                                <div className="article-page__meta__description">
+                                                    <div className="flex items-center gap-[10px]">
+                                                        {article.name && (
+                                                            <p className="article-page__name">
+                                                                {article.name},
+                                                            </p>
+                                                        )}
+                                                        {article.degree && (
+                                                            <p className="article-page__degree">
+                                                                {article.degree}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    {article.university && (
+                                                        <p className="article-page__university">
+                                                            {article.university}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="md:ml-auto flex items-center space-x-2">
+                                            <div className="md:ml-auto flex items-center space-x-2">
                                             {user &&
                                                 (favoriting ? (
                                                     <Loader2 className="h-10 w-10 animate-spin" />
@@ -232,7 +224,17 @@ const ArticlePage = ({ params }) => {
                                                 {isFavorited ? "Saved to favorites" : "Save to favorites"}
                                             </span>
 
+                                            </div>
                                         </div>
+                                        {article.additional_editors && article.additional_editors.length > 0 && (
+                                            <div className="mt-2 ml-0">
+                                                {article.additional_editors.map((editor, index) => (
+                                                    <p key={index} className="text-gray-600 text-base">
+                                                        {editor}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="flex items-center justify-start w-full gap-2 mb-4">
                                         <h3 className="text-xl font-semibold text-gray-500 w-700">
