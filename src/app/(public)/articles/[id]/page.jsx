@@ -229,7 +229,7 @@ const ArticlePage = ({ params }) => {
                                         {article.additional_editors && article.additional_editors.length > 0 && (
                                             <div className="mt-2 ml-0">
                                                 {article.additional_editors.map((editor, index) => (
-                                                    <p key={index} className="text-gray-600 text-base">
+                                                    <p key={index} className="text-gray-600" style={{ fontSize: '1.44rem' }}>
                                                         {editor}
                                                     </p>
                                                 ))}

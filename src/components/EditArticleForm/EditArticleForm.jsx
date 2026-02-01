@@ -224,12 +224,13 @@ const EditArticleForm = ({
     const clearAdditionalEditors = () =>
         setAdditionalEditors([]);
 
+    // Additional editors use semicolon separator (to allow commas in names like "John Smith, MD")
     const handleNewAdditionalEditorChange = e => {
         const val = e.target.value;
-        if (val.includes(",")) {
+        if (val.includes(";")) {
             const bits = val
-                .split(",")
-                .map(cleanName)
+                .split(";")
+                .map(s => s.trim())
                 .filter(Boolean);
             setAdditionalEditors(old => [...old, ...bits]);
             setNewAdditionalEditor("");
@@ -240,7 +241,7 @@ const EditArticleForm = ({
 
     const addAdditionalEditors = () => {
         if (!newAdditionalEditor.trim()) return;
-        setAdditionalEditors(old => [...old, cleanName(newAdditionalEditor)]);
+        setAdditionalEditors(old => [...old, newAdditionalEditor.trim()]);
         setNewAdditionalEditor("");
     };
   
@@ -697,10 +698,10 @@ const handleExportToWord = async () => {
                 ))}
             </div>
 
-            {/* bottom row: paste/type, add & clear */}
+            {/* bottom row: paste/type, add & clear (use semicolon to separate multiple) */}
             <div className="edit-article-form__add-author">
                 <Input
-                    placeholder="Paste or type editor(s)…"
+                    placeholder="Type editor (use ; to separate multiple)…"
                     value={newAdditionalEditor}
                     onChange={handleNewAdditionalEditorChange}
                     onKeyDown={e => {
