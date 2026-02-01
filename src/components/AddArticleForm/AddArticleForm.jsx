@@ -270,6 +270,7 @@ const AddArticleForm = () => {
             setTitle(data.title || "");
             setAuthors(data.authors || []);
             setPublicationDate(data.publicationDate || "");
+            setSourcePublication(data.sourcePublication || "");
             setSourceLink(data.sourceLink || pubmedUrl);
             setContent(data.content || "");
 

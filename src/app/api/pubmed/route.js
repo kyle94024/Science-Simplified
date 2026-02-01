@@ -82,6 +82,7 @@ export async function POST(req) {
         let doi = null;
         let abstract = "";
         let content = "";
+        let journalName = "";
 
         if (db === "pubmed") {
             // PubMed XML
@@ -114,6 +115,9 @@ export async function POST(req) {
             // Date
             const pubDate = article.Journal?.JournalIssue?.PubDate || {};
             date = [pubDate.Year, pubDate.Month, pubDate.Day].filter(Boolean).join(" ");
+
+            // Journal name
+            journalName = getText(article.Journal?.Title) || getText(article.Journal?.ISOAbbreviation) || "";
 
             // DOI + check for PMC ID
             const ids =
@@ -187,6 +191,12 @@ export async function POST(req) {
                 doi = idsArray.find(i => i.$?.["pub-id-type"] === "doi")?._;
             }
 
+            // Journal name
+            const journalMeta = article?.front?.["journal-meta"];
+            journalName = getText(journalMeta?.["journal-title-group"]?.["journal-title"])
+                || getText(journalMeta?.["journal-title"])
+                || "";
+
             // Abstract
             const abs = meta?.abstract;
             if (abs) {
@@ -210,6 +220,7 @@ export async function POST(req) {
             title,
             authors,
             publicationDate: date,
+            sourcePublication: journalName,
             doi,
             sourceLink: doi ? `https://doi.org/${doi}` : url,
             content
