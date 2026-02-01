@@ -26,7 +26,7 @@ const exampleHtmlPath = path.join(
 export async function summarizeArticle(content) {
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4o", //GPT model
+            model: "gpt-5-nano", // Fast, lightweight model for simple summarization
             messages: [
                 {
                     role: "system",
@@ -81,11 +81,11 @@ Make your output simpler in language than the example provided.
             // Stream so you can handle very long outputs incrementally
             const stream = await openai.chat.completions.create(
             {
-                model: "gpt-4.1",      
+                model: "gpt-5-nano",   // Fast, lightweight model for article simplification
                 messages,
-                max_tokens: 32768,     // bump to the snapshot’s token limit
+                max_tokens: 32768,
                 temperature: 0.7,
-                stream: true,         // get a token stream
+                stream: true,
             },
             { responseType: "stream" }
             );
