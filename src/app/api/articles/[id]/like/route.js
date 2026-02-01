@@ -1,7 +1,7 @@
 export const revalidate = 0;
 
-const { query } = require("@/lib/db");
-const { NextResponse } = require("next/server");
+import { query } from "@/lib/db";
+import { NextResponse } from "next/server";
 
 // GET: Check if the article is liked by the user
 export async function GET(req, { params }) {

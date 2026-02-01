@@ -160,48 +160,6 @@ const ArticlePage = ({ params }) => {
                                     <h1 className="article-page__title heading-tertiary">
                                         {article.title}
                                     </h1>
-                                    <div className="flex items-center justify-start w-full gap-2 mb-4">
-                                        <h3 className="text-xl font-semibold text-gray-500 w-700">
-                                            Original Paper Published:
-                                        </h3>
-                                        <p className="text-2xl font-bold text-gray-600">
-                                            {article.publication_date || 'N/A'}{article.source_publication ? `, ${article.source_publication}` : ''}
-                                        </p>
-                                    </div>
-                                    {article.authors && article.authors.length > 0 && (
-                                        <div className="flex items-start justify-start w-full gap-2 mb-8">
-                                            <h3 className="text-xl font-semibold text-gray-500 w-700 whitespace-nowrap pt-1">
-                                                Original Paper Authors:
-                                            </h3>
-                                            <div className="flex-1">
-                                                {article.authors.length <= 3 ? (
-                                                    <p className="text-2xl font-bold text-gray-600">
-                                                        {article.authors.join(', ')}
-                                                    </p>
-                                                ) : (
-                                                    <div className="flex items-start gap-2">
-                                                        <div className="flex-1">
-                                                            <p className="text-2xl font-bold text-gray-600">
-                                                                {authorsExpanded
-                                                                    ? article.authors.join(', ')
-                                                                    : `${article.authors.slice(0, 3).join(', ')}...`
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => setAuthorsExpanded(!authorsExpanded)}
-                                                            className="p-1 hover:bg-gray-100 rounded transition-transform duration-200"
-                                                            aria-label={authorsExpanded ? "Collapse authors" : "Expand authors"}
-                                                        >
-                                                            <ChevronDown
-                                                                className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${authorsExpanded ? 'rotate-180' : ''}`}
-                                                            />
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
                                     <div className="flex">
                                         <div className="article-page__meta hidden">
                                             <h3 className="body-lg w-700">
@@ -273,9 +231,51 @@ const ArticlePage = ({ params }) => {
                                             <span className="text-gray-600 text-2xl whitespace-nowrap">
                                                 {isFavorited ? "Saved to favorites" : "Save to favorites"}
                                             </span>
-                                            
+
                                         </div>
                                     </div>
+                                    <div className="flex items-center justify-start w-full gap-2 mb-4">
+                                        <h3 className="text-xl font-semibold text-gray-500 w-700">
+                                            Original Paper Published:
+                                        </h3>
+                                        <p className="text-2xl font-bold text-gray-600">
+                                            {article.publication_date || 'N/A'}{article.source_publication ? `, ${article.source_publication}` : ''}
+                                        </p>
+                                    </div>
+                                    {article.authors && article.authors.length > 0 && (
+                                        <div className="flex items-start justify-start w-full gap-2 mb-8">
+                                            <h3 className="text-xl font-semibold text-gray-500 w-700 whitespace-nowrap pt-1">
+                                                Original Paper Authors:
+                                            </h3>
+                                            <div className="flex-1">
+                                                {article.authors.length <= 3 ? (
+                                                    <p className="text-2xl font-bold text-gray-600">
+                                                        {article.authors.join(', ')}
+                                                    </p>
+                                                ) : (
+                                                    <div className="flex items-start gap-2">
+                                                        <div className="flex-1">
+                                                            <p className="text-2xl font-bold text-gray-600">
+                                                                {authorsExpanded
+                                                                    ? article.authors.join(', ')
+                                                                    : `${article.authors.slice(0, 3).join(', ')}...`
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setAuthorsExpanded(!authorsExpanded)}
+                                                            className="p-1 hover:bg-gray-100 rounded transition-transform duration-200"
+                                                            aria-label={authorsExpanded ? "Collapse authors" : "Expand authors"}
+                                                        >
+                                                            <ChevronDown
+                                                                className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${authorsExpanded ? 'rotate-180' : ''}`}
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                     {article.image_url && (
                                     <div className="article-page__image-container">
                                         <Image
