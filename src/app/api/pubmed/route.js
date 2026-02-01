@@ -201,20 +201,38 @@ export async function POST(req) {
             const meta = article?.front?.["article-meta"];
             title = getText(meta?.["title-group"]?.["article-title"]);
 
-            // Authors
-            const contribs = meta?.["contrib-group"]?.contrib;
-            if (contribs) {
-                const contribArray = Array.isArray(contribs) ? contribs : [contribs];
-                authors = contribArray.map(c => {
-                    const name = c?.name || {};
-                    const parts = [
-                        getText(name.prefix),
-                        getText(name["given-names"]),
-                        getText(name.surname),
-                        getText(name.suffix)
-                    ].filter(Boolean);
-                    return parts.join(" ").replace(/\s+/g, " ").trim();
-                });
+            // Authors - contrib-group can be an array (authors, editors, etc.)
+            const contribGroups = meta?.["contrib-group"];
+            if (contribGroups) {
+                const groups = Array.isArray(contribGroups) ? contribGroups : [contribGroups];
+
+                // Collect all contributors from all groups
+                let allContribs = [];
+                for (const group of groups) {
+                    if (group?.contrib) {
+                        const contribs = Array.isArray(group.contrib) ? group.contrib : [group.contrib];
+                        allContribs.push(...contribs);
+                    }
+                }
+
+                // Filter for authors only (contrib-type="author") and extract names
+                authors = allContribs
+                    .filter(c => !c.$?.["contrib-type"] || c.$?.["contrib-type"] === "author")
+                    .map(c => {
+                        const name = c?.name || {};
+                        // Handle case where name might be a string-ref or collab
+                        if (c?.collab) {
+                            return getText(c.collab);
+                        }
+                        const parts = [
+                            getText(name.prefix),
+                            getText(name["given-names"]),
+                            getText(name.surname),
+                            getText(name.suffix)
+                        ].filter(Boolean);
+                        return parts.join(" ").replace(/\s+/g, " ").trim();
+                    })
+                    .filter(Boolean);
             }
 
             // Date - pub-date can be an array with multiple date types (epub, ppub, etc.)
