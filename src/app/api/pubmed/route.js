@@ -114,7 +114,21 @@ export async function POST(req) {
 
             // Date
             const pubDate = article.Journal?.JournalIssue?.PubDate || {};
-            date = [pubDate.Year, pubDate.Month, pubDate.Day].filter(Boolean).join(" ");
+            date = [
+                getText(pubDate.Year),
+                getText(pubDate.Month),
+                getText(pubDate.Day)
+            ].filter(Boolean).join(" ");
+
+            // If no date from JournalIssue, try ArticleDate
+            if (!date && article.ArticleDate) {
+                const artDate = Array.isArray(article.ArticleDate) ? article.ArticleDate[0] : article.ArticleDate;
+                date = [
+                    getText(artDate?.Year),
+                    getText(artDate?.Month),
+                    getText(artDate?.Day)
+                ].filter(Boolean).join(" ");
+            }
 
             // Journal name
             journalName = getText(article.Journal?.Title) || getText(article.Journal?.ISOAbbreviation) || "";
@@ -172,16 +186,22 @@ export async function POST(req) {
                 });
             }
 
-            // Date
-            const pubDate = meta?.["pub-date"];
-            if (pubDate) {
-                date = [
-                    getText(pubDate.Year || pubDate.year),
-                    getText(pubDate.Month || pubDate.month),
-                    getText(pubDate.Day || pubDate.day)
-                ]
-                    .filter(Boolean)
-                    .join(" ");
+            // Date - pub-date can be an array with multiple date types (epub, ppub, etc.)
+            const pubDateData = meta?.["pub-date"];
+            if (pubDateData) {
+                // Handle array of dates - prefer ppub (print), then epub (electronic), then first available
+                const pubDates = Array.isArray(pubDateData) ? pubDateData : [pubDateData];
+                const preferredDate = pubDates.find(d => d.$?.["pub-type"] === "ppub")
+                    || pubDates.find(d => d.$?.["pub-type"] === "epub")
+                    || pubDates[0];
+
+                if (preferredDate) {
+                    date = [
+                        getText(preferredDate.year) || getText(preferredDate.Year),
+                        getText(preferredDate.month) || getText(preferredDate.Month),
+                        getText(preferredDate.day) || getText(preferredDate.Day)
+                    ].filter(Boolean).join(" ");
+                }
             }
 
             // DOI
