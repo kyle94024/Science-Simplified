@@ -972,15 +972,15 @@ export const sites = {
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Turner Syndrome community.",
 
-      about_teamMember2Image: "expert-placeholder.png",
-      about_teamMember2Name: "Medical Outreach Lead",
+      about_teamMember2Image: "Selina.jpg",
+      about_teamMember2Name: "Selina Montoya",
       about_teamMember2Title: "Medical Outreach Lead",
-      about_teamMember2Bio: "Placeholder Bio",
+      about_teamMember2Bio: "Selina is a third-year medical student at the University of New Mexico School of Medicine with a strong interest in women's health. She aspires to pursue a residency in either Obstetrics and Gynecology or Family Medicine, where she can provide comprehensive, compassionate care to women across all stages of life. In her free time, she enjoys watching movies and exploring the beautiful hiking trails around Albuquerque.",
 
       about_teamMember3Image: "prakash.png",
-      about_teamMember3Name: "Dr. Prakash",
+      about_teamMember3Name: "Dr. Siddharth K. Prakash",
       about_teamMember3Title: "Faculty Advisor",
-      about_teamMember3Bio: "Faculty Advisor Bio",
+      about_teamMember3Bio: "Dr. Siddharth K. Prakash is a board-certified cardiologist and professor at McGovern Medical School at UTHealth Houston. He co-directs the Turner Syndrome Adult Comprehensive Care Center and leads the national Turner Syndrome Research Registry. He serves as chair of the Scientific Advisory Board of the Turner Syndrome Society of the United States, specializing in cardiovascular care for individuals with Turner Syndrome.",
 
       about_supporter1Logo: "tsf-logo.png",
       about_supporter1Name: "Turner Syndrome Foundation",
