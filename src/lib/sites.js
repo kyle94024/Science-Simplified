@@ -928,6 +928,84 @@ export const sites = {
       
     },
 
+    TURNERS: {
+      name: "Turner Syndrome Simplified",
+      shortName: "TS",
+      pathName: "Turners",
+      fullName: "Turner Syndrome Simplified",
+      disease: "Turner Syndrome",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+      domain: "https://ssts.vercel.app",
+
+      theme: { // Theme - Purple butterfly theme
+        primary: "#7B2D8E",          // deep purple (Turner Syndrome awareness color)
+        primaryDark: "#5A1F6A",      // darker purple
+        lightGrey: "#f5f5f5",
+        text: "#2D1F3D",
+        background: "#faf8fc",
+        contactUsColor: "#9B59B6",   // medium purple
+        authorTextColor: "#7B2D8E",  // deep purple
+        footerBGColor: "#f3e8f7",    // light purple tint
+      },
+      // Images (Home)
+      homeBG: "Turners_homeBG.png", //home/homeBG - butterfly imagery
+      homeExploreAllBG: "Turners_ExploreAllBG.png", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "Turners_logoWithText.png", //logoWithText
+      articleThumbnailPlaceholder: "Turners_articlePlaceholder.png", //articleThumbnailPlaceholder
+      contactUsBGLeft: "Turners_contactUsBG.png", //contactUsBGLeft
+      contactUsBGRight: "Turners_contactUsBG.png", //contactUsBGRight
+
+
+      loginBGTop: "Turners_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "Turners_loginBGBottom.webp", //loginBGBottom
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Turner Syndrome articles certified by experts.",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Turner Syndrome articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Turner Syndrome to patients, families, and caregivers. We aim to empower those affected by Turner Syndrome with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Turner Syndrome community.",
+
+      about_teamMember2Image: "expert-placeholder.png",
+      about_teamMember2Name: "Medical Outreach Lead",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Placeholder Bio",
+
+      about_teamMember3Image: "prakash.png",
+      about_teamMember3Name: "Dr. Prakash",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Faculty Advisor Bio",
+
+      about_supporter1Logo: "tsf-logo.png",
+      about_supporter1Name: "Turner Syndrome Foundation",
+      about_supporter1Width: 300,
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://turnersyndromefoundation.org/",
+
+      about_supporter2Logo: "tsf-logo.png",
+      about_supporter2Name: "Turner Syndrome Foundation",
+      about_supporter2Width: 300,
+      about_supporter2Height: 200,
+      about_supporter2Link: "https://turnersyndromefoundation.org/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "Turner Syndrome Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Turner Syndrome.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Turner Syndrome research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Turner Syndrome community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Turner Syndrome community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Turner Syndrome with the community.",
+      about_getInvolvedDescription: "Turner Syndrome Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Turner Syndrome community",
+
+      about_our_mission: "our-mission.jpg",
+
+    },
+
     HS: {
       name: "HS Simplified",
       shortName: "HS",

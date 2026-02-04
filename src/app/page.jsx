@@ -50,7 +50,8 @@ export default function Home() {
                     tenant.shortName === "RYR1" ||
                     tenant.shortName === "ALS" ||
                     tenant.shortName === "Asherman's" ||
-                    tenant.shortName === "Aicardi"
+                    tenant.shortName === "Aicardi" ||
+                    tenant.shortName === "TS"
                         ? "background-alt"
                         : ""
                 }`}
