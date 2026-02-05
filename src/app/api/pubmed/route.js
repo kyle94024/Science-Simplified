@@ -85,6 +85,127 @@ const extractParagraphText = (node) => {
     return "";
 };
 
+// Extract figure label and caption
+const extractFigureCaption = (figNode) => {
+    if (!figNode) return null;
+    const label = extractParagraphText(figNode.label).trim();
+    const caption = figNode.caption;
+
+    let captionText = "";
+    if (caption) {
+        const titleText = caption.title ? extractParagraphText(caption.title).trim() : "";
+        const pText = caption.p ? extractParagraphText(caption.p).trim() : "";
+        captionText = [titleText, pText].filter(Boolean).join(": ");
+    }
+
+    if (!label && !captionText) return null;
+    return label ? `**${label}:** ${captionText}` : `**[Figure]:** ${captionText}`;
+};
+
+// Extract table label and caption (skip actual table data)
+const extractTableCaption = (tableWrapNode) => {
+    if (!tableWrapNode) return null;
+    const label = extractParagraphText(tableWrapNode.label).trim();
+    const caption = tableWrapNode.caption;
+
+    let captionText = "";
+    if (caption) {
+        const titleText = caption.title ? extractParagraphText(caption.title).trim() : "";
+        const pText = caption.p ? extractParagraphText(caption.p).trim() : "";
+        captionText = [titleText, pText].filter(Boolean).join(": ");
+    }
+
+    if (!label && !captionText) return null;
+    return label ? `**${label}:** ${captionText}` : `**[Table]:** ${captionText}`;
+};
+
+// Extract boxed text (key points, summaries)
+const extractBoxedText = (boxedNode) => {
+    if (!boxedNode) return null;
+    const parts = [];
+
+    if (boxedNode.title) {
+        const titleText = extractParagraphText(boxedNode.title).trim();
+        if (titleText) parts.push(`**${titleText}**`);
+    }
+
+    if (boxedNode.p) {
+        const ps = Array.isArray(boxedNode.p) ? boxedNode.p : [boxedNode.p];
+        ps.forEach(p => {
+            const text = extractParagraphText(p).trim();
+            if (text) parts.push(text);
+        });
+    }
+
+    if (boxedNode.list) {
+        const lists = Array.isArray(boxedNode.list) ? boxedNode.list : [boxedNode.list];
+        lists.forEach(list => {
+            if (list["list-item"]) {
+                const items = Array.isArray(list["list-item"]) ? list["list-item"] : [list["list-item"]];
+                items.forEach(item => {
+                    const text = extractParagraphText(item).trim();
+                    if (text) parts.push(`  * ${text}`);
+                });
+            }
+        });
+    }
+
+    if (parts.length === 0) return null;
+    return `---\n${parts.join("\n")}\n---`;
+};
+
+// Extract definition list (term/definition pairs)
+const extractDefinitionList = (defListNode) => {
+    if (!defListNode) return [];
+    const items = [];
+
+    const defItems = defListNode["def-item"];
+    if (!defItems) return [];
+
+    const itemsArray = Array.isArray(defItems) ? defItems : [defItems];
+    itemsArray.forEach(item => {
+        const term = extractParagraphText(item.term).trim();
+        const def = extractParagraphText(item.def).trim();
+        if (term || def) {
+            items.push(`**${term || "Term"}:** ${def}`);
+        }
+    });
+
+    return items;
+};
+
+// Extract block quotes
+const extractBlockQuote = (quoteNode) => {
+    if (!quoteNode) return null;
+    const text = extractParagraphText(quoteNode).trim();
+    if (!text) return null;
+    return text.split('\n').map(line => `> ${line}`).join('\n');
+};
+
+// Extract statements (theorems, principles, etc.)
+const extractStatement = (statementNode) => {
+    if (!statementNode) return null;
+    const parts = [];
+
+    const label = extractParagraphText(statementNode.label).trim();
+    if (label) parts.push(`**${label}:**`);
+
+    if (statementNode.title) {
+        const titleText = extractParagraphText(statementNode.title).trim();
+        if (titleText) parts.push(`**${titleText}**`);
+    }
+
+    if (statementNode.p) {
+        const ps = Array.isArray(statementNode.p) ? statementNode.p : [statementNode.p];
+        ps.forEach(p => {
+            const text = extractParagraphText(p).trim();
+            if (text) parts.push(text);
+        });
+    }
+
+    return parts.length > 0 ? parts.join(" ") : null;
+};
+
 // Recursive function to collect text with headings from PMC body
 const collectTextWithHeadings = (node, paragraphs = []) => {
     if (!node) return paragraphs;
@@ -105,6 +226,14 @@ const collectTextWithHeadings = (node, paragraphs = []) => {
         if (node.title) {
             const titleText = extractParagraphText(node.title).trim();
             if (titleText) paragraphs.push(`\n\n## ${titleText}\n`);
+        }
+
+        // Label (for named sections without title)
+        if (node.label && !node.title && !node.fig && !node["table-wrap"]) {
+            const labelText = extractParagraphText(node.label).trim();
+            if (labelText) {
+                paragraphs.push(`\n\n## ${labelText}\n`);
+            }
         }
 
         // Paragraphs - extract all text content
@@ -130,6 +259,90 @@ const collectTextWithHeadings = (node, paragraphs = []) => {
             });
         }
 
+        // Definition lists
+        if (node["def-list"]) {
+            const defLists = Array.isArray(node["def-list"]) ? node["def-list"] : [node["def-list"]];
+            defLists.forEach(defList => {
+                const items = extractDefinitionList(defList);
+                paragraphs.push(...items);
+            });
+        }
+
+        // Figures (caption only)
+        if (node.fig) {
+            const figs = Array.isArray(node.fig) ? node.fig : [node.fig];
+            figs.forEach(fig => {
+                const caption = extractFigureCaption(fig);
+                if (caption) paragraphs.push(caption);
+            });
+        }
+
+        // Tables (caption only - skip table data)
+        if (node["table-wrap"]) {
+            const tables = Array.isArray(node["table-wrap"]) ? node["table-wrap"] : [node["table-wrap"]];
+            tables.forEach(table => {
+                const caption = extractTableCaption(table);
+                if (caption) paragraphs.push(caption);
+            });
+        }
+
+        // Boxed text (key points, summaries)
+        if (node["boxed-text"]) {
+            const boxes = Array.isArray(node["boxed-text"]) ? node["boxed-text"] : [node["boxed-text"]];
+            boxes.forEach(box => {
+                const content = extractBoxedText(box);
+                if (content) paragraphs.push(content);
+            });
+        }
+
+        // Block quotes
+        if (node["disp-quote"]) {
+            const quotes = Array.isArray(node["disp-quote"]) ? node["disp-quote"] : [node["disp-quote"]];
+            quotes.forEach(quote => {
+                const content = extractBlockQuote(quote);
+                if (content) paragraphs.push(content);
+            });
+        }
+
+        // Statements (theorems, principles)
+        if (node.statement) {
+            const statements = Array.isArray(node.statement) ? node.statement : [node.statement];
+            statements.forEach(stmt => {
+                const content = extractStatement(stmt);
+                if (content) paragraphs.push(content);
+            });
+        }
+
+        // Display formulas (equations)
+        if (node["disp-formula"]) {
+            const formulas = Array.isArray(node["disp-formula"]) ? node["disp-formula"] : [node["disp-formula"]];
+            formulas.forEach(formula => {
+                const text = extractParagraphText(formula).trim();
+                if (text) paragraphs.push(`[Equation: ${text}]`);
+            });
+        }
+
+        // Supplementary material references
+        if (node["supplementary-material"]) {
+            const supps = Array.isArray(node["supplementary-material"]) ? node["supplementary-material"] : [node["supplementary-material"]];
+            supps.forEach(supp => {
+                const label = extractParagraphText(supp.label).trim();
+                const caption = supp.caption ? extractParagraphText(supp.caption).trim() : "";
+                if (label || caption) {
+                    paragraphs.push(`[Supplementary Material: ${[label, caption].filter(Boolean).join(" - ")}]`);
+                }
+            });
+        }
+
+        // Verse groups (rare in scientific articles)
+        if (node["verse-group"]) {
+            const verses = Array.isArray(node["verse-group"]) ? node["verse-group"] : [node["verse-group"]];
+            verses.forEach(verse => {
+                const text = extractParagraphText(verse).trim();
+                if (text) paragraphs.push(`> ${text}`);
+            });
+        }
+
         // Recurse into nested sections
         if (node.sec) {
             const secs = Array.isArray(node.sec) ? node.sec : [node.sec];
@@ -140,6 +353,63 @@ const collectTextWithHeadings = (node, paragraphs = []) => {
         if (node.body) {
             collectTextWithHeadings(node.body, paragraphs);
         }
+    }
+
+    return paragraphs;
+};
+
+// Extract back matter content (acknowledgments, appendices, glossary)
+const extractBackMatter = (backNode, paragraphs = []) => {
+    if (!backNode) return paragraphs;
+
+    // Acknowledgments
+    if (backNode.ack) {
+        const acks = Array.isArray(backNode.ack) ? backNode.ack : [backNode.ack];
+        acks.forEach(ack => {
+            paragraphs.push(`\n\n## Acknowledgments\n`);
+            if (ack.title) {
+                const titleText = extractParagraphText(ack.title).trim();
+                if (titleText && titleText.toLowerCase() !== "acknowledgments" && titleText.toLowerCase() !== "acknowledgements") {
+                    paragraphs.push(`**${titleText}**`);
+                }
+            }
+            if (ack.p) {
+                const ps = Array.isArray(ack.p) ? ack.p : [ack.p];
+                ps.forEach(p => {
+                    const text = extractParagraphText(p).trim();
+                    if (text) paragraphs.push(text);
+                });
+            }
+            if (ack.sec) {
+                collectTextWithHeadings(ack.sec, paragraphs);
+            }
+        });
+    }
+
+    // Appendices
+    const appGroup = backNode["app-group"];
+    const apps = appGroup?.app || backNode.app;
+    if (apps) {
+        const appArray = Array.isArray(apps) ? apps : [apps];
+        appArray.forEach(app => {
+            const label = extractParagraphText(app.label).trim();
+            const title = app.title ? extractParagraphText(app.title).trim() : "";
+            const heading = [label, title].filter(Boolean).join(": ") || "Appendix";
+            paragraphs.push(`\n\n## ${heading}\n`);
+            collectTextWithHeadings(app, paragraphs);
+        });
+    }
+
+    // Glossary
+    if (backNode.glossary) {
+        const glossaries = Array.isArray(backNode.glossary) ? backNode.glossary : [backNode.glossary];
+        glossaries.forEach(glossary => {
+            paragraphs.push(`\n\n## Glossary\n`);
+            if (glossary["def-list"]) {
+                const items = extractDefinitionList(glossary["def-list"]);
+                paragraphs.push(...items);
+            }
+        });
     }
 
     return paragraphs;
@@ -253,6 +523,10 @@ export async function POST(req) {
                     const pmcArticle = pmcParsed?.["pmc-articleset"]?.article;
                     if (pmcArticle?.body) {
                         const bodyParagraphs = collectTextWithHeadings(pmcArticle.body, []);
+                        // Include back matter (acknowledgments, appendices)
+                        if (pmcArticle?.back) {
+                            extractBackMatter(pmcArticle.back, bodyParagraphs);
+                        }
                         content = [abstract, bodyParagraphs.join("\n\n")].filter(Boolean).join("\n\n");
                     }
                 }
@@ -359,6 +633,10 @@ export async function POST(req) {
             const body = article?.body;
             if (body) {
                 const bodyParagraphs = collectTextWithHeadings(body, []);
+                // Include back matter (acknowledgments, appendices)
+                if (article?.back) {
+                    extractBackMatter(article.back, bodyParagraphs);
+                }
                 content = [abstract, bodyParagraphs.join("\n\n")].filter(Boolean).join("\n\n");
             } else {
                 content = abstract;
