@@ -8,7 +8,19 @@ export const runtime = "nodejs";
 const getText = (val) => {
     if (!val) return "";
     if (typeof val === "string") return val;
-    if (typeof val === "object" && val._) return val._;
+    if (typeof val === "number") return String(val);
+    if (Array.isArray(val)) return val.map(getText).join("");
+    if (typeof val === "object") {
+        // Handle object with _ (text content with attributes)
+        if (val._) return val._;
+        // Handle #text property
+        if (val["#text"]) return val["#text"];
+        // Recursively extract text from all child properties (except $ which is attributes)
+        return Object.entries(val)
+            .filter(([key]) => key !== "$")
+            .map(([, v]) => getText(v))
+            .join("");
+    }
     return "";
 };
 
@@ -62,18 +74,21 @@ const collectTextWithHeadings = (node, paragraphs = []) => {
     } else if (typeof node === "object") {
         // Section title
         if (node.title) {
-            paragraphs.push(`\n\n## ${getText(node.title)}\n`);
+            const titleText = getText(node.title);
+            if (titleText.trim()) paragraphs.push(`\n\n## ${titleText.trim()}\n`);
         }
         // Paragraphs
         if (node.p) {
             const ps = Array.isArray(node.p) ? node.p : [node.p];
             ps.forEach(p => {
-                const text = typeof p === "string" ? p : getText(p) || getText(p?.["#text"]);
+                const text = getText(p);
                 if (text.trim()) paragraphs.push(text.trim());
             });
         }
         // Recurse into nested sections
         if (node.sec) collectTextWithHeadings(node.sec, paragraphs);
+        // Also check for other content containers
+        if (node.body) collectTextWithHeadings(node.body, paragraphs);
     }
 
     return paragraphs;
