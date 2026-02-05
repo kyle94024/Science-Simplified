@@ -63,32 +63,83 @@ const formatDate = (year, month, day) => {
     return parts.join(" ");
 };
 
-// Recursive function to collect text with headings
+// Extract plain text from a paragraph node (handles nested inline elements)
+const extractParagraphText = (node) => {
+    if (!node) return "";
+    if (typeof node === "string") return node;
+    if (typeof node === "number") return String(node);
+    if (Array.isArray(node)) return node.map(extractParagraphText).join("");
+    if (typeof node === "object") {
+        // Get text content (with attributes)
+        if (node._) return node._;
+        // Skip xref (citations like [1], [2]) to keep text cleaner
+        if (node.$ && node.$["ref-type"]) return "";
+        // Recursively extract from children
+        const parts = [];
+        for (const [key, val] of Object.entries(node)) {
+            if (key === "$") continue; // skip attributes
+            parts.push(extractParagraphText(val));
+        }
+        return parts.join("");
+    }
+    return "";
+};
+
+// Recursive function to collect text with headings from PMC body
 const collectTextWithHeadings = (node, paragraphs = []) => {
     if (!node) return paragraphs;
 
     if (typeof node === "string") {
-        if (node.trim()) paragraphs.push(node.trim());
-    } else if (Array.isArray(node)) {
+        const trimmed = node.trim();
+        if (trimmed) paragraphs.push(trimmed);
+        return paragraphs;
+    }
+
+    if (Array.isArray(node)) {
         node.forEach(n => collectTextWithHeadings(n, paragraphs));
-    } else if (typeof node === "object") {
+        return paragraphs;
+    }
+
+    if (typeof node === "object") {
         // Section title
         if (node.title) {
-            const titleText = getText(node.title);
-            if (titleText.trim()) paragraphs.push(`\n\n## ${titleText.trim()}\n`);
+            const titleText = extractParagraphText(node.title).trim();
+            if (titleText) paragraphs.push(`\n\n## ${titleText}\n`);
         }
-        // Paragraphs
+
+        // Paragraphs - extract all text content
         if (node.p) {
             const ps = Array.isArray(node.p) ? node.p : [node.p];
             ps.forEach(p => {
-                const text = getText(p);
-                if (text.trim()) paragraphs.push(text.trim());
+                const text = extractParagraphText(p).trim();
+                if (text) paragraphs.push(text);
             });
         }
+
+        // Handle list items
+        if (node.list) {
+            const lists = Array.isArray(node.list) ? node.list : [node.list];
+            lists.forEach(list => {
+                if (list["list-item"]) {
+                    const items = Array.isArray(list["list-item"]) ? list["list-item"] : [list["list-item"]];
+                    items.forEach(item => {
+                        const text = extractParagraphText(item).trim();
+                        if (text) paragraphs.push(`• ${text}`);
+                    });
+                }
+            });
+        }
+
         // Recurse into nested sections
-        if (node.sec) collectTextWithHeadings(node.sec, paragraphs);
-        // Also check for other content containers
-        if (node.body) collectTextWithHeadings(node.body, paragraphs);
+        if (node.sec) {
+            const secs = Array.isArray(node.sec) ? node.sec : [node.sec];
+            secs.forEach(sec => collectTextWithHeadings(sec, paragraphs));
+        }
+
+        // Handle body element
+        if (node.body) {
+            collectTextWithHeadings(node.body, paragraphs);
+        }
     }
 
     return paragraphs;
@@ -285,9 +336,23 @@ export async function POST(req) {
             const abs = meta?.abstract;
             if (abs) {
                 const absData = Array.isArray(abs) ? abs : [abs];
-                abstract = absData
-                    .map(a => (typeof a === "string" ? a : getText(a?.["#text"] || a)))
-                    .join("\n\n");
+                const abstractParts = [];
+                absData.forEach(a => {
+                    // Abstract might have nested sec/p structure or direct text
+                    if (a?.sec) {
+                        collectTextWithHeadings(a.sec, abstractParts);
+                    } else if (a?.p) {
+                        const ps = Array.isArray(a.p) ? a.p : [a.p];
+                        ps.forEach(p => {
+                            const text = extractParagraphText(p).trim();
+                            if (text) abstractParts.push(text);
+                        });
+                    } else {
+                        const text = extractParagraphText(a).trim();
+                        if (text) abstractParts.push(text);
+                    }
+                });
+                abstract = abstractParts.join("\n\n");
             }
 
             // Full content (abstract + body with headings)
