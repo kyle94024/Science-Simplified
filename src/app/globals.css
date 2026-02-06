@@ -272,6 +272,21 @@ body {
     color: #fff;
 }
 
+.btn-secondary {
+    background: #6b7280;
+    color: #fff;
+    border: 1px solid #6b7280;
+    cursor: pointer;
+}
+.btn-secondary:hover {
+    background: #4b5563;
+    border-color: #4b5563;
+}
+.btn-secondary:active {
+    background: #374151;
+    transform: scale(0.98);
+}
+
 .btn-outlined {
     border: 1px solid #000;
 }
@@ -627,6 +642,21 @@ body {
 .btn-primary-red {
     background: #ff0000;
     color: #fff;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: #fff;
+    border: 1px solid #6b7280;
+    cursor: pointer;
+}
+.btn-secondary:hover {
+    background: #4b5563;
+    border-color: #4b5563;
+}
+.btn-secondary:active {
+    background: #374151;
+    transform: scale(0.98);
 }
 
 .btn-outlined {

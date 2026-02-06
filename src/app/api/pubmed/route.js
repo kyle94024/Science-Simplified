@@ -458,6 +458,7 @@ export async function POST(req) {
         let abstract = "";
         let content = "";
         let journalName = "";
+        let fullTextAvailable = false;
 
         if (db === "pubmed") {
             // PubMed XML
@@ -514,7 +515,6 @@ export async function POST(req) {
 
             // If PubMed has a linked PMC ID, fetch full text
             if (pmcId) {
-                console.log("[PUBMED DEBUG] Found linked PMC ID:", pmcId);
                 const pmcResponse = await fetch(
                     `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=${pmcId}&retmode=xml`
                 );
@@ -522,37 +522,26 @@ export async function POST(req) {
                     const pmcXml = await pmcResponse.text();
                     const pmcParsed = await xml2js.parseStringPromise(pmcXml, { explicitArray: false });
                     const pmcArticle = pmcParsed?.["pmc-articleset"]?.article;
-                    console.log("[PUBMED DEBUG] PMC article found:", !!pmcArticle);
-                    console.log("[PUBMED DEBUG] PMC body found:", !!pmcArticle?.body);
                     if (pmcArticle?.body) {
+                        fullTextAvailable = true;
                         const bodyParagraphs = collectTextWithHeadings(pmcArticle.body, []);
-                        console.log("[PUBMED DEBUG] Extracted paragraphs:", bodyParagraphs.length);
                         // Include back matter (acknowledgments, appendices)
                         if (pmcArticle?.back) {
                             extractBackMatter(pmcArticle.back, bodyParagraphs);
                         }
                         content = [abstract, bodyParagraphs.join("\n\n")].filter(Boolean).join("\n\n");
-                        console.log("[PUBMED DEBUG] Final content length:", content.length);
                     }
-                } else {
-                    console.log("[PUBMED DEBUG] PMC fetch failed:", pmcResponse.status);
                 }
-            } else {
-                console.log("[PUBMED DEBUG] No PMC ID found, using abstract only");
             }
         } else if (db === "pmc") {
             // PMC XML
-            console.log("[PMC DEBUG] Parsing PMC article...");
             const article = parsed?.["pmc-articleset"]?.article;
             if (!article) {
-                console.log("[PMC DEBUG] Article not found in parsed XML");
                 return NextResponse.json({ error: "Article not found" }, { status: 404 });
             }
-            console.log("[PMC DEBUG] Article found, keys:", Object.keys(article));
 
             const meta = article?.front?.["article-meta"];
             title = getText(meta?.["title-group"]?.["article-title"]);
-            console.log("[PMC DEBUG] Title:", title?.slice(0, 50));
 
             // Authors - contrib-group can be an array (authors, editors, etc.)
             const contribGroups = meta?.["contrib-group"];
@@ -644,20 +633,15 @@ export async function POST(req) {
 
             // Full content (abstract + body with headings)
             const body = article?.body;
-            console.log("[PMC DEBUG] Has body:", !!body);
             if (body) {
-                console.log("[PMC DEBUG] Body keys:", Object.keys(body));
+                fullTextAvailable = true;
                 const bodyParagraphs = collectTextWithHeadings(body, []);
-                console.log("[PMC DEBUG] Extracted paragraphs count:", bodyParagraphs.length);
-                console.log("[PMC DEBUG] First 3 paragraphs:", bodyParagraphs.slice(0, 3).map(p => p.slice(0, 50)));
                 // Include back matter (acknowledgments, appendices)
                 if (article?.back) {
                     extractBackMatter(article.back, bodyParagraphs);
                 }
                 content = [abstract, bodyParagraphs.join("\n\n")].filter(Boolean).join("\n\n");
-                console.log("[PMC DEBUG] Final content length:", content.length);
             } else {
-                console.log("[PMC DEBUG] No body found, using abstract only");
                 content = abstract;
             }
         }
@@ -669,7 +653,8 @@ export async function POST(req) {
             sourcePublication: journalName,
             doi,
             sourceLink: doi ? `https://doi.org/${doi}` : url,
-            content
+            content,
+            fullTextAvailable
         });
     } catch (err) {
         console.error("PubMed fetch error:", err);

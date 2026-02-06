@@ -274,7 +274,13 @@ const AddArticleForm = () => {
             setSourceLink(data.sourceLink || pubmedUrl);
             setContent(data.content || "");
 
-            toast.success("Article information fetched!");
+            if (data.fullTextAvailable) {
+                toast.success("Article information fetched!");
+            } else {
+                toast.warning("This article doesn't support full text extraction. Please use PDF upload instead.", {
+                    autoClose: 6000
+                });
+            }
         } catch (err) {
             toast.error("Error: " + err.message);
         } finally {
