@@ -26,7 +26,7 @@ export default function StatsCard({
                 <span className="stats-card-label">{label}</span>
                 {Icon && (
                     <div className="text-gray-400">
-                        {typeof Icon === "function" ? <Icon size={20} /> : Icon}
+                        <Icon size={20} />
                     </div>
                 )}
             </div>
