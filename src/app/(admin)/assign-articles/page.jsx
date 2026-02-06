@@ -1,11 +1,9 @@
 "use client";
-import "./AssignArticlesPage.scss";
 
 import { withAuth } from "@/components/withAuth/withAuth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Popover,
     PopoverContent,
@@ -13,18 +11,23 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import Navbar from "@/components/Navbar/Navbar";
 import Image from "next/image";
-import { Loader2, Edit } from "lucide-react";
+import { Loader2, Edit, Users, FileText, CheckCircle } from "lucide-react";
+import { PageHeader, SearchInput, EmptyState, ConfirmDialog } from "@/components/admin";
 
-const FallbackAuthorImage = ({ authorName }) => {
+const FallbackAuthorImage = ({ authorName, size = "md" }) => {
     const firstLetter = authorName ? authorName.charAt(0).toUpperCase() : "A";
+    const sizeClasses = {
+        sm: "w-8 h-8 text-[1.2rem]",
+        md: "w-12 h-12 text-[1.6rem]",
+        lg: "w-16 h-16 text-[2rem]",
+    };
+
     return (
-        <div className="assign-articles__author-image-fallback">
-            <p className="assign-articles__author-image-initial">
-                {firstLetter}
-            </p>
+        <div
+            className={`${sizeClasses[size]} flex items-center justify-center bg-[#4cb19f] rounded-full flex-shrink-0`}
+        >
+            <span className="text-white font-medium">{firstLetter}</span>
         </div>
     );
 };
@@ -33,30 +36,28 @@ const EditorTag = ({ editor, articleId, onUnassign }) => {
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <div className="assign-articles__editor-tag">
-                    <Edit size={14} />
+                <button className="inline-flex items-center gap-1.5 bg-[#4cb19f] text-white px-3 py-1.5 rounded-full text-[1.3rem] font-medium hover:bg-[#3d9485] transition-colors">
+                    <Edit size={12} />
                     <span>{editor.name}</span>
-                </div>
+                </button>
             </PopoverTrigger>
-            <PopoverContent className="assign-articles__editor-popover">
-                <div className="assign-articles__editor-details">
-                    <div className="assign-articles__editor-header">
-                        <FallbackAuthorImage authorName={editor.name} />
+            <PopoverContent className="w-72 p-4">
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                        <FallbackAuthorImage authorName={editor.name} size="md" />
                         <div>
-                            <h3 className="assign-articles__editor-name">
+                            <h4 className="text-[1.5rem] font-semibold text-gray-900">
                                 {editor.name}
-                            </h3>
-                            <p className="assign-articles__editor-email">
-                                {editor.email}
-                            </p>
+                            </h4>
+                            <p className="text-[1.3rem] text-gray-500">{editor.email}</p>
                         </div>
                     </div>
                     <Button
                         onClick={() => onUnassign(editor.id, articleId)}
                         variant="destructive"
-                        className="assign-articles__unassign-button"
+                        className="w-full text-[1.4rem]"
                     >
-                        Unassign
+                        Unassign Editor
                     </Button>
                 </div>
             </PopoverContent>
@@ -72,6 +73,9 @@ const AssignArticles = () => {
     const [loadingArticles, setLoadingArticles] = useState(true);
     const [loadingEditors, setLoadingEditors] = useState(true);
     const [assigningArticles, setAssigningArticles] = useState(false);
+    const [articleSearch, setArticleSearch] = useState("");
+    const [editorSearch, setEditorSearch] = useState("");
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     useEffect(() => {
         fetchPendingArticles();
@@ -81,9 +85,7 @@ const AssignArticles = () => {
     const fetchPendingArticles = async () => {
         setLoadingArticles(true);
         try {
-            const response = await fetch(
-                "/api/articles/pending-with-assignments"
-            );
+            const response = await fetch("/api/articles/pending-with-assignments");
             if (!response.ok) throw new Error("Failed to fetch articles");
             const data = await response.json();
             setPendingArticles(data);
@@ -108,6 +110,25 @@ const AssignArticles = () => {
         }
     };
 
+    // Filtered lists
+    const filteredArticles = useMemo(() => {
+        if (!articleSearch) return pendingArticles;
+        const query = articleSearch.toLowerCase();
+        return pendingArticles.filter((article) =>
+            article.title?.toLowerCase().includes(query)
+        );
+    }, [pendingArticles, articleSearch]);
+
+    const filteredEditors = useMemo(() => {
+        if (!editorSearch) return editors;
+        const query = editorSearch.toLowerCase();
+        return editors.filter(
+            (editor) =>
+                editor.name?.toLowerCase().includes(query) ||
+                editor.email?.toLowerCase().includes(query)
+        );
+    }, [editors, editorSearch]);
+
     const handleArticleSelection = (articleId) => {
         setSelectedArticles((prev) =>
             prev.includes(articleId)
@@ -124,19 +145,20 @@ const AssignArticles = () => {
         );
     };
 
-    const handleAssignment = async () => {
-        if (selectedArticles.length === 0 || selectedEditors.length === 0) {
-            toast.error("Please select at least one article and one editor");
-            return;
+    const handleSelectAllArticles = () => {
+        if (selectedArticles.length === filteredArticles.length) {
+            setSelectedArticles([]);
+        } else {
+            setSelectedArticles(filteredArticles.map((a) => a.id));
         }
+    };
 
+    const handleAssignment = async () => {
         try {
             setAssigningArticles(true);
             const response = await fetch("/api/articles/assign", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     editorIds: selectedEditors,
                     articleIds: selectedArticles,
@@ -144,18 +166,21 @@ const AssignArticles = () => {
             });
 
             if (response.ok) {
-                toast.success("Articles assigned successfully!");
-                setAssigningArticles(false);
+                toast.success(
+                    `Successfully assigned ${selectedArticles.length} article(s) to ${selectedEditors.length} editor(s)!`
+                );
                 setSelectedArticles([]);
                 setSelectedEditors([]);
+                setShowConfirmDialog(false);
                 fetchPendingArticles();
             } else {
                 const data = await response.json();
                 throw new Error(data.message || "Failed to assign articles");
             }
         } catch (err) {
-            setAssigningArticles(false);
             toast.error(err.message);
+        } finally {
+            setAssigningArticles(false);
         }
     };
 
@@ -163,9 +188,7 @@ const AssignArticles = () => {
         try {
             const response = await fetch("/api/articles/unassign", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ editorId, articleId }),
             });
 
@@ -180,189 +203,256 @@ const AssignArticles = () => {
         }
     };
 
+    const canAssign = selectedArticles.length > 0 && selectedEditors.length > 0;
+
     return (
-        <>
-            <Navbar />
-            <div className="assign-articles">
-                <h1 className="assign-articles__title">Assign Articles</h1>
+        <div className="animate-fadeIn">
+            <PageHeader
+                title="Assign Articles"
+                subtitle="Assign pending articles to editors for review"
+                backHref="/"
+            />
 
-                <div className="assign-articles__grid">
-                    {/* Pending Articles */}
-                    <Card>
-                        <CardHeader className="assign-articles__header">
-                            <CardTitle>Pending Articles</CardTitle>
-                            <CardTitle className="assign-articles__selected-count">
-                                Selected ({selectedArticles.length})
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="assign-articles__content">
-                            {loadingArticles ? (
-                                <p>Loading articles...</p>
-                            ) : pendingArticles.length > 0 ? (
-                                pendingArticles.map((article) => (
-                                    <div
-                                        key={article.id}
-                                        className="assign-articles__item"
-                                    >
-                                        <div className="assign-articles__item-content">
-                                            <Checkbox
-                                                className="assign-articles__checkbox"
-                                                id={`article-${article.id}`}
-                                                checked={selectedArticles.includes(
-                                                    article.id
-                                                )}
-                                                onCheckedChange={() =>
-                                                    handleArticleSelection(
-                                                        article.id
-                                                    )
-                                                }
-                                            />
-                                            <div className="assign-articles__details">
-                                                <div className="assign-articles__article-header">
-                                                    <img
-                                                        src={
-                                                            article.image_url ||
-                                                            "/default-article-image.png"
-                                                        }
-                                                        alt={article.title}
-                                                        className="assign-articles__image"
-                                                    />
-                                                    <div>
-                                                        <label
-                                                            htmlFor={`article-${article.id}`}
-                                                            className="assign-articles__label"
-                                                        >
-                                                            {article.title}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div className="assign-articles__editors-container">
-                                                    <h4 className="assign-articles__editors-title">
-                                                        Assigned Editors:
-                                                    </h4>
-                                                    <div className="assign-articles__editors-list">
-                                                        {article
-                                                            .assigned_editors
-                                                            .length > 0 ? (
-                                                            article.assigned_editors.map(
-                                                                (editor) => (
-                                                                    <EditorTag
-                                                                        key={
-                                                                            editor.id
-                                                                        }
-                                                                        editor={
-                                                                            editor
-                                                                        }
-                                                                        articleId={
-                                                                            article.id
-                                                                        }
-                                                                        onUnassign={
-                                                                            handleUnassign
-                                                                        }
-                                                                    />
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <p className="assign-articles__no-editors">
-                                                                Not assigned to
-                                                                any editor
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="assign-articles__empty">
-                                    No pending articles available.
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
+            {/* Selection Summary */}
+            {canAssign && (
+                <div className="mb-6 p-4 bg-[rgba(76,177,159,0.1)] rounded-xl border border-[rgba(76,177,159,0.2)] flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 text-[1.4rem]">
+                            <FileText size={18} className="text-[#4cb19f]" />
+                            <span className="font-medium">{selectedArticles.length}</span>
+                            <span className="text-gray-600">article(s)</span>
+                        </div>
+                        <span className="text-gray-400">to</span>
+                        <div className="flex items-center gap-2 text-[1.4rem]">
+                            <Users size={18} className="text-[#4cb19f]" />
+                            <span className="font-medium">{selectedEditors.length}</span>
+                            <span className="text-gray-600">editor(s)</span>
+                        </div>
+                    </div>
+                    <Button
+                        onClick={() => setShowConfirmDialog(true)}
+                        className="btn btn-primary-green btn-sm"
+                    >
+                        <CheckCircle size={16} />
+                        Assign Selected
+                    </Button>
+                </div>
+            )}
 
-                    {/* Editors */}
-                    <Card>
-                        <CardHeader className="assign-articles__header">
-                            <CardTitle>Editors</CardTitle>
-                            <CardTitle className="assign-articles__selected-count">
-                                Selected ({selectedEditors.length})
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="assign-articles__content">
-                            {loadingEditors ? (
-                                <p>Loading editors...</p>
-                            ) : editors.length > 0 ? (
-                                editors.map((editor) => (
-                                    <div
-                                        key={editor.id}
-                                        className="assign-articles__item"
-                                    >
-                                        <Checkbox
-                                            className="assign-articles__checkbox"
-                                            id={`editor-${editor.id}`}
-                                            checked={selectedEditors.includes(
-                                                editor.id
-                                            )}
-                                            onCheckedChange={() =>
-                                                handleEditorSelection(editor.id)
-                                            }
-                                        />
-                                        {editor.image ? (
-                                            <Image
-                                                src={
-                                                    editor.image ||
-                                                    "/placeholder.svg"
-                                                }
-                                                alt={`Editor image for ${editor.name}`}
-                                                className="assign-articles__editor-image"
-                                                width={50}
-                                                height={50}
-                                            />
-                                        ) : (
-                                            <FallbackAuthorImage
-                                                authorName={editor.name}
-                                            />
-                                        )}
-                                        <label
-                                            htmlFor={`editor-${editor.id}`}
-                                            className="assign-articles__label"
-                                        >
-                                            {editor.name} ({editor.email})
-                                        </label>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="assign-articles__empty">
-                                    No editors available.
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Articles Column */}
+                <div className="lg:col-span-2 admin-card">
+                    <div className="admin-card-header">
+                        <div>
+                            <h2 className="admin-card-title">Pending Articles</h2>
+                            <p className="admin-card-subtitle">
+                                {selectedArticles.length} of {pendingArticles.length} selected
+                            </p>
+                        </div>
+                        {filteredArticles.length > 0 && (
+                            <button
+                                onClick={handleSelectAllArticles}
+                                className="text-[1.3rem] text-[#4cb19f] hover:underline"
+                            >
+                                {selectedArticles.length === filteredArticles.length
+                                    ? "Deselect All"
+                                    : "Select All"}
+                            </button>
+                        )}
+                    </div>
+                    <div className="p-4 border-b border-gray-100">
+                        <SearchInput
+                            value={articleSearch}
+                            onChange={setArticleSearch}
+                            placeholder="Search articles..."
+                        />
+                    </div>
+                    <div className="admin-card-body max-h-[60vh] overflow-y-auto space-y-3">
+                        {loadingArticles ? (
+                            <div className="space-y-3">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="skeleton h-28 rounded-lg" />
+                                ))}
+                            </div>
+                        ) : filteredArticles.length > 0 ? (
+                            filteredArticles.map((article) => (
+                                <ArticleItem
+                                    key={article.id}
+                                    article={article}
+                                    isSelected={selectedArticles.includes(article.id)}
+                                    onSelect={handleArticleSelection}
+                                    onUnassign={handleUnassign}
+                                />
+                            ))
+                        ) : (
+                            <EmptyState
+                                icon="articles"
+                                title="No articles found"
+                                description={
+                                    articleSearch
+                                        ? "Try a different search term"
+                                        : "No pending articles to assign"
+                                }
+                            />
+                        )}
+                    </div>
                 </div>
 
-                <Button
-                    onClick={handleAssignment}
-                    className="btn btn-primary ml-auto"
-                    disabled={
-                        selectedArticles.length === 0 ||
-                        selectedEditors.length === 0 ||
-                        assigningArticles
-                    }
-                >
-                    {assigningArticles ? (
-                        <>
-                            <Loader2 className="assign-articles__loader" />
-                            <span>Assigning ...</span>
-                        </>
-                    ) : (
-                        "Assign Articles"
-                    )}
-                </Button>
+                {/* Editors Column */}
+                <div className="admin-card">
+                    <div className="admin-card-header">
+                        <div>
+                            <h2 className="admin-card-title">Editors</h2>
+                            <p className="admin-card-subtitle">
+                                {selectedEditors.length} selected
+                            </p>
+                        </div>
+                    </div>
+                    <div className="p-4 border-b border-gray-100">
+                        <SearchInput
+                            value={editorSearch}
+                            onChange={setEditorSearch}
+                            placeholder="Search editors..."
+                        />
+                    </div>
+                    <div className="admin-card-body max-h-[60vh] overflow-y-auto space-y-2">
+                        {loadingEditors ? (
+                            <div className="space-y-2">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="skeleton h-16 rounded-lg" />
+                                ))}
+                            </div>
+                        ) : filteredEditors.length > 0 ? (
+                            filteredEditors.map((editor) => (
+                                <EditorItem
+                                    key={editor.id}
+                                    editor={editor}
+                                    isSelected={selectedEditors.includes(editor.id)}
+                                    onSelect={handleEditorSelection}
+                                />
+                            ))
+                        ) : (
+                            <EmptyState
+                                icon="users"
+                                title="No editors found"
+                                description={
+                                    editorSearch
+                                        ? "Try a different search term"
+                                        : "No editors available"
+                                }
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
-        </>
+
+            {/* Confirmation Dialog */}
+            <ConfirmDialog
+                open={showConfirmDialog}
+                onOpenChange={setShowConfirmDialog}
+                title="Confirm Assignment"
+                description={`You are about to assign ${selectedArticles.length} article(s) to ${selectedEditors.length} editor(s). Each editor will receive a notification about their new assignments.`}
+                confirmLabel="Assign Articles"
+                onConfirm={handleAssignment}
+                loading={assigningArticles}
+            />
+        </div>
     );
 };
+
+function ArticleItem({ article, isSelected, onSelect, onUnassign }) {
+    return (
+        <div
+            className={`p-4 rounded-lg border transition-all ${
+                isSelected
+                    ? "border-[#4cb19f] bg-[rgba(76,177,159,0.05)]"
+                    : "border-gray-200 hover:border-gray-300"
+            }`}
+        >
+            <div className="flex gap-4">
+                <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => onSelect(article.id)}
+                    className="mt-1 w-5 h-5"
+                />
+                <img
+                    src={article.image_url || "/default-article-image.png"}
+                    alt=""
+                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                    <label
+                        htmlFor={`article-${article.id}`}
+                        className="text-[1.5rem] font-medium text-gray-900 line-clamp-2 cursor-pointer"
+                        onClick={() => onSelect(article.id)}
+                    >
+                        {article.title}
+                    </label>
+                    <div className="mt-2">
+                        <p className="text-[1.2rem] text-gray-500 mb-2">
+                            Assigned Editors:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {article.assigned_editors?.length > 0 ? (
+                                article.assigned_editors.map((editor) => (
+                                    <EditorTag
+                                        key={editor.id}
+                                        editor={editor}
+                                        articleId={article.id}
+                                        onUnassign={onUnassign}
+                                    />
+                                ))
+                            ) : (
+                                <span className="text-[1.2rem] text-gray-400 italic">
+                                    No editors assigned
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function EditorItem({ editor, isSelected, onSelect }) {
+    return (
+        <div
+            onClick={() => onSelect(editor.id)}
+            className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                isSelected
+                    ? "border-[#4cb19f] bg-[rgba(76,177,159,0.05)]"
+                    : "border-gray-200 hover:border-gray-300"
+            }`}
+        >
+            <div className="flex items-center gap-3">
+                <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => onSelect(editor.id)}
+                    className="w-5 h-5"
+                />
+                {editor.image ? (
+                    <Image
+                        src={editor.image}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                    />
+                ) : (
+                    <FallbackAuthorImage authorName={editor.name} size="sm" />
+                )}
+                <div className="flex-1 min-w-0">
+                    <p className="text-[1.4rem] font-medium text-gray-900 truncate">
+                        {editor.name}
+                    </p>
+                    <p className="text-[1.2rem] text-gray-500 truncate">
+                        {editor.email}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default withAuth(AssignArticles);
