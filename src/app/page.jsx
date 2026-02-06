@@ -6,10 +6,10 @@ import Navbar from "@/components/Navbar/Navbar";
 
 import HomeServiceBanner from "@/components/HomeServiceBanner/HomeServiceBanner";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import useAuthStore from "@/store/useAuthStore";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
 // custom components
 import SubscriptionBanner from "@/components/SubscriptionBanner/SubscriptionBanner";
@@ -18,8 +18,13 @@ import RecentArticlesSection from "@/components/RecentArticlesSection/RecentArti
 import FeaturedArticlesSection from "@/components/FeaturedArticlesSection/FeaturedArticlesSection";
 import Footer from "@/components/Footer/Footer";
 
-export default function Home() {
+// HSF redirect mapping (for HS Foundation external links)
+import { getArticleIdFromHsfId } from "@/lib/hsfRedirects";
+
+// Inner component that uses useSearchParams (needs Suspense boundary for SSR)
+function HomeContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const { role } = useAuthStore();
     console.log("User: ", role);
@@ -29,6 +34,21 @@ export default function Home() {
         router.push(`/articles}`);
     };
 
+    // Handle HSF redirect (e.g., ?hsf-id=100941 -> /articles/126)
+    // Only active for HS (Hidradenitis Suppurativa) tenant
+    useEffect(() => {
+        if (tenant.shortName !== "HS") return; // Only for HS Foundation links
+
+        const hsfId = searchParams.get("hsf-id");
+        if (hsfId) {
+            const articleId = getArticleIdFromHsfId(hsfId);
+            if (articleId) {
+                router.replace(`/articles/${articleId}`);
+                return;
+            }
+        }
+    }, [searchParams, router]);
+
     useEffect(() => {
         document.documentElement.style.setProperty(
             "--hero-illustration",
@@ -37,7 +57,7 @@ export default function Home() {
     }, []);
 
     return (
-        <main className="home">
+        <main className="home" suppressHydrationWarning>
             <section
                 className={`home__header ${
                     tenant.shortName === "HS" ||
@@ -109,5 +129,14 @@ export default function Home() {
 
             <Footer />
         </main>
+    );
+}
+
+// Wrapper component with Suspense boundary for useSearchParams
+export default function Home() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <HomeContent />
+        </Suspense>
     );
 }
