@@ -7,7 +7,12 @@ import { toast } from "react-toastify";
 import { Copy, Trash2, Link2, Loader2, CheckCircle, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PageHeader, SearchInput, EmptyState, StatusBadge, ConfirmDialog, StatsCard } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import SearchInput from "@/components/admin/SearchInput";
+import EmptyState from "@/components/admin/EmptyState";
+import StatusBadge from "@/components/admin/StatusBadge";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
+import StatsCard from "@/components/admin/StatsCard";
 
 export default withAuth(function MagicLinksAdminPage() {
     const tenantName = defaultTenant.shortName;

@@ -7,7 +7,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { withAuth } from "@/components/withAuth/withAuth";
-import { PageHeader, EmptyState, StatsCard } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import EmptyState from "@/components/admin/EmptyState";
+import StatsCard from "@/components/admin/StatsCard";
 
 export default withAuth(function CreateEditorPage() {
     const [form, setForm] = useState({

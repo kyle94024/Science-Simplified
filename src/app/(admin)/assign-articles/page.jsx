@@ -13,7 +13,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { Loader2, Edit, Users, FileText, CheckCircle } from "lucide-react";
-import { PageHeader, SearchInput, EmptyState, ConfirmDialog } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import SearchInput from "@/components/admin/SearchInput";
+import EmptyState from "@/components/admin/EmptyState";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
 const FallbackAuthorImage = ({ authorName, size = "md" }) => {
     const firstLetter = authorName ? authorName.charAt(0).toUpperCase() : "A";

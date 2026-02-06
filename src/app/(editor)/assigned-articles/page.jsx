@@ -7,7 +7,11 @@ import { withEditorAuth } from "@/components/withEditorAuth/withEditorAuth";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import useAuthStore from "@/store/useAuthStore";
-import { PageHeader, EmptyState, SearchInput, StatsCard, StatusBadge } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import EmptyState from "@/components/admin/EmptyState";
+import SearchInput from "@/components/admin/SearchInput";
+import StatsCard from "@/components/admin/StatsCard";
+import StatusBadge from "@/components/admin/StatusBadge";
 
 const EditorAssignedArticles = () => {
     const [articles, setArticles] = useState([]);

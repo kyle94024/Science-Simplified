@@ -5,7 +5,11 @@ import { Star, FileText, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { withAuth } from "@/components/withAuth/withAuth";
 import { toast } from "react-toastify";
-import { PageHeader, EmptyState, SearchInput, StatsCard, StatusBadge } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import EmptyState from "@/components/admin/EmptyState";
+import SearchInput from "@/components/admin/SearchInput";
+import StatsCard from "@/components/admin/StatsCard";
+import StatusBadge from "@/components/admin/StatusBadge";
 
 const FeaturedArticles = () => {
     const [featuredArticles, setFeaturedArticles] = useState([]);

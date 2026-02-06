@@ -3,7 +3,10 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Beaker, ExternalLink } from "lucide-react";
-import { PageHeader, SearchInput, EmptyState, StatsCard } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import SearchInput from "@/components/admin/SearchInput";
+import EmptyState from "@/components/admin/EmptyState";
+import StatsCard from "@/components/admin/StatsCard";
 
 const TENANTS = ["HS", "NF", "EB"];
 
@@ -117,11 +120,11 @@ export default function AdminTrialsPage() {
                                 : `No clinical trials available for ${tenant}. Try syncing trials first.`
                         }
                         action={
-                            !searchQuery && (
+                            !searchQuery ? (
                                 <Link href="/admin/sync" className="btn btn-primary-green btn-sm">
                                     Sync Trials
                                 </Link>
-                            )
+                            ) : null
                         }
                     />
                 </div>

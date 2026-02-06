@@ -4,7 +4,11 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { FileText, Clock, CheckCircle, Users } from "lucide-react";
 import { withAuth } from "@/components/withAuth/withAuth";
-import { PageHeader, EmptyState, SearchInput, StatsCard, StatusBadge } from "@/components/admin";
+import PageHeader from "@/components/admin/PageHeader";
+import EmptyState from "@/components/admin/EmptyState";
+import SearchInput from "@/components/admin/SearchInput";
+import StatsCard from "@/components/admin/StatsCard";
+import StatusBadge from "@/components/admin/StatusBadge";
 
 const PendingArticles = () => {
     const [articles, setArticles] = useState([]);
