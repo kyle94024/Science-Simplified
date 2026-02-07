@@ -4,15 +4,25 @@
 
 export const hsfIdToArticleId = {
   "100941": "126",  // Can Quitting Smoking Lower the Risk of Hidradenitis Suppurativa?
+  "100817": "125",  // Spironolactone Shows Promise for Early, Mild HS in Women of Childbearing Age
+  "100790": "124",  // Deroofing Shows Promise for HS Patients
   "100757": "123",  // Semaglutide for diabetes, weight loss, and… Hidradenitis Suppurativa?
-  "100746": "9",    // Links Between Plastics Use, Processed Food, Sweating, and HS
+  "100746": "122",  // Links Between Plastics Use, Processed Food, Sweating, and HS
   "100730": "121",  // Hidradenitis Suppurativa and Maternal and Offspring Outcomes
+  "100435": "120",  // Mediterranean Diet and Physical Activity in HS
   "100405": "119",  // Barriers to Accessing Care for HS
   "100406": "118",  // Genetic Variants Associated with Hidradenitis Suppurativa
   "100404": "117",  // Assessing the Impact of HS on Work Productivity
+  "100399": "116",  // Understanding HS and Pain
   "100400": "115",  // Average Time Patients Stay on Biologic Treatment
+  "100396": "114",  // Secukinumab for Moderate to Severe HS
+  "100397": "113",  // Bimekizumab for Moderate to Severe HS
+  "100389": "112",  // Birth Control and HS
+  "100382": "111",  // Finasteride in Women with HS
+  "100376": "110",  // Biologic Therapy Not Associated with COVID-19 Severity
   "100360": "109",  // Adalimumab (Humira) in combination with surgery is safe and effective
   "100361": "108",  // A new treatment option for tunnels in HS
+  "100328": "107",  // Medical Conditions Related to Hidradenitis Suppurativa
   "100317": "106",  // Factors that affect delayed HS diagnosis in children and teens
   "100285": "105",  // HS surgeries associated with high satisfaction, brief recovery
   "100286": "104",  // Negative Impacts of Hidradenitis Suppurativa in Pregnant Women
