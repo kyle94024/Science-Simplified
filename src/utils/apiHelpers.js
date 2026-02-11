@@ -47,7 +47,7 @@ export async function summarizeArticle(content) {
 export async function simplifyArticle(content, lengthString) {
     try {
         const instruction = `
-        You simplify scientific articles into a patient-friendly science summary for readers who already have basic familiarity with the condition being discussed. Assume an informed patient or caregiver audience. Do NOT explain what the condition is or provide broad medical background unless a single short sentence is essential to interpret the study.
+You simplify scientific articles into a patient-friendly science summary for readers who already have basic familiarity with the condition being discussed. Assume an informed patient or caregiver audience. Do NOT explain what the condition is or provide broad medical background unless a single short sentence is essential to interpret the study.
 
 Tone requirements:
 • warm, human-centered, and respectful
@@ -55,19 +55,30 @@ Tone requirements:
 • medically accurate, non-promotional, and evidence-based
 • no hype or exaggerated language
 
-Do NOT use marketing-style adjectives such as “exciting,” “groundbreaking,” “promising,” or “revolutionary.” 
+Do NOT use marketing-style adjectives such as "exciting," "groundbreaking," "promising," or "revolutionary."
 Do NOT imply treatment effectiveness for everyone unless the study design directly supports it. If results are uncertain, early-stage, or small-scale, say so clearly.
 
 Content rules:
 • Explain medical terms the first time they appear, in plain language.
 • Do NOT include the study title, authors list, affiliations, or citations as a header.
-• Refer to researchers by last name only: “Smith and colleagues” or “the research team.”
+• Refer to researchers by last name only: "Smith and colleagues" or "the research team."
 • Each paragraph should be medium length — not one sentence, not a long block.
 • Include limitations, uncertainties, or missing information when applicable.
-• If the article does not report something, write “Not reported” or “Unclear from the paper.”
+• If the article does not report something, write "Not reported" or "Unclear from the paper."
 
-Respond using HTML formatting, with visually appealing headers and whitespace. Use only the CSS classes in the example css file, given below, prefixed with "apicss-". Return it in a div with the class "apicss-body". Use (darker) apicss colors for important words and phrases. Do not start your response with "<!DOCTYPE html>" or markdown fences. No copyright sign or extra boilerplate. An example output is provided. Make your output simpler in language than the example.
+HTML/CSS FORMATTING (CRITICAL - FOLLOW EXACTLY):
+• Wrap ALL content in: <div class="apicss-body">...</div>
+• Main title: <h1 class="apicss-heading-primary">Title Here</h1>
+• Section headers: <h2 class="apicss-heading-secondary">Section Name</h2>
+• ALL paragraphs: <p class="apicss-paragraph">Text here</p>
+• Important terms/drugs: <span class="apicss-text-primary apicss-strong">term</span>
+• Conditions/diseases: <span class="apicss-text-secondary">condition name</span>
+• Key statistics/results: <span class="apicss-text-success apicss-strong">95% improved</span>
+• Limitations/warnings: <span class="apicss-text-warning">small sample size</span>
+• Technical terms: <span class="apicss-text-info">medical term (definition)</span>
 
+NEVER use plain <h2>, <p>, or <strong> without CSS classes. Follow the example output exactly.
+Do not start with "<!DOCTYPE html>" or markdown fences. No copyright sign.
 Make your output simpler in language than the example provided.
 
             `.trim();
@@ -81,7 +92,7 @@ Make your output simpler in language than the example provided.
             // Stream so you can handle very long outputs incrementally
             const stream = await openai.chat.completions.create(
             {
-                model: "gpt-4.1-nano", // Fastest OpenAI model for article simplification
+                model: "gpt-4.1-mini", // Better at following complex formatting than nano
                 messages,
                 max_tokens: 32768,
                 temperature: 0.7,
