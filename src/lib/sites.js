@@ -1082,7 +1082,84 @@ export const sites = {
       about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the HS community",
 
       about_our_mission: "our-mission.jpg",
-      
+
+    },
+
+    RUNX1: {
+      name: "RUNX1 Simplified",
+      shortName: "RUNX1",
+      pathName: "RUNX1",
+      fullName: "RUNX1 Simplified",
+      disease: "RUNX1 Familial Platelet Disorder",
+      apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
+      domain: "https://ssrunx1.vercel.app",
+
+      theme: { // Theme - Green/Blue/Red/Orange multi-color (based on RUNX1 RP logo)
+        primary: "#4CAF50",          // green (primary brand color)
+        primaryDark: "#388E3C",      // darker green
+        lightGrey: "#f5f5f5",
+        text: "#1B5E20",             // dark green text
+        background: "#F5FFF5",       // very light green tint
+        contactUsColor: "#2196F3",   // blue accent
+        authorTextColor: "#388E3C",  // dark green
+        footerBGColor: "#E8F5E9",    // light green tint
+      },
+      // Images (Home)
+      homeBG: "RUNX1_homeBG.png", //home/homeBG
+      homeExploreAllBG: "RUNX1_ExploreAllBG.png", //home/homeExploreAllBG
+      // Images (General)
+      logoWithText: "RUNX1_logoWithText.png", //logoWithText
+      articleThumbnailPlaceholder: "RUNX1_articlePlaceholder.png", //articleThumbnailPlaceholder
+      contactUsBGLeft: "RUNX1_contactUsBG.png", //contactUsBGLeft
+      contactUsBGRight: "RUNX1_contactUsBG.png", //contactUsBGRight
+
+      loginBGTop: "RUNX1_loginBGTop.webp", //loginBGTop
+      loginBGBottom: "RUNX1_loginBGBottom.webp", //loginBGBottom
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified RUNX1-FPD articles certified by experts.",
+      text_exploreAllTitle: "We give knowledge to patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified RUNX1 Familial Platelet Disorder articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RUNX1 Familial Platelet Disorder to patients, families, and caregivers. We aim to empower those affected by RUNX1-FPD with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyle.png",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the RUNX1-FPD community.",
+
+      about_teamMember2Image: "expert-placeholder.png",
+      about_teamMember2Name: "Medical Outreach Lead",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Placeholder Bio",
+
+      about_teamMember3Image: "expert-placeholder.png",
+      about_teamMember3Name: "Katrin Ericson",
+      about_teamMember3Title: "Faculty Advisor",
+      about_teamMember3Bio: "Faculty Advisor from the RUNX1 Research Program.",
+
+      about_supporter1Logo: "runx1-rp-logo.png",
+      about_supporter1Name: "RUNX1 Research Program",
+      about_supporter1Width: 400,
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://www.runx1-fpd.org/",
+
+      about_supporter2Logo: "runx1-rp-logo.png",
+      about_supporter2Name: "RUNX1 Research Program",
+      about_supporter2Width: 400,
+      about_supporter2Height: 200,
+      about_supporter2Link: "https://www.runx1-fpd.org/",
+      about_supporter2Hidden: true,
+
+      about_mission1: "RUNX1 Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by RUNX1 Familial Platelet Disorder.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in RUNX1-FPD research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the RUNX1-FPD community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the RUNX1-FPD community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in RUNX1 Familial Platelet Disorder with the community.",
+      about_getInvolvedDescription: "RUNX1 Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the RUNX1-FPD community",
+
+      about_our_mission: "our-mission.jpg",
+
     },
 
   };
