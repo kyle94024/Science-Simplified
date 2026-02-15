@@ -32,6 +32,18 @@
   margin: 0 auto;
 }
 
+.clinical-trials-page__disclaimer {
+  font-size: 1.4rem;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  max-width: 720px;
+  margin: 1.5rem auto 0;
+  line-height: 1.5;
+}
+
 /* ---------- SEARCH BAR ---------- */
 .clinical-trials-page__search {
   max-width: 720px;

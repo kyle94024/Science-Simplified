@@ -126,6 +126,10 @@ const ClinicalTrialsPage = () => {
             <p className="clinical-trials-page__subtitle">
               Summaries of currently recruiting clinical trials
             </p>
+            <p className="clinical-trials-page__disclaimer">
+              ⚠️ These summaries are AI-generated and have not been reviewed by medical experts.
+              Always consult with your healthcare provider before considering participation in any clinical trial.
+            </p>
           </div>
 
           {/* ---------- SEARCH ---------- */}
