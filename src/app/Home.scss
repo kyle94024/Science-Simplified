@@ -4,6 +4,19 @@
         flex-direction: column;
 
         // min-height: 100vh;
+
+        // Full-width background mode (for RUNX1 and similar)
+        &.fullwidth-bg {
+            background-image: var(--hero-illustration);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            min-height: 500px;
+
+            .home__hero {
+                background: none; // Remove hero's individual background
+            }
+        }
     }
     &__hero {
         flex-grow: 1;
@@ -127,6 +140,13 @@
             background-size: 45vw;
 
             // min-height: 100vh;
+
+            // Full-width background on mobile
+            &.fullwidth-bg {
+                background-size: cover;
+                background-position: center top;
+                min-height: auto;
+            }
         }
         &__hero {
             flex-grow: 1;

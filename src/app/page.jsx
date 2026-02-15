@@ -49,29 +49,40 @@ function HomeContent() {
         }
     }, [searchParams, router]);
 
+    // Tenants that use full-width background (spans entire header)
+    const fullWidthBgTenants = ["RUNX1"];
+    const useFullWidthBg = fullWidthBgTenants.includes(tenant.shortName);
+
     useEffect(() => {
+        // For full-width tenants, use a different background image
+        const bgImage = useFullWidthBg
+            ? `url(/assets/${tenant.pathName}/home/${tenant.homeBG.replace('.png', '_fullwidth.png')})`
+            : `url(/assets/${tenant.pathName}/home/${tenant.homeBG})`;
+
         document.documentElement.style.setProperty(
             "--hero-illustration",
-            `url(/assets/${tenant.pathName}/home/${tenant.homeBG})`
+            bgImage
         );
-    }, []);
+    }, [useFullWidthBg]);
 
     return (
         <main className="home" suppressHydrationWarning>
             <section
                 className={`home__header ${
-                    tenant.shortName === "HS" ||
-                    tenant.shortName === "CF" ||
-                    tenant.shortName === "Vitiligo" ||
-                    tenant.shortName === "Canavan" ||
-                    tenant.shortName === "Progeria" ||
-                    tenant.shortName === "Huntington's" ||
-                    tenant.shortName === "Rett" ||
-                    tenant.shortName === "RYR1" ||
-                    tenant.shortName === "ALS" ||
-                    tenant.shortName === "Asherman's" ||
-                    tenant.shortName === "Aicardi" ||
-                    tenant.shortName === "TS"
+                    useFullWidthBg
+                        ? "fullwidth-bg"
+                        : tenant.shortName === "HS" ||
+                          tenant.shortName === "CF" ||
+                          tenant.shortName === "Vitiligo" ||
+                          tenant.shortName === "Canavan" ||
+                          tenant.shortName === "Progeria" ||
+                          tenant.shortName === "Huntington's" ||
+                          tenant.shortName === "Rett" ||
+                          tenant.shortName === "RYR1" ||
+                          tenant.shortName === "ALS" ||
+                          tenant.shortName === "Asherman's" ||
+                          tenant.shortName === "Aicardi" ||
+                          tenant.shortName === "TS"
                         ? "background-alt"
                         : ""
                 }`}

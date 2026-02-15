@@ -1090,7 +1090,7 @@ export const sites = {
       shortName: "RUNX1",
       pathName: "RUNX1",
       fullName: "RUNX1 Simplified",
-      disease: "RUNX1 Familial Platelet Disorder",
+      disease: "RUNX1",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
       domain: "https://ssrunx1.vercel.app",
 
