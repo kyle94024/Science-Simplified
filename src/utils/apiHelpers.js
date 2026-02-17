@@ -46,9 +46,19 @@ export async function summarizeArticle(content) {
 
 export async function simplifyArticle(content, lengthString) {
     try {
+        // NF-specific addendum for updated nomenclature
+        const nfAddendum = tenant.shortName === "NF" ? `
+IMPORTANT - NF NOMENCLATURE:
+When discussing types of neurofibromatosis, use the current diagnostic terminology:
+• "NF2" should be referred to as "NF2-related schwannomatosis" (NF2-SWN)
+• The umbrella term "schwannomatosis" now includes NF2-related schwannomatosis and SMARCB1/LZTR1-related schwannomatosis
+• When referring to all forms collectively, use "all forms of neurofibromatosis and schwannomatosis"
+• If the source article uses older terminology (just "NF2"), you may update it to the current nomenclature while preserving the original meaning
+` : "";
+
         const instruction = `
 You simplify scientific articles into a patient-friendly science summary for readers who already have basic familiarity with the condition being discussed. Assume an informed patient or caregiver audience. Do NOT explain what the condition is or provide broad medical background unless a single short sentence is essential to interpret the study.
-
+${nfAddendum}
 Tone requirements:
 • warm, human-centered, and respectful
 • clear, steady, and accessible (≈ 8th grade reading level)

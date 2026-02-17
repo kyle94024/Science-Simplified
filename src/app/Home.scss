@@ -16,6 +16,18 @@
             .home__hero {
                 background: none; // Remove hero's individual background
             }
+
+            // Light text for dark backgrounds (RUNX1)
+            &.dark-bg {
+                .heading-primary,
+                .heading-tertiary,
+                .body-large {
+                    color: #fff;
+                }
+                .color-green {
+                    color: #FF0000 !important; // Red accent instead of green
+                }
+            }
         }
     }
     &__hero {

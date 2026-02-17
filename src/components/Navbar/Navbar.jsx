@@ -17,7 +17,7 @@ export default function Navbar() {
     const navbrand = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 
     return (
-        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : ""}`}>
+        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : ""}`}>
             <div className="navbar-inner boxed padding">
                 {/* Left logo */}
                 <Link href="/" className="navbrand">

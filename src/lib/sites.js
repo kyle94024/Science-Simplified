@@ -1094,15 +1094,15 @@ export const sites = {
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
       domain: "https://ssrunx1.vercel.app",
 
-      theme: { // Theme - Green/Blue/Red/Orange multi-color (based on RUNX1 RP logo)
-        primary: "#4CAF50",          // green (primary brand color)
-        primaryDark: "#388E3C",      // darker green
+      theme: { // Theme - Red/Black/White (based on runx1-fpd.org branding)
+        primary: "#FF0000",          // bright red (main branding color)
+        primaryDark: "#CC0000",      // darker red
         lightGrey: "#f5f5f5",
-        text: "#1B5E20",             // dark green text
-        background: "#F5FFF5",       // very light green tint
-        contactUsColor: "#2196F3",   // blue accent
-        authorTextColor: "#388E3C",  // dark green
-        footerBGColor: "#E8F5E9",    // light green tint
+        text: "#000000",             // black text
+        background: "#FFFFFF",       // white background
+        contactUsColor: "#FF0000",   // red accent
+        authorTextColor: "#666666",  // gray for secondary text
+        footerBGColor: "#1a1a1a",    // dark/black footer
       },
       // Images (Home)
       homeBG: "RUNX1_homeBG.png", //home/homeBG

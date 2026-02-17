@@ -210,6 +210,30 @@ header {
         }
     }
 
+    &.runx1-mode {
+        background: #000000;
+        .nav-links > li > a,
+        .dropdown > span {
+            color: #fff;
+        }
+        .nav-links > li:hover > a,
+        .nav-links > li:hover > span {
+            color: #FF0000; // Red on hover
+        }
+        .auth-buttons .btn {
+            color: #fff;
+            border-color: #fff;
+        }
+        .auth-buttons .btn-primary {
+            background: #FF0000;
+            border-color: #FF0000;
+            color: #fff;
+        }
+        .mobile-toggle {
+            color: #fff;
+        }
+    }
+
     .navbar-inner {
         display: flex;
         align-items: center;
@@ -315,6 +339,16 @@ header {
         button {
             text-align: center;
             color: #333;
+        }
+    }
+
+    &.runx1-mode .mobile-menu {
+        background: #000;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+        a,
+        button {
+            color: #fff;
         }
     }
 

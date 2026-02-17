@@ -28,7 +28,7 @@ const faqsData = [
     },
     {
         question: `Who reviews the information on ${tenant.name}?`,
-        answer: `All articles and resources on our website are (soon to be) reviewed by ${tenant.shortName} experts, ensuring that the information provided is accurate, reliable, and up-to-date.`,
+        answer: `All articles on our website are reviewed by ${tenant.shortName} experts, ensuring that the information provided is accurate, reliable, and up-to-date. Please note that clinical trial summaries are AI-generated and have not been reviewed by medical experts—always consult your healthcare provider before considering participation in any clinical trial.`,
     },
     {
         question: `How can ${tenant.name} help those living with ${tenant.shortName}?`,
