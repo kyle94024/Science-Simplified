@@ -64,7 +64,7 @@ export const sites = {
       about_supporter2Link: "https://ccrod.cancer.gov/confluence/plugins/servlet/mobile?contentId=141000895#content/view/141000895",
       about_supporter2Hidden: false,
 
-      about_mission1: "NF Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by NF1, NF2 and schwannomatosis.",
+      about_mission1: "NF Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by all forms of Neurofibromatosis and schwannomatosis.",
       about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in NF research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the NF community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
       about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Neurofibromatosis community.",
       about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Neurofibromatosis and Schwannomatosis with the community.",
