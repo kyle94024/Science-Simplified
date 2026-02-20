@@ -1108,7 +1108,7 @@ export const sites = {
       homeBG: "RUNX1_homeBG.png", //home/homeBG
       homeExploreAllBG: "RUNX1_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
-      logoWithText: "RUNX1_logoWithText.png", //logoWithText
+      logoWithText: "runx1logo.png", //logoWithText
       articleThumbnailPlaceholder: "RUNX1_articlePlaceholder.png", //articleThumbnailPlaceholder
       contactUsBGLeft: "RUNX1_contactUsBG.png", //contactUsBGLeft
       contactUsBGRight: "RUNX1_contactUsBG.png", //contactUsBGRight
