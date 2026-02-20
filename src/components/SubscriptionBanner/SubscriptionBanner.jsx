@@ -12,7 +12,7 @@ const SubscriptionBanner = () => {
     }, []);
 
     return (
-        <div className={`subscription-banner ${tenant.shortName === "HS" || tenant.shortName === "CF" || tenant.shortName === "Vitiligo" || tenant.shortName === "Canavan" || tenant.shortName === "Progeria" || tenant.shortName === "Huntington's" || tenant.shortName === "Rett" || tenant.shortName === "RYR1" || tenant.shortName === "ALS" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" || tenant.shortName === "TS" ? "background-alt" : ""}`}>
+        <div className={`subscription-banner ${tenant.shortName === "HS" || tenant.shortName === "CF" || tenant.shortName === "Vitiligo" || tenant.shortName === "Canavan" || tenant.shortName === "Progeria" || tenant.shortName === "Huntington's" || tenant.shortName === "Rett" || tenant.shortName === "RYR1" || tenant.shortName === "ALS" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" || tenant.shortName === "TS" || tenant.shortName === "RUNX1" ? "background-alt" : ""}`}>
             <h2 className={`heading-tertiary w-800 ${tenant.shortName === "ALS" ? "invisible" : ""}`}>Get in Touch</h2>
             <p className={`body-large color-light-grey ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
                 Reach out to us for any questions, partnerships, or support.
