@@ -50,7 +50,7 @@ function HomeContent() {
     }, [searchParams, router]);
 
     // Tenants that use full-width background (spans entire header)
-    const fullWidthBgTenants = ["RUNX1"];
+    const fullWidthBgTenants = [];
     const useFullWidthBg = fullWidthBgTenants.includes(tenant.shortName);
 
     useEffect(() => {
@@ -82,7 +82,8 @@ function HomeContent() {
                           tenant.shortName === "ALS" ||
                           tenant.shortName === "Asherman's" ||
                           tenant.shortName === "Aicardi" ||
-                          tenant.shortName === "TS"
+                          tenant.shortName === "TS" ||
+                          tenant.shortName === "RUNX1"
                         ? "background-alt"
                         : ""
                 }`}
