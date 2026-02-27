@@ -1105,7 +1105,8 @@ export const sites = {
         footerBGColor: "#151611",    // dark/black footer
       },
       // Images (Home)
-      homeBG: "RUNX1_homeBG.png", //home/homeBG
+      // homeBG: "RUNX1_homeBG.png", //home/homeBG
+      homeBG: "runx1badbanner.jpg", //home/homeBG
       homeExploreAllBG: "RUNX1_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
       logoWithText: "runx1logo.png", //logoWithText

@@ -49,28 +49,23 @@ function HomeContent() {
         }
     }, [searchParams, router]);
 
-    // Tenants that use full-width background (spans entire header)
-    const fullWidthBgTenants = [];
-    const useFullWidthBg = fullWidthBgTenants.includes(tenant.shortName);
+    // Check if tenant opts into full-width banner background
+    const useFullWidthBg = tenant.homeBG_full === true;
 
     useEffect(() => {
-        // For full-width tenants, use a different background image
-        const bgImage = useFullWidthBg
-            ? `url(/assets/${tenant.pathName}/home/${tenant.homeBG.replace('.png', '_fullwidth.png')})`
-            : `url(/assets/${tenant.pathName}/home/${tenant.homeBG})`;
-
+        const bgImage = `url(/assets/${tenant.pathName}/home/${tenant.homeBG})`;
         document.documentElement.style.setProperty(
             "--hero-illustration",
             bgImage
         );
-    }, [useFullWidthBg]);
+    }, []);
 
     return (
         <main className="home" suppressHydrationWarning>
             <section
                 className={`home__header ${
                     useFullWidthBg
-                        ? `fullwidth-bg ${tenant.shortName === "RUNX1" ? "dark-bg" : ""}`
+                        ? "fullwidth-bg"
                         : tenant.shortName === "HS" ||
                           tenant.shortName === "CF" ||
                           tenant.shortName === "Vitiligo" ||
