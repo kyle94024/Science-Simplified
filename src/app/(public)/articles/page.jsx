@@ -29,7 +29,9 @@ const ArticleSearchPage = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch("/api/articles");
+                const response = await fetch(
+  `/api/articles?search=${searchQuery}&sort=${sortBy}`
+);
                 if (!response.ok) throw new Error("Failed to fetch articles");
                 const data = await response.json();
                 setArticles(data);
@@ -43,24 +45,35 @@ const ArticleSearchPage = () => {
         fetchArticles();
     }, []);
 
-    const parsePublicationDate = (dateStr) => {
-        return new Date(dateStr);
-    };
+   const sortArticles = (articlesToSort) => {
+    if (sortBy === "publication") {
+        return [...articlesToSort].sort((a, b) => {
+            const dateA = Date.parse(a.publication_date);
+            const dateB = Date.parse(b.publication_date);
 
-    const sortArticles = (articlesToSort) => {
-        if (sortBy === "publication") {
-            return [...articlesToSort].sort((a, b) => {
-                const dateA = parsePublicationDate(a.publication_date);
-                const dateB = parsePublicationDate(b.publication_date);
-                return dateB.getTime() - dateA.getTime();
-            });
-        }
-        return articlesToSort;
-    };
+            if (isNaN(dateA)) return 1;
+            if (isNaN(dateB)) return -1;
 
-    const filteredArticles = articles.filter((article) =>
-        article.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+            return dateB - dateA;
+        });
+    }
+
+    if (sortBy === "recent") {
+        return [...articlesToSort].sort((a, b) => b.id - a.id);
+    }
+
+    return articlesToSort;
+};
+    const filteredArticles = articles.filter((article) => {
+    const query = searchQuery.toLowerCase();
+
+    const titleMatch = article.title?.toLowerCase().includes(query);
+    const summaryMatch = article.summary?.toLowerCase().includes(query);
+    const innerTextMatch = article.innertext?.toLowerCase().includes(query);
+    const authorsMatch = article.authors?.join(" ").toLowerCase().includes(query);
+
+    return titleMatch || summaryMatch || innerTextMatch || authorsMatch;
+});
 
     const sortedArticles = sortArticles(filteredArticles);
 

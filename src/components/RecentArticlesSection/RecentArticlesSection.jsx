@@ -1,39 +1,70 @@
 "use client";
 import { useEffect, useState } from "react";
 import ArticlesSection from "../ArticlesSection/ArticlesSection";
+import useSearchStore from "@/store/useSearchStore";
 
 const RecentArticlesSection = () => {
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+  const { searchQuery } = useSearchStore();
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const response = await fetch("/api/articles/recent");
-                if (!response.ok) throw new Error("Failed to fetch articles");
-                const data = await response.json();
-                setArticles(data.slice(0, 6)); // Show only the first 3 articles
-                setError(false); // Reset error if the fetch is successful
-            } catch (error) {
-                console.error("Error fetching articles:", error);
-                setError(true); // Set error state if fetch fails
-            } finally {
-                setLoading(false);
-            }
-        };
+  const [allArticles, setAllArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-        fetchArticles();
-    }, []);
+  // Fetch ALL articles once
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch("/api/articles");
+        if (!response.ok) throw new Error("Failed to fetch articles");
 
-    return (
-        <ArticlesSection
-            articles={articles}
-            loading={loading}
-            error={error}
-            sectionTitle={"Recently Added Articles"}
-        />
+        const data = await response.json();
+        setAllArticles(data);
+        setArticles(data.slice(0, 6)); // initial 6
+        setError(false);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  // React to search input
+  useEffect(() => {
+    if (!searchQuery) {
+      setArticles(allArticles.slice(0, 6));
+      return;
+    }
+
+    const filtered = allArticles.filter((article) =>
+      (
+        article.title +
+        " " +
+        article.summary +
+        " " +
+        article.long_summary +
+        " " +
+        article.authors
+      )
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase())
     );
+
+    setArticles(filtered.slice(0, 6));
+  }, [searchQuery, allArticles]);
+
+  return (
+    <ArticlesSection
+      articles={articles}
+      loading={loading}
+      error={error}
+      sectionTitle={"Recently Added Articles"}
+    />
+  );
 };
 
 export default RecentArticlesSection;

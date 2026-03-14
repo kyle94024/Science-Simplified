@@ -103,8 +103,7 @@ function HomeContent() {
                                 </span> */}
                             </p>
                             <SearchArticles
-                                setSearchQuery={handleSearchSubmit}
-                            />
+                               mode="home" />
                         </div>
                     </div>
                 </section>
