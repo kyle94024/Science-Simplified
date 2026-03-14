@@ -30,7 +30,7 @@
             left: 0;
             width: 6rem;
             height: 0.4rem;
-            background-color: #4cb19f;
+            background-color: var(--color-primary);
             border-radius: 2px;
         }
     }
@@ -90,7 +90,7 @@
         font-weight: 600;
         margin-top: 4rem;
         margin-bottom: 3rem;
-        color: #4cb19f;
+        color: var(--color-primary);
     }
 
     &__team-grid {
@@ -148,7 +148,7 @@
 
     &__team-member-title {
         font-size: 1.6rem;
-        color: #4cb19f;
+        color: var(--color-primary);
         font-weight: 500;
         margin-bottom: 1.5rem;
     }
@@ -198,7 +198,7 @@
         border-radius: 50%;
         overflow: hidden;
         margin-bottom: 1.5rem;
-        border: 3px solid #4cb19f;
+        border: 3px solid var(--color-primary);
 
         img {
             width: 100%;
@@ -317,7 +317,7 @@
     }
 
     &__external-icon {
-        color: #4cb19f;
+        color: var(--color-primary);
     }
 
     // Responsive adjustments

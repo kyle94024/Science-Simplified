@@ -35,15 +35,20 @@ const PendingArticles = () => {
     }, []);
 
     // Filter articles based on search
-    const filteredArticles = useMemo(() => {
-        if (!searchQuery) return articles;
-        const query = searchQuery.toLowerCase();
-        return articles.filter(
-            (article) =>
-                article.title?.toLowerCase().includes(query) ||
-                article.authors?.toLowerCase().includes(query)
-        );
-    }, [articles, searchQuery]);
+   const filteredArticles = useMemo(() => {
+    const queryLower = searchQuery.toLowerCase();
+
+    return articles.filter((article) => {
+        const titleMatch =
+            article.title?.toLowerCase().includes(queryLower);
+
+        const authorsMatch =
+            Array.isArray(article.authors) &&
+            article.authors.join(" ").toLowerCase().includes(queryLower);
+
+        return titleMatch || authorsMatch;
+    });
+}, [articles, searchQuery]);
 
     // Calculate stats
     const stats = useMemo(() => {
