@@ -437,6 +437,42 @@ export default async function AboutPage() {
                                     </div>
                                 </Link>
                             )}
+                            {/* Dynamic supporters 3, 4, etc. — only render when declared in tenant config */}
+                            {[3, 4, 5, 6, 7, 8].map((n) => {
+                                const logo = tenant[`about_supporter${n}Logo`];
+                                const hidden = tenant[`about_supporter${n}Hidden`];
+                                if (!logo || hidden) return null;
+                                return (
+                                    <Link
+                                        key={n}
+                                        href={tenant[`about_supporter${n}Link`]}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`${aboutPageClass}__supporter-logo`}
+                                    >
+                                        <Image
+                                            src={`/assets/${tenant.pathName}/about/${logo}`}
+                                            alt={tenant[`about_supporter${n}Name`]}
+                                            width={tenant[`about_supporter${n}Width`]}
+                                            height={tenant[`about_supporter${n}Height`]}
+                                            className={`${aboutPageClass}__logo-image`}
+                                        />
+                                        <div
+                                            className={`${aboutPageClass}__logo-link`}
+                                        >
+                                            <p
+                                                className={`${aboutPageClass}__logo-name`}
+                                            >
+                                                {tenant[`about_supporter${n}Name`]}
+                                            </p>
+                                            <ExternalLink
+                                                size={16}
+                                                className={`${aboutPageClass}__external-icon`}
+                                            />
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </section>
                 </div>

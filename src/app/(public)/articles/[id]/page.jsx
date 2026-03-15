@@ -5,7 +5,7 @@ import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import SectionLoader from "@/components/SectionLoader/SectionLoader";
 import { Button } from "@/components/ui/button";
-import { Heart, Loader2, ChevronDown } from "lucide-react";
+import { Heart, Loader2, ChevronDown, ExternalLink, Pencil, Trash2, AlertTriangle, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { HeartFilledIcon } from "@radix-ui/react-icons";
+import { SUPPORTED_LANGUAGES, TRANSLATION_WARNINGS } from "@/lib/translationWarnings";
 
 import { format } from "date-fns";
 
@@ -28,6 +29,11 @@ const ArticlePage = ({ params }) => {
     const [isFavorited, setIsFavorited] = useState(false);
     const [favoriting, setFavoriting] = useState(false);
     const [authorsExpanded, setAuthorsExpanded] = useState(false);
+
+    // Translation state
+    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [translation, setTranslation] = useState(null);
+    const [translating, setTranslating] = useState(false);
 
     const { isAdmin, user } = useAuthStore(); // Access user and admin state from Zustand
     const { email, userId, name } = user || {};
@@ -122,6 +128,31 @@ const ArticlePage = ({ params }) => {
         if (userId) fetchFavoriteStatus(); // Fetch favorite status when user is logged in
     }, [id, userId]);
 
+    const handleTranslate = async (langCode) => {
+        if (langCode === selectedLanguage) {
+            // Clicking the same language again → revert to English
+            setSelectedLanguage(null);
+            setTranslation(null);
+            return;
+        }
+
+        setTranslating(true);
+        try {
+            const res = await fetch(
+                `/api/articles/${id}/translate?lang=${langCode}`
+            );
+            if (!res.ok) throw new Error("Translation failed");
+            const data = await res.json();
+            setTranslation(data);
+            setSelectedLanguage(langCode);
+        } catch (e) {
+            console.error("Translation error:", e);
+            toast.error("Failed to load translation. Please try again.");
+        } finally {
+            setTranslating(false);
+        }
+    };
+
     const handleDelete = async () => {
         setDeleting(true);
         try {
@@ -158,7 +189,9 @@ const ArticlePage = ({ params }) => {
                             <div className="flex flex-col gap-16">
                                 <div className="article-page__article-details">
                                     <h1 className="article-page__title heading-tertiary">
-                                        {article.title}
+                                        {selectedLanguage && translation
+                                            ? translation.translated_title
+                                            : article.title}
                                     </h1>
                                     <div className="mb-4">
                                         <div className="flex">
@@ -315,22 +348,103 @@ const ArticlePage = ({ params }) => {
                                 </div>
                             </div>
 
+                            {/* Translation warning banner */}
+                            {selectedLanguage && translation && (
+                                <div className="article-page__translation-warning">
+                                    <div className="article-page__translation-warning-header">
+                                        <AlertTriangle className="w-8 h-8" />
+                                        <span className="w-700">
+                                            {SUPPORTED_LANGUAGES.find(
+                                                (l) =>
+                                                    l.code ===
+                                                    selectedLanguage
+                                            )?.nativeName || selectedLanguage}
+                                        </span>
+                                    </div>
+                                    <p className="article-page__translation-warning-native">
+                                        {
+                                            TRANSLATION_WARNINGS[
+                                                selectedLanguage
+                                            ]?.native
+                                        }
+                                    </p>
+                                    <p className="article-page__translation-warning-english">
+                                        {
+                                            TRANSLATION_WARNINGS[
+                                                selectedLanguage
+                                            ]?.english
+                                        }
+                                    </p>
+                                </div>
+                            )}
+
                             <div className="article-page__summary">
                                 <h2 className="article-page__summary-title w-700">
                                     Summary
                                 </h2>
                                 <div
                                     dangerouslySetInnerHTML={{
-                                        __html: article.summary,
+                                        __html:
+                                            selectedLanguage && translation
+                                                ? translation.translated_summary
+                                                : article.summary,
                                     }}
                                 ></div>
                             </div>
-                            <div
-                                className="article-page__content-text apicss-body"
-                                dangerouslySetInnerHTML={{
-                                    __html: article.innertext,
-                                }}
-                            ></div>
+
+                            {translating ? (
+                                <div className="article-page__translating">
+                                    <Loader2 className="h-12 w-12 animate-spin" />
+                                    <p>Translating article...</p>
+                                </div>
+                            ) : (
+                                <div
+                                    className="article-page__content-text apicss-body"
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            selectedLanguage && translation
+                                                ? translation.translated_innertext
+                                                : article.innertext,
+                                    }}
+                                ></div>
+                            )}
+
+                            {/* Language selector */}
+                            <div className="article-page__translation-selector">
+                                <div className="article-page__translation-selector-header">
+                                    <Globe className="w-7 h-7" />
+                                    <h3>Read in another language</h3>
+                                </div>
+                                <div className="article-page__language-buttons">
+                                    {selectedLanguage && (
+                                        <button
+                                            className="article-page__lang-btn article-page__lang-btn--active"
+                                            onClick={() => {
+                                                setSelectedLanguage(null);
+                                                setTranslation(null);
+                                            }}
+                                        >
+                                            English
+                                        </button>
+                                    )}
+                                    {SUPPORTED_LANGUAGES.map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            className={`article-page__lang-btn ${
+                                                selectedLanguage === lang.code
+                                                    ? "article-page__lang-btn--selected"
+                                                    : ""
+                                            }`}
+                                            onClick={() =>
+                                                handleTranslate(lang.code)
+                                            }
+                                            disabled={translating}
+                                        >
+                                            {lang.nativeName}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                             <div className="article-page__actions">
                                 {article.article_link && (
                                     <Link
@@ -339,6 +453,7 @@ const ArticlePage = ({ params }) => {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
+                                        <ExternalLink className="w-7 h-7" />
                                         Read Original Paper
                                     </Link>
                                 )}
@@ -349,6 +464,7 @@ const ArticlePage = ({ params }) => {
                                             className="btn btn-primary"
                                             rel="noopener noreferrer"
                                         >
+                                            <Pencil className="w-7 h-7" />
                                             Edit Article
                                         </Link>
                                         <Button
@@ -363,7 +479,10 @@ const ArticlePage = ({ params }) => {
                                                     Deleting...
                                                 </>
                                             ) : (
-                                                "Delete"
+                                                <>
+                                                    <Trash2 className="w-7 h-7" />
+                                                    Delete
+                                                </>
                                             )}
                                         </Button>
                                     </>

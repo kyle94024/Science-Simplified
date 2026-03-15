@@ -131,6 +131,80 @@ Make your output simpler in language than the example provided.
     }
   }
 
+/**
+ * Translate HTML content from English to target language, preserving all
+ * HTML tags and apicss-* class attributes exactly.
+ */
+export async function translateHtmlContent(htmlContent, targetLanguage, languageName) {
+    try {
+        const instruction = `
+You are a medical article translator. Translate the following HTML content from English to ${languageName}.
+
+CRITICAL RULES — follow these exactly:
+1. Translate ONLY the human-readable text content between HTML tags.
+2. NEVER modify, remove, or add any HTML tags (<div>, <h1>, <h2>, <p>, <span>, etc.).
+3. NEVER modify any class="..." attributes. Every class attribute must remain exactly as-is in the output.
+4. NEVER modify any other HTML attributes (id, style, href, etc.).
+5. Medical and scientific terms should use the standard accepted terminology in ${languageName}. If no standard translation exists, keep the English term and add a parenthetical translation.
+6. Output ONLY the translated HTML. No markdown fences, no explanations, no preamble.
+        `.trim();
+
+        const stream = await openai.chat.completions.create(
+            {
+                model: "gpt-4.1-mini",
+                messages: [
+                    { role: "system", content: instruction },
+                    { role: "user", content: htmlContent },
+                ],
+                max_tokens: 32768,
+                temperature: 0.3,
+                stream: true,
+            },
+            { responseType: "stream" }
+        );
+
+        let result = "";
+        for await (const chunk of stream) {
+            if (chunk.choices?.[0]?.delta?.content) {
+                result += chunk.choices[0].delta.content;
+            }
+        }
+
+        // Strip markdown fences if present
+        if (result.startsWith("```html")) {
+            result = result.replace(/^```html\s*/, "").replace(/\s*```$/, "");
+        }
+
+        return result.trim();
+    } catch (error) {
+        console.error(`Error translating content to ${languageName}:`, error);
+        throw error;
+    }
+}
+
+/**
+ * Translate plain text (e.g. article title) from English to target language.
+ */
+export async function translatePlainText(text, targetLanguage, languageName) {
+    try {
+        const response = await openai.chat.completions.create({
+            model: "gpt-4.1-nano",
+            messages: [
+                {
+                    role: "system",
+                    content: `Translate the following text from English to ${languageName}. Output ONLY the translation, nothing else. For medical/scientific terms, use the standard accepted terminology in ${languageName}.`,
+                },
+                { role: "user", content: text },
+            ],
+            temperature: 0.3,
+        });
+        return response.choices[0].message.content.trim();
+    } catch (error) {
+        console.error(`Error translating text to ${languageName}:`, error);
+        throw error;
+    }
+}
+
 // Utility function to convert Markdown to HTML
 function markdownToHtml(markdown) {
     return marked(markdown);

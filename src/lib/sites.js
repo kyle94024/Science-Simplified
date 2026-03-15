@@ -32,7 +32,7 @@ export const sites = {
       //Text
       text_homeTitleDescription: "Collection of simplified NF articles certified by experts.",
       text_exploreAllTitle: "We give knowledge to NF patients, families, and caregivers",
-      text_exploreAllDescription: "Collection of simplified NF articles certified by experts. Powered by REiNS.",
+      text_exploreAllDescription: "Collection of simplified NF articles certified by experts.",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Neurofibromatosis to patients, families, and caregivers. We aim to empower those affected by NF with the knowledge and resources they need to navigate their journey.",
       // About
       about_teamMember1Image: "kyle.png",
@@ -63,6 +63,13 @@ export const sites = {
       about_supporter2Height: 100,
       about_supporter2Link: "https://ccrod.cancer.gov/confluence/plugins/servlet/mobile?contentId=141000895#content/view/141000895",
       about_supporter2Hidden: false,
+
+      about_supporter3Logo: "nfcollective.jpg",
+      about_supporter3Name: "NF Collective",
+      about_supporter3Width: 400,
+      about_supporter3Height: 250,
+      about_supporter3Link: "https://nfcollective.org/",
+      about_supporter3Hidden: false,
 
       about_mission1: "NF Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by all forms of Neurofibromatosis and schwannomatosis.",
       about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in NF research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the NF community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
