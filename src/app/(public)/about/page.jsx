@@ -4,7 +4,7 @@ import { Mail, ExternalLink } from "lucide-react";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import Image from "next/image";
-import Marquee from "react-fast-marquee";
+import DraggableCarousel from "@/components/DraggableCarousel/DraggableCarousel";
 import { tenant } from "@/lib/config";
 
 import { query } from "@/lib/db";
@@ -244,17 +244,7 @@ export default async function AboutPage() {
                             {tenant.about_contributorsDescription}
                         </p>
                         <div className={`${aboutPageClass}__experts-container`}>
-                            <Marquee
-                                pauseOnHover={true}
-                                speed={40}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                }}
-                                autoFill={true}
-                                gradient={false}
+                            <DraggableCarousel
                                 className={`${aboutPageClass}__experts-marquee`}
                             >
                                 {experts.length > 0 ? (
@@ -325,7 +315,7 @@ export default async function AboutPage() {
                                 ) : (
                                     <p>No editors available at this time.</p>
                                 )}
-                            </Marquee>
+                            </DraggableCarousel>
                         </div>
                     </section>
 

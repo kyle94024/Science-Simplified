@@ -35,6 +35,9 @@ const ArticlePage = ({ params }) => {
     const [translation, setTranslation] = useState(null);
     const [translating, setTranslating] = useState(false);
 
+    // Scroll progress
+    const [scrollProgress, setScrollProgress] = useState(0);
+
     const { isAdmin, user } = useAuthStore(); // Access user and admin state from Zustand
     const { email, userId, name } = user || {};
 
@@ -128,6 +131,17 @@ const ArticlePage = ({ params }) => {
         if (userId) fetchFavoriteStatus(); // Fetch favorite status when user is logged in
     }, [id, userId]);
 
+    // Scroll progress bar
+    useEffect(() => {
+        const onScroll = () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            setScrollProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     const handleTranslate = async (langCode) => {
         if (langCode === selectedLanguage) {
             // Clicking the same language again → revert to English
@@ -174,6 +188,10 @@ const ArticlePage = ({ params }) => {
 
     return (
         <div className="article-page">
+            <div
+                className="article-page__progress-bar"
+                style={{ width: `${scrollProgress}%` }}
+            />
             <Navbar />
             <ToastContainer />
             <div className="article-page__content padding">

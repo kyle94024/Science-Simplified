@@ -25,17 +25,32 @@
         border-radius: 9999px;
         border: 1px solid #e5e7eb;
         font-size: 1.6rem; // Added to scale up the text
-
         height: 5rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(76, 177, 159, 0.12);
+        }
     }
 
     &__button {
         border-radius: 100%;
         background-color: #111827;
         color: white;
-
         width: 5rem;
         height: 5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
 
         &-icon {
             width: 2.4rem; // Increased from 1.5rem

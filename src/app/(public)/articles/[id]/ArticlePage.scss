@@ -2,14 +2,24 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    
+
     font-family: sans-serif;
 
+    &__progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--color-primary);
+        z-index: 9999;
+        transition: width 0.1s linear;
+    }
 
     &__content {
         flex-grow: 1;
         padding-top: 5rem;
         padding-bottom: 8rem;
+        animation: fadeIn 0.4s ease-out;
     }
 
     &__image-container {
@@ -117,8 +127,9 @@
     &__summary {
         background-color: #f9f9f9;
         padding: 2.4rem;
-        border-radius: 0.64rem;
+        border-radius: 0 0.64rem 0.64rem 0;
         margin-bottom: 3.2rem;
+        border-left: 4px solid var(--color-primary);
 
         &-title {
             font-size: 1.92rem;

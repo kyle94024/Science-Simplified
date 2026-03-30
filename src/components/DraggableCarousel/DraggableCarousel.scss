@@ -1,0 +1,52 @@
+.draggable-carousel-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.draggable-carousel {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+    padding: 1rem 0 2rem;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &--grabbing {
+        cursor: grabbing;
+        scroll-snap-type: none;
+
+        * {
+            pointer-events: none;
+        }
+    }
+
+    > * {
+        scroll-snap-align: start;
+        flex-shrink: 0;
+    }
+}
+
+.draggable-carousel-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4rem;
+    z-index: 1;
+    pointer-events: none;
+
+    &--left {
+        left: 0;
+        background: linear-gradient(to right, var(--color-bg, #fff), transparent);
+    }
+
+    &--right {
+        right: 0;
+        background: linear-gradient(to left, var(--color-bg, #fff), transparent);
+    }
+}

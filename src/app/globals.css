@@ -44,24 +44,24 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #233437;
+    background: var(--color-primary-dark, #233437);
     transition: all 0.2s;
     border-radius: 3rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #233437;
+    background: var(--color-primary-dark, #233437);
 }
 
 /* text selection color */
 ::-moz-selection {
     color: #fff;
-    background: #233437;
+    background: var(--color-primary-dark, #233437);
 }
 
 ::selection {
     color: #fff;
-    background: #233437;
+    background: var(--color-primary-dark, #233437);
 }
 
 /* Typography with media queries */
@@ -188,13 +188,17 @@ body {
     line-height: normal;
     text-decoration: none;
     text-wrap: nowrap;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     cursor: pointer;
+
+    &:active:not(:disabled) {
+        transform: scale(0.97);
+    }
 
     &:focus-visible {
         outline: 2px solid var(--color-primary);
@@ -224,6 +228,7 @@ body {
 
     &:hover:not(:disabled) {
         background-color: rgba(11, 22, 24, 0.9);
+        box-shadow: 0 4px 12px rgba(11, 22, 24, 0.2);
     }
 }
 
@@ -243,6 +248,7 @@ body {
 
     &:hover:not(:disabled) {
         background: #3d9485;
+        box-shadow: 0 4px 12px rgba(76, 177, 159, 0.3);
     }
 }
 
@@ -252,6 +258,7 @@ body {
 
     &:hover:not(:disabled) {
         background: #dc2626;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 }
 
@@ -840,6 +847,30 @@ body {
 
 .animate-slideInUp {
     animation: slideInUp 0.3s ease-out;
+}
+
+.animate-stagger-1 {
+    animation: slideInUp 0.5s ease-out 0.1s both;
+}
+.animate-stagger-2 {
+    animation: slideInUp 0.5s ease-out 0.2s both;
+}
+.animate-stagger-3 {
+    animation: slideInUp 0.5s ease-out 0.35s both;
+}
+.animate-stagger-4 {
+    animation: slideInUp 0.5s ease-out 0.5s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-fadeIn,
+    .animate-slideInUp,
+    .animate-stagger-1,
+    .animate-stagger-2,
+    .animate-stagger-3,
+    .animate-stagger-4 {
+        animation: none !important;
+    }
 }
 
 @layer base {

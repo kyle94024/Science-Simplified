@@ -88,7 +88,7 @@ function HomeContent() {
                 <section className="home__hero padding">
                     <div className="boxed">
                         <div className="home__hero__content">
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 animate-stagger-1">
                                 <h1 className="heading-primary">
                                     {tenant.disease}
                                 </h1>
@@ -96,14 +96,16 @@ function HomeContent() {
                                     Information Made Simple
                                 </h2>
                             </div>
-                            <p className="body-large">
+                            <p className="body-large animate-stagger-2">
                                 {tenant.text_homeTitleDescription}{" "}
                                 {/* <span className="w-700 color-green-dark">
                                     Powered by Innovation.
                                 </span> */}
                             </p>
-                            <SearchArticles
-                               mode="home" />
+                            <div className="animate-stagger-3">
+                                <SearchArticles
+                                   mode="home" />
+                            </div>
                         </div>
                     </div>
                 </section>
