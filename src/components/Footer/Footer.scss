@@ -1,5 +1,6 @@
 .footer {
     background-color: var(--color-footer-bg);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
 
     padding-top: 8rem;
     padding-bottom: 8rem;
@@ -35,10 +36,11 @@
 
     &__social-link {
         color: #676767;
-        transition: color 0.3s ease;
+        transition: color 0.3s ease, transform 0.3s ease;
 
         &:hover {
-            color: #1f2937;
+            color: var(--color-primary);
+            transform: translateY(-2px);
         }
     }
 
@@ -79,11 +81,26 @@
         color: #676767;
         text-decoration: none;
         font-size: 1.8rem;
-
+        position: relative;
         transition: color 0.3s ease;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--color-primary);
+            transition: width 0.3s ease;
+        }
 
         &:hover {
             color: #1f2937;
+
+            &::after {
+                width: 100%;
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 "use client";
 import "./Navbar.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { tenant } from "@/lib/config";
@@ -12,12 +13,20 @@ export default function Navbar() {
     const { user, isAdmin, role } = useAuthStore();
     const { logout } = useAuth();
     const [navbarOpen, setNavbarOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 10);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     const toggleNavbar = () => setNavbarOpen(!navbarOpen);
     const navbrand = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 
     return (
-        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : ""}`}>
+        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
             <div className="navbar-inner boxed padding">
                 {/* Left logo */}
                 <Link href="/" className="navbrand">
@@ -32,22 +41,27 @@ export default function Navbar() {
 
                 {/* Main nav */}
                 <ul className="nav-links">
-                    <li>
-                        <Link href="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link href="/articles">Articles</Link>
-                    </li>
-                    <li>
-                        <Link href="/clinical-trials">Clinical Trials</Link>
-                    </li>
-
-                    <li>
-                        <Link href="/about">About</Link>
-                    </li>
-                    <li>
-                        <Link href="/contact">Contact Us</Link>
-                    </li>
+                    {[
+                        { href: "/", label: "Home" },
+                        { href: "/articles", label: "Articles" },
+                        { href: "/clinical-trials", label: "Clinical Trials" },
+                        { href: "/about", label: "About" },
+                        { href: "/contact", label: "Contact Us" },
+                    ].map((item) => (
+                        <li key={item.href}>
+                            <Link
+                                href={item.href}
+                                className={
+                                    pathname === item.href ||
+                                    (item.href !== "/" && pathname.startsWith(item.href))
+                                        ? "active"
+                                        : ""
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        </li>
+                    ))}
                     
 
                     {/* Editor dropdown */}
