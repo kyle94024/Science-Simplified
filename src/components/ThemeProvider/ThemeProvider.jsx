@@ -14,6 +14,8 @@ export default function ThemeProvider({ children }) {
         document.documentElement.style.setProperty('--color-contactUsColor', tenant.theme.contactUsColor);
         document.documentElement.style.setProperty('--color-author-text-color', tenant.theme.authorTextColor);
         document.documentElement.style.setProperty('--color-footer-bg', tenant.theme.footerBGColor);
+        document.documentElement.style.setProperty('--color-pill-text',tenant.theme.pillTextColor || '#0f172a' // fallback default
+     );
     }, []);
 
     return children;

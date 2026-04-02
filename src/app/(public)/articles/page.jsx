@@ -27,30 +27,30 @@ const ArticleSearchPage = () => {
     const isHS = tenant.shortName === "HS";
 
     useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const response = await fetch(
-  `/api/articles?search=${searchQuery}&sort=${sortBy}`
-);
-                if (!response.ok) throw new Error("Failed to fetch articles");
-                const data = await response.json();
-                setArticles(data);
-            } catch (error) {
-                console.error("Error fetching articles:", error);
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchArticles();
-    }, []);
+    const fetchArticles = async () => {
+        try {
+            const response = await fetch(
+                `/api/articles?search=${searchQuery}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch articles");
+            const data = await response.json();
+            setArticles(data);
+        } catch (error) {
+            console.error("Error fetching articles:", error);
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchArticles();
+}, [searchQuery, sortBy]); 
 
    const sortArticles = (articlesToSort) => {
     if (sortBy === "publication") {
         return [...articlesToSort].sort((a, b) => {
-            const dateA = Date.parse(a.publication_date);
-            const dateB = Date.parse(b.publication_date);
-
+            const dateA = new Date(a.publication_date).getTime();
+const dateB = new Date(b.publication_date).getTime();
             if (isNaN(dateA)) return 1;
             if (isNaN(dateB)) return -1;
 

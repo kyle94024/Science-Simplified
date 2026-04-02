@@ -56,7 +56,7 @@
 
 .trial-card__pill {
   background: var(--color-footer-bg);
-  color: #0f172a;
+  color: var(--color-pill-text, #0f172a);
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;

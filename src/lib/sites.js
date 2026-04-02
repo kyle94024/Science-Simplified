@@ -1110,6 +1110,7 @@ export const sites = {
         contactUsColor: "#701616",   // red accent
         authorTextColor: "#666666",  // gray for secondary text
         footerBGColor: "#151611",    // dark/black footer
+          pillTextColor: "#fdf4f4ff",
       },
       // Images (Home)
       // homeBG: "RUNX1_homeBG.png", //home/homeBG
