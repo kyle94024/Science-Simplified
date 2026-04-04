@@ -93,8 +93,8 @@ export function buildDefaultSections(tenantConfig) {
     content: {
       name: "Kyle Wan",
       role: "Founder",
-      photoUrl: `${assetBase}/kyle.png`,
-      story: "<p>In 2023, my grandma was diagnosed with pulmonary adenocarcinoma. She didn't fully understand her diagnosis, and that lack of understanding delayed her treatment. When I spoke with a family member living with a rare disease, I realized this wasn't just a one-off problem — many patients struggle to keep up with the research that could shape their care.</p><p>That moment set me on a journey to make scientific research more accessible, especially for smaller disease communities where clear, reliable information can be hard to find. I believe every patient and family deserves to understand the science behind their condition, and that's why I started this platform.</p>",
+      photoUrl: `${assetBase}/withgrandma.jpg`,
+      story: "<p>In 2023, my grandma was diagnosed with pulmonary adenocarcinoma, more commonly known as lung cancer. However, she didn't fully understand her diagnosis, and that lack of understanding delayed her treatment. When I spoke with a family member living with Neurofibromatosis, I realized this wasn't just a one-off story — many patients struggle to keep up with the research that could shape their care, because research is hard to understand for many patients like my grandmother and uncle.</p><p>That moment set me on a journey to make scientific research more accessible, especially for smaller disease communities where clear, reliable information can be hard to find. I believe every patient and family deserves to understand and stay up-to-date with the science behind their condition, and that's why I started this platform.</p>",
     },
   });
 
