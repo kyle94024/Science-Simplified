@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Save, RotateCcw, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-import withAuth from "@/components/withAuth/withAuth";
+import { withAuth } from "@/components/withAuth/withAuth";
 import { PageHeader } from "@/components/admin";
 import AboutSectionList from "@/components/admin/about/AboutSectionList";
 import AddSectionDialog from "@/components/admin/about/AddSectionDialog";
