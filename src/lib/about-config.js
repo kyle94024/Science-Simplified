@@ -64,22 +64,17 @@ export function buildDefaultSections(tenantConfig) {
     visible: true,
     content: {
       title: "How It Works",
-      description: "<p>Every article on our platform goes through a rigorous process to ensure accuracy and accessibility.</p>",
+      description: "<p>Every article on our platform goes through a careful process to ensure it's both accurate and easy to understand.</p>",
       steps: [
         {
-          icon: "Search",
-          title: "Research Discovery",
-          description: "We identify the latest published research relevant to our community.",
-        },
-        {
-          icon: "Cpu",
-          title: "AI Simplification",
-          description: "Complex research papers are transformed into clear, readable summaries using advanced AI.",
+          icon: "BookOpen",
+          title: "Simplified for Everyone",
+          description: "Complex research papers are rewritten into clear, plain-language summaries so that patients, families, and caregivers can actually understand them.",
         },
         {
           icon: "ShieldCheck",
-          title: "Expert Verification",
-          description: "Every summary is reviewed and certified by qualified scientists and clinicians.",
+          title: "Verified by Experts",
+          description: "Every summary is hand-reviewed and certified by scientists and clinicians who specialize in the field — so you can trust what you're reading.",
         },
       ],
     },
@@ -94,7 +89,7 @@ export function buildDefaultSections(tenantConfig) {
       name: "Kyle Wan",
       role: "Founder",
       photoUrl: `${assetBase}/withgrandma.jpg`,
-      story: "<p>In 2023, my grandma was diagnosed with pulmonary adenocarcinoma, more commonly known as lung cancer. However, she didn't fully understand her diagnosis, and that lack of understanding delayed her treatment. When I spoke with a family member living with Neurofibromatosis, I realized this wasn't just a one-off story — many patients struggle to keep up with the research that could shape their care, because research is hard to understand for many patients like my grandmother and uncle.</p><p>That moment set me on a journey to make scientific research more accessible, especially for smaller disease communities where clear, reliable information can be hard to find. I believe every patient and family deserves to understand and stay up-to-date with the science behind their condition, and that's why I started this platform.</p>",
+      story: "<p>In 2023, my grandma was diagnosed with pulmonary adenocarcinoma, more commonly known as lung cancer. However, she didn't fully understand her diagnosis, and that lack of understanding delayed her treatment. When I spoke with a family member living with Neurofibromatosis, I realized this wasn't just a one-off story — many patients struggle to keep up with the research that could shape their care, because research is hard to understand for people without medical backgrounds.</p><p>That moment set me on a journey to make scientific research more accessible, especially for smaller disease communities where clear, reliable information can be hard to find. I believe every patient and family deserves to understand and stay up-to-date with the science behind their condition, and that's why I started this platform.</p>",
     },
   });
 
