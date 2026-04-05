@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-const Editor = dynamic(() => import("@/components/ContentEditor/Editor"), { ssr: false });
+const Editor = dynamic(() => import("@/components/ContentEditor/Editor").then(mod => mod.Editor), { ssr: false });
 
 export default function MissionEditor({ content, onChange }) {
   const update = (field, value) => onChange({ ...content, [field]: value });
