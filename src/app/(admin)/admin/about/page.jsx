@@ -23,17 +23,8 @@ function AdminAboutPage() {
     try {
       const res = await fetch("/api/about-config");
       const data = await res.json();
-
-      if (data.sections && data.source === "db") {
-        setSections(data.sections);
-        setSource("db");
-      } else {
-        // Load defaults
-        const defaultsRes = await fetch("/api/about-config/defaults");
-        const defaultsData = await defaultsRes.json();
-        setSections(defaultsData.sections || []);
-        setSource("defaults");
-      }
+      setSections(data.sections || []);
+      setSource(data.source || "defaults");
     } catch (error) {
       console.error("Error loading about config:", error);
       toast.error("Failed to load about page configuration");

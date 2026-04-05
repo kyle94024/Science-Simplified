@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/neon";
 import { requireAdmin } from "@/lib/adminGuard";
+import { buildDefaultSections } from "@/lib/about-config";
+import { tenant } from "@/lib/config";
 
 export async function GET() {
   try {
@@ -19,7 +21,9 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json({ sections: null, source: "defaults" });
+    // Return defaults inline so no separate auth-gated fetch is needed
+    const defaults = buildDefaultSections(tenant);
+    return NextResponse.json({ sections: defaults, source: "defaults" });
   } catch (error) {
     console.error("Error fetching about config:", error);
     return NextResponse.json(
