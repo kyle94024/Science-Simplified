@@ -18,6 +18,7 @@ import {
     X,
     LayoutDashboard,
     Settings,
+    FileText,
 } from "lucide-react";
 
 const navigationGroups = [
@@ -42,6 +43,12 @@ const navigationGroups = [
         items: [
             { href: "/admin/clinical-trials", label: "Trials List", icon: Beaker },
             { href: "/admin/sync", label: "Sync Trials", icon: RefreshCw },
+        ],
+    },
+    {
+        label: "Website",
+        items: [
+            { href: "/admin/about", label: "About Page", icon: FileText },
         ],
     },
 ];
