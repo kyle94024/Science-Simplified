@@ -90,7 +90,11 @@ function HomeContent() {
                         <div className="home__hero__content">
                             <div className="flex flex-col gap-1 animate-stagger-1">
                                 <h1 className="heading-primary">
-                                    {tenant.disease}
+                                    {tenant.shortName === "RUNX1" ? (
+                                        <><em>RUNX1</em>-FPD</>
+                                    ) : (
+                                        tenant.disease
+                                    )}
                                 </h1>
                                 <h2 className="heading-tertiary w-400 color-green">
                                     Information Made Simple
