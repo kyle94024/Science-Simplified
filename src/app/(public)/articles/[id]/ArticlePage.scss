@@ -537,6 +537,23 @@
     max-width: 800px;
     padding: 0 1rem;
   }
-  
+
+  &__audio-generating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    background: #f0faf7;
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0.8rem;
+    font-size: 1.4rem;
+    color: #555;
+
+    svg {
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+  }
 
 

@@ -36,8 +36,9 @@ const ArticlePage = ({ params }) => {
     const [translation, setTranslation] = useState(null);
     const [translating, setTranslating] = useState(false);
 
-    // Audio regeneration state
+    // Audio state
     const [regeneratingAudio, setRegeneratingAudio] = useState(false);
+    const [audioGenerating, setAudioGenerating] = useState(false);
 
     // Scroll progress
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -145,6 +146,36 @@ const ArticlePage = ({ params }) => {
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
+
+    // Poll for audio generation status (admin only, when no audio yet)
+    useEffect(() => {
+        if (!isAdmin || !article || article.audio_url) return;
+
+        setAudioGenerating(true);
+        let attempts = 0;
+        const maxAttempts = 12; // ~60 seconds
+
+        const interval = setInterval(async () => {
+            attempts++;
+            try {
+                const res = await fetch(`/api/articles/${id}/audio`);
+                const data = await res.json();
+                if (data.audioUrl) {
+                    setArticle((prev) => ({ ...prev, audio_url: data.audioUrl }));
+                    setAudioGenerating(false);
+                    clearInterval(interval);
+                }
+            } catch (e) {
+                // ignore polling errors
+            }
+            if (attempts >= maxAttempts) {
+                setAudioGenerating(false);
+                clearInterval(interval);
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [isAdmin, article?.id, article?.audio_url, id]);
 
     const handleTranslate = async (langCode) => {
         if (langCode === selectedLanguage) {
@@ -389,12 +420,17 @@ const ArticlePage = ({ params }) => {
                             </div>
 
                             {/* Audio Player */}
-                            {article.audio_url && (
+                            {article.audio_url ? (
                                 <AudioPlayer
                                     audioUrl={article.audio_url}
                                     title={article.title}
                                 />
-                            )}
+                            ) : isAdmin && audioGenerating ? (
+                                <div className="article-page__audio-generating">
+                                    <Loader2 size={18} className="animate-spin" />
+                                    <span>Generating article audio...</span>
+                                </div>
+                            ) : null}
 
                             {/* Translation warning banner */}
                             {selectedLanguage && translation && (
