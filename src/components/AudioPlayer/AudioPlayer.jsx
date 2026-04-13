@@ -20,8 +20,6 @@ export default function AudioPlayer({ audioUrl, title }) {
   const [speedIndex, setSpeedIndex] = useState(1); // default 1x
   const [isLoaded, setIsLoaded] = useState(false);
 
-  if (!audioUrl) return null;
-
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -81,6 +79,8 @@ export default function AudioPlayer({ audioUrl, title }) {
   }, []);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  if (!audioUrl) return null;
 
   return (
     <div
