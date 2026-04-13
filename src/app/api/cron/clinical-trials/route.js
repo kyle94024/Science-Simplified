@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
-const TENANTS = ["NF", "EB", "HS"]; // List of tenants to sync
+const TENANTS = [
+  "NF", "EB", "HS", "CF", "RUNX1", "TURNERS", "HUNTINGTONS",
+  "PROGERIA", "AICARDI", "ASHERMANS", "CANAVANS", "RETTS",
+  "RYR1", "ALS", "VITILIGO", "SCLERODERMA",
+];
 
 export async function GET(req) {
   const authHeader = req.headers.get("authorization");
