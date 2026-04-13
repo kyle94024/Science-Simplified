@@ -1172,5 +1172,78 @@ export const sites = {
 
     },
 
+    Scleroderma: {
+      name: "Scleroderma Simplified",
+      shortName: "Scleroderma",
+      pathName: "Scleroderma",
+      fullName: "Scleroderma Simplified",
+      disease: "Scleroderma",
+      apiUrl: process.env.NEXT_PUBLIC_SCLERODERMA_API_URL,
+      domain: "https://ssscleroderma.vercel.app",
+
+      theme: {
+        primary: "#004990",             // SRF Blue
+        primaryDark: "#002952",         // SRF Dark Blue
+        lightGrey: "#E0E0E0",          // Grey for backgrounds
+        text: "#333333",               // Black font
+        background: "#FFFFFF",         // White background
+        contactUsColor: "#F5853F",     // Orange accent
+        authorTextColor: "#004990",    // SRF Blue for author text
+        footerBGColor: "#002952",      // Dark blue footer
+        signUpButtonColor: "#F5853F",  // Orange sign up button
+      },
+      // Images (Home)
+      homeBG: "sclerodermabanner.jpg",
+      homeBG_full: true,
+      homeExploreAllBG: "scleroderma_explore_all.jpg",
+      // Images (General)
+      logoWithText: "scleroderma_logo.png",
+      articleThumbnailPlaceholder: "home/sclerodermabanner.jpg",
+      contactUsBGLeft: "scleroderma_explore_all.jpg",
+      contactUsBGRight: "scleroderma_explore_all.jpg",
+
+      loginBGTop: "sclerodermabanner.jpg",
+      loginBGBottom: "scleroderma_explore_all.jpg",
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Scleroderma articles certified by experts.",
+      text_exploreAllTitle: "We give knowledge to Scleroderma patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Scleroderma articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Scleroderma to patients, families, and caregivers. We aim to empower those affected by Scleroderma with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "withgrandma.jpg",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Scleroderma community.",
+
+      about_teamMember2Image: "expert-placeholder.png",
+      about_teamMember2Name: "Expert Advisor Placeholder",
+      about_teamMember2Title: "Expert Advisor Placeholder",
+      about_teamMember2Bio: "Placeholder Bio",
+
+      about_teamMember3Image: "expert-placeholder.png",
+      about_teamMember3Name: "Expert Advisor Placeholder",
+      about_teamMember3Title: "Expert Advisor Placeholder",
+      about_teamMember3Bio: "Placeholder Bio",
+
+      about_supporter1Logo: "expert-placeholder.png",
+      about_supporter1Name: "Scleroderma Research Foundation",
+      about_supporter1Width: 400,
+      about_supporter1Height: 100,
+      about_supporter1Link: "https://srfcure.org/",
+      about_supporter1Hidden: true,
+
+      about_mission1: "Scleroderma Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Scleroderma.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Scleroderma research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Scleroderma community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Scleroderma community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Scleroderma with the community.",
+      about_getInvolvedDescription: "Scleroderma Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Scleroderma community",
+
+      about_our_mission: "our-mission.jpg",
+
+    },
+
   };
   
