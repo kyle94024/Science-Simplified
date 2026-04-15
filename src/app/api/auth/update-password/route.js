@@ -4,9 +4,57 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
-        const { currentPassword, newPassword, email } = await req.json();
+        const body = await req.json();
 
-        // Get user from the database (replace with session user info)
+        // =====================================
+        // 🔹 RESET PASSWORD (via token)
+        // =====================================
+        if (body.token && body.newPassword) {
+            const { token, newPassword } = body;
+
+            const userResult = await query(
+                "SELECT * FROM email_credentials WHERE reset_token = $1",
+                [token]
+            );
+
+            if (userResult.rows.length === 0) {
+                return NextResponse.json(
+                    { message: "Invalid or expired token" },
+                    { status: 400 }
+                );
+            }
+
+            const user = userResult.rows[0];
+
+            // Check if token expired
+            if (!user.reset_token_expiry || new Date(user.reset_token_expiry) < new Date()) {
+                return NextResponse.json(
+                    { message: "Token has expired" },
+                    { status: 400 }
+                );
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            await query(
+                `UPDATE email_credentials
+                 SET password_hash = $1,
+                     reset_token = NULL,
+                     reset_token_expiry = NULL
+                 WHERE email = $2`,
+                [hashedPassword, user.email]
+            );
+
+            return NextResponse.json({
+                message: "Password reset successful",
+            });
+        }
+
+        // =====================================
+        // 🔹 NORMAL PASSWORD CHANGE (logged-in user)
+        // =====================================
+        const { currentPassword, newPassword, email } = body;
+
         const userResult = await query(
             "SELECT * FROM email_credentials WHERE email = $1",
             [email]
@@ -20,6 +68,7 @@ export async function POST(req) {
         }
 
         const user = userResult.rows[0];
+
         const passwordMatch = await bcrypt.compare(
             currentPassword,
             user.password_hash
@@ -32,16 +81,17 @@ export async function POST(req) {
             );
         }
 
-        // Hash new password
         const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
-        // Update password in the database
         await query(
             "UPDATE email_credentials SET password_hash = $1 WHERE email = $2",
             [newPasswordHash, email]
         );
 
-        return NextResponse.json({ message: "Password updated successfully" });
+        return NextResponse.json({
+            message: "Password updated successfully",
+        });
+
     } catch (error) {
         console.error("Update password error:", error);
         return NextResponse.json(

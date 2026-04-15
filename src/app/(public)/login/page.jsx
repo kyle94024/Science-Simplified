@@ -41,7 +41,7 @@ export default function LoginForm() {
     }, []);
 
     return (
-        <main className="login-page">
+        <main className={`login-page ${tenant.shortName === "RUNX1" ? "runx1-login" : ""}`}>
             <Navbar />
             <div className="login-page__body">
                 <div className="login-form">
@@ -97,12 +97,12 @@ export default function LoginForm() {
                                 </button>
                             </div>
                         </div>
-                        {/* <a
-                            href="#forgot-password"
+                        <a
+                            href="/forgot-password"
                             className="login-form__forgot-password"
                         >
                             Forgot password?
-                        </a> */}
+                        </a>
                         <Button
                             type="submit"
                             className="login-form__submit"
@@ -123,6 +123,7 @@ export default function LoginForm() {
                         <a href="/signup" className="login-form__signup-link">
                             Sign up here
                         </a>
+                        
                     </p>
                 </div>
             </div>

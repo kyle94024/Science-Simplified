@@ -5,7 +5,7 @@ import { tenant as defaultTenant } from "@/lib/config";
 
 const SYSTEM_PROMPT = `
 You are a medical communicator trained to write clinical information for patients
-at a high-school reading level (grade 10–12).
+at a high-school reading level (grade 12).
 
 Rewrite the provided text to be:
 - Clear, friendly, accurate

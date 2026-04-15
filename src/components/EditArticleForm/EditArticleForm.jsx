@@ -32,7 +32,7 @@ const predefinedTags = [
     "Clinical Trial",
     "Meta-Analysis",
     "Review",
-    "REiNS",
+    "Runx1 Research Program",
     "Clinical Research",
     "Basic Science",
     "Artificial Intelligence",

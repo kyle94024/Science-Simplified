@@ -47,33 +47,22 @@ const ArticleSearchPage = () => {
 }, [searchQuery, sortBy]); 
 
    const sortArticles = (articlesToSort) => {
-  if (sortBy === "publication" || sortBy === "recent") {
-    return [...articlesToSort].sort((a, b) => {
-      const dateA = parseDate(a.publication_date);
-      const dateB = parseDate(b.publication_date);
+    if (sortBy === "publication") {
+        return [...articlesToSort].sort((a, b) => {
+            const dateA = new Date(a.publication_date).getTime();
+const dateB = new Date(b.publication_date).getTime();
+            if (isNaN(dateA)) return 1;
+            if (isNaN(dateB)) return -1;
 
-      if (!dateA) return 1;
-      if (!dateB) return -1;
+            return dateB - dateA;
+        });
+    }
 
-      return dateB - dateA;
-    });
-  }
+    if (sortBy === "recent") {
+        return [...articlesToSort].sort((a, b) => b.id - a.id);
+    }
 
-  return articlesToSort;
-};const parseDate = (dateStr) => {
-  if (!dateStr) return null;
-
-  // Try native parsing first
-  const parsed = new Date(dateStr);
-  if (!isNaN(parsed)) return parsed;
-
-  // Handle formats like "2025 Apr"
-  const parts = dateStr.split(" ");
-  if (parts.length === 2) {
-    return new Date(`${parts[0]} ${parts[1]} 01`);
-  }
-
-  return null;
+    return articlesToSort;
 };
     const filteredArticles = articles.filter((article) => {
     const query = searchQuery.toLowerCase();

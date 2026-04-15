@@ -67,7 +67,27 @@ export function useAuth() {
             setLoading(false); // End loading
         }
     };
+const requestPasswordReset = async (email) => {
+    try {
+        const response = await fetch("/api/auth/request-reset", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+        });
 
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || "Failed to send reset link");
+        }
+
+        return await response.json();
+    } catch (error) {
+        setError(error.message);
+        throw error;
+    }
+};
     const logout = async () => {
         setLoading(true); // Start loading during logout
         try {
@@ -88,5 +108,5 @@ export function useAuth() {
         }
     };
 
-    return { loading, login, logout, error };
+    return { loading, login, logout, error, requestPasswordReset };
 }
