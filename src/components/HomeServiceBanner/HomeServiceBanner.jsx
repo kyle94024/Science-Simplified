@@ -18,7 +18,7 @@ function HomeServiceBanner() {
                     {tenant.text_exploreAllDescription}
                 </p>
             </div>
-            <Link href="/articles" className="btn btn-primary-white">
+            <Link href="/articles" className={`btn ${tenant.shortName === "Scleroderma" ? "btn-scleroderma-orange" : "btn-primary-white"}`}>
                 Explore All
             </Link>
         </div>

@@ -16,6 +16,10 @@ export default function ThemeProvider({ children }) {
         document.documentElement.style.setProperty('--color-footer-bg', tenant.theme.footerBGColor);
         document.documentElement.style.setProperty('--color-pill-text',tenant.theme.pillTextColor || '#0f172a' // fallback default
      );
+        if (tenant.theme.fontFamily) {
+            document.documentElement.style.setProperty('--font-body', tenant.theme.fontFamily);
+            document.documentElement.style.setProperty('--font-outfit', tenant.theme.fontFamily);
+        }
     }, []);
 
     return children;

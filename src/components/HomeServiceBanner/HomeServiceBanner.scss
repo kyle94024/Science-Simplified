@@ -37,6 +37,16 @@
             font-size: 1.8rem;
         }
     }
+    .btn-scleroderma-orange {
+        background: #F5853F;
+        color: #fff;
+        border-color: #F5853F;
+
+        &:hover {
+            background: #e0742e;
+            border-color: #e0742e;
+        }
+    }
 }
 
 // Media queries

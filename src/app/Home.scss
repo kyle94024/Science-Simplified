@@ -12,20 +12,6 @@
             background-position: center center;
             background-size: cover;
             min-height: 500px;
-            position: relative;
-
-            // Subtle bottom fade to blend into content below
-            &::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 5%;
-                background: linear-gradient(to bottom, transparent, var(--color-background, #fff));
-                pointer-events: none;
-            }
-
             .home__hero {
                 background: none; // Remove hero's individual background
             }

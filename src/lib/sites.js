@@ -1192,6 +1192,7 @@ export const sites = {
         footerBGColor: "#002952",      // SRF Dark Blue footer
         pillTextColor: "#EBF5FF",      // SRF Blue Tint for tag pills
         darkBgAccent: "#FEC916",       // SRF Yellow — bright accent on dark hero
+        fontFamily: "'Century Gothic', 'Segma', 'Futura', sans-serif",
       },
       // Images (Home)
       homeBG: "gradientwithouttext.png",
@@ -1213,7 +1214,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Scleroderma to patients, families, and caregivers. We aim to empower those affected by Scleroderma with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "withgrandma.jpg",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Scleroderma community.",
