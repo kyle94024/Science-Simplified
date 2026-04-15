@@ -41,7 +41,7 @@ export async function GET() {
 
       FROM clinical_trials
       WHERE is_active = true
-        AND tenant = ${tenant}
+        AND LOWER(tenant) = LOWER(${tenant})
         AND overall_status IN ('RECRUITING', 'ENROLLING_BY_INVITATION')
 
         -- 🔒 ABSOLUTE GATES (DO NOT REMOVE)
