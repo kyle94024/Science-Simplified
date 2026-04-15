@@ -17,7 +17,7 @@
                 background: none; // Remove hero's individual background
             }
 
-            // Light text for dark backgrounds (RUNX1)
+            // Light text for dark backgrounds (RUNX1, Scleroderma, etc.)
             &.dark-bg {
                 .heading-primary,
                 .heading-tertiary,
@@ -25,7 +25,7 @@
                     color: #fff;
                 }
                 .color-green {
-                    color: #701616 !important; // Red accent instead of green
+                    color: var(--color-primary) !important;
                 }
             }
         }
