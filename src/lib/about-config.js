@@ -97,7 +97,7 @@ export function buildDefaultSections(tenantConfig) {
   const members = [];
   for (let i = 1; i <= 3; i++) {
     const name = t[`about_teamMember${i}Name`];
-    if (!name) continue;
+    if (!name || t[`about_teamMember${i}Hidden`]) continue;
     members.push({
       id: `member-default-${i}`,
       name,

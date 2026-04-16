@@ -675,6 +675,7 @@ export const sites = {
       about_teamMember3Name: "Faculty Advisor Name",
       about_teamMember3Title: "Faculty Advisor",
       about_teamMember3Bio: "Placeholder Bio",
+      about_teamMember3Hidden: true,
 
       about_supporter1Logo: "HDSA.webp",
       about_supporter1Name: "Huntington's Disease Society of America",
