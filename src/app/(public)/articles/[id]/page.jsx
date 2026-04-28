@@ -325,9 +325,11 @@ const ArticlePage = ({ params }) => {
                                                         aria-label="Favorite article"
                                                     />
                                                 ))}
-                                            <span className="text-gray-600 text-2xl whitespace-nowrap">
-                                                {isFavorited ? "Saved to favorites" : "Save to favorites"}
-                                            </span>
+                                            {user && (
+                                                <span className="text-gray-600 text-2xl whitespace-nowrap">
+                                                    {isFavorited ? "Saved to favorites" : "Save to favorites"}
+                                                </span>
+                                            )}
 
                                             </div>
                                         </div>

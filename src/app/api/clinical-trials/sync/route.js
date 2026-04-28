@@ -105,7 +105,28 @@ function trialMatchesTenant(trial, tenantKey) {
   const config = TENANT_CONFIG[tenantKey];
   if (!config) return false;
 
-  const conditions = trial.protocolSection?.conditionsModule?.conditions || [];
+  const p = trial.protocolSection;
+
+  /* ---------------- RUNX1 SPECIAL FIX ---------------- */
+  if (tenantKey === "RUNX1") {
+    const haystack = [
+      ...(p.conditionsModule?.conditions || []),
+      ...(p.conditionsModule?.keywords || []),
+      p.identificationModule?.briefTitle || "",
+      p.descriptionModule?.briefSummary || "",
+      p.descriptionModule?.detailedDescription || "",
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesRequired = config.required.some((term) =>
+      haystack.includes(term.toLowerCase())
+    );
+
+    return matchesRequired;
+  }
+
+  const conditions = p.conditionsModule?.conditions || [];
   const haystack = conditions.join(" ").toLowerCase();
 
   const matchesRequired = config.required.some((term) =>
