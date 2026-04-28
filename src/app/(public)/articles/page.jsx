@@ -46,23 +46,51 @@ const ArticleSearchPage = () => {
     fetchArticles();
 }, [searchQuery, sortBy]); 
 
-   const sortArticles = (articlesToSort) => {
-    if (sortBy === "publication") {
-        return [...articlesToSort].sort((a, b) => {
-            const dateA = new Date(a.publication_date).getTime();
-const dateB = new Date(b.publication_date).getTime();
-            if (isNaN(dateA)) return 1;
-            if (isNaN(dateB)) return -1;
+   const parseDateSafe = (dateStr) => {
+  if (!dateStr) return 0;
 
-            return dateB - dateA;
-        });
-    }
+  const months = {
+    Jan: 0, Feb: 1, Mar: 2, Apr: 3,
+    May: 4, Jun: 5, Jul: 6, Aug: 7,
+    Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+  };
 
-    if (sortBy === "recent") {
-        return [...articlesToSort].sort((a, b) => b.id - a.id);
-    }
+  const parts = dateStr.split(" ");
 
-    return articlesToSort;
+  // Case 1: "2025 Aug"
+  if (parts.length === 2) {
+    const [year, month] = parts;
+    return new Date(Number(year), months[month] ?? 0, 1).getTime();
+  }
+
+  // Case 2: "2025 Jul 8"
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return new Date(
+      Number(year),
+      months[month] ?? 0,
+      Number(day)
+    ).getTime();
+  }
+
+  return 0;
+};
+
+const sortArticles = (articlesToSort) => {
+  if (sortBy === "publication") {
+    return [...articlesToSort].sort((a, b) => {
+      const dateA = parseDateSafe(a.publication_date);
+      const dateB = parseDateSafe(b.publication_date);
+
+      return dateB - dateA;
+    });
+  }
+
+  if (sortBy === "recent") {
+    return [...articlesToSort].sort((a, b) => b.id - a.id);
+  }
+
+  return articlesToSort;
 };
     const filteredArticles = articles.filter((article) => {
     const query = searchQuery.toLowerCase();
