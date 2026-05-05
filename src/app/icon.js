@@ -22,6 +22,7 @@ const faviconConfig = {
     HS: { label: "HS", bg: "#7B2CBF", color: "#fff" },
     RUNX1: { label: "R1", bg: "#701616", color: "#fff" },
     Scleroderma: { label: "Sc", bg: "#004990", color: "#fff" },
+    Myositis: { label: "MS", bg: "#191548", color: "#fff" },
 };
 
 export default function Icon() {

@@ -72,7 +72,7 @@ function HomeContent() {
             <section
                 className={`home__header ${
                     useFullWidthBg
-                        ? `fullwidth-bg${tenant.shortName === "RUNX1" || tenant.shortName === "Scleroderma" ? " dark-bg" : ""}`
+                        ? `fullwidth-bg${tenant.shortName === "RUNX1" || tenant.shortName === "Scleroderma" || tenant.shortName === "Myositis" ? " dark-bg" : ""}`
                         : tenant.shortName === "HS" ||
                           tenant.shortName === "CF" ||
                           tenant.shortName === "Vitiligo" ||
@@ -86,7 +86,8 @@ function HomeContent() {
                           tenant.shortName === "Aicardi" ||
                           tenant.shortName === "TS" ||
                           tenant.shortName === "RUNX1" ||
-                          tenant.shortName === "Scleroderma"
+                          tenant.shortName === "Scleroderma" ||
+                          tenant.shortName === "Myositis"
                         ? "background-alt"
                         : ""
                 }`}

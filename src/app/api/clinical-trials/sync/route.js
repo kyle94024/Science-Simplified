@@ -84,6 +84,11 @@ const TENANT_CONFIG = {
     required: ["scleroderma", "systemic sclerosis", "morphea"],
     exclude: [],
   },
+
+  MYOSITIS: {
+    required: ["myositis", "dermatomyositis", "polymyositis", "inclusion body myositis"],
+    exclude: [],
+  },
 };
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
