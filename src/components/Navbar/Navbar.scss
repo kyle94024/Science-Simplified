@@ -239,6 +239,34 @@ header {
         }
     }
 
+    &.myositis-mode {
+        background: #e8e6f5; // Pale blue/lavender tint
+        .nav-links > li > a,
+        .dropdown > span {
+            color: #191548; // Dark navy text
+        }
+        .nav-links > li:hover > a,
+        .nav-links > li:hover > span {
+            color: #5a4fa0;
+        }
+        .nav-links > li > a.active {
+            color: #191548;
+            font-weight: 700;
+        }
+        .auth-buttons .btn {
+            color: #191548;
+            border-color: #191548;
+        }
+        .auth-buttons .btn-primary {
+            background: #191548;
+            border-color: #191548;
+            color: #fff;
+        }
+        .mobile-toggle {
+            color: #191548;
+        }
+    }
+
     &.scleroderma-mode {
         background: #FFFFFF;
         .nav-links > li > a,
@@ -408,6 +436,16 @@ header {
         a,
         button {
             color: #333333;
+        }
+    }
+
+    &.myositis-mode .mobile-menu {
+        background: #e8e6f5;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+        a,
+        button {
+            color: #191548;
         }
     }
 
