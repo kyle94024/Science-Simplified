@@ -312,6 +312,34 @@ const EditArticleForm = ({
     };
 
    // ADDED: Export article to Word
+// Convert HTML to plain text while preserving paragraph breaks.
+// Block elements (p, div, h1-6, li, br, etc.) become newlines, then tags are stripped.
+const htmlToPlainParagraphs = (html) => {
+    if (!html) return [];
+    let text = html;
+    // Convert block-level closing tags and <br> to newlines
+    text = text.replace(/<br\s*\/?>/gi, "\n");
+    text = text.replace(/<\/(?:p|div|h[1-6]|li|blockquote|tr|section|article)>/gi, "\n");
+    text = text.replace(/<(?:hr)\s*\/?>/gi, "\n");
+    // Strip remaining tags
+    text = text.replace(/<[^>]+>/g, "");
+    // Decode common HTML entities
+    text = text
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&mdash;/gi, "—")
+        .replace(/&ndash;/gi, "–");
+    // Split on newlines, trim, drop empty lines
+    return text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+};
+
 const handleExportToWord = async () => {
     if (!articleData) return;
 
@@ -372,15 +400,13 @@ const handleExportToWord = async () => {
                         spacing: { after: 200 },
                     }),
 
-                    ...summary
-                        .replace(/<[^>]+>/g, "")
-                        .split("\n")
-                        .map(
-                            line =>
-                                new Paragraph({
-                                    children: [new TextRun(line)],
-                                })
-                        ),
+                    ...htmlToPlainParagraphs(summary).map(
+                        (line) =>
+                            new Paragraph({
+                                children: [new TextRun(line)],
+                                spacing: { after: 200 },
+                            })
+                    ),
 
                     new Paragraph({
                         text: "",
@@ -398,15 +424,13 @@ const handleExportToWord = async () => {
                         spacing: { after: 200 },
                     }),
 
-                    ...content
-                        .replace(/<[^>]+>/g, "")
-                        .split("\n")
-                        .map(
-                            line =>
-                                new Paragraph({
-                                    children: [new TextRun(line)],
-                                })
-                        ),
+                    ...htmlToPlainParagraphs(content).map(
+                        (line) =>
+                            new Paragraph({
+                                children: [new TextRun(line)],
+                                spacing: { after: 200 },
+                            })
+                    ),
                 ].filter(Boolean),
             },
         ],
