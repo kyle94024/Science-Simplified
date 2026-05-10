@@ -35,7 +35,7 @@ export const sites = {
       text_exploreAllDescription: "Collection of simplified NF articles certified by experts.",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Neurofibromatosis to patients, families, and caregivers. We aim to empower those affected by NF with the knowledge and resources they need to navigate their journey.",
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the NF community.",
@@ -119,7 +119,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Epidermolysis Bullosa to patients, families, and caregivers. We aim to empower those affected by EB with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the EB community.",
@@ -196,7 +196,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Cystic Fibrosis to patients, families, and caregivers. We aim to empower those affected by CF with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the CF community.",
@@ -273,7 +273,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Asherman's Syndrome to patients, families, and caregivers. We aim to empower those affected by Asherman's Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Asherman's Syndrome community.",
@@ -350,7 +350,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Aicardi Syndrome to patients, families, and caregivers. We aim to empower those affected by Aicardi Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
@@ -428,7 +428,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RYR1-related diseases to patients, families, and caregivers. We aim to empower those affected by RYR1-related diseases with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
@@ -506,7 +506,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about ALS to patients, families, and caregivers. We aim to empower those affected by ALS with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the ALS community.",
@@ -583,7 +583,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Rett Syndrome to patients, families, and caregivers. We aim to empower those affected by Rett Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Rett Syndrome community.",
@@ -661,7 +661,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Huntington's Disease to patients, families, and caregivers. We aim to empower those affected by Huntington's Disease with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Huntington's Disease community.",
@@ -740,7 +740,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Progeria to patients, families, and caregivers. We aim to empower those affected by Progeria with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Progeria community.",
@@ -818,7 +818,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Canavan Disease to patients, families, and caregivers. We aim to empower those affected by Canavan Disease with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Canavan Disease community.",
@@ -897,7 +897,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Vitiligo to patients, families, and caregivers. We aim to empower those affected by Vitiligo with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Vitiligo Disease community.",
@@ -975,7 +975,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Turner Syndrome to patients, families, and caregivers. We aim to empower those affected by Turner Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Turner Syndrome community.",
@@ -1054,7 +1054,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about HS to patients, families, and caregivers. We aim to empower those affected by HS with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the HS Disease community.",
@@ -1135,7 +1135,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RUNX1 Familial Platelet Disorder to patients, families, and caregivers. We aim to empower those affected by RUNX1-FPD with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the RUNX1-FPD community.",
@@ -1291,7 +1291,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Myositis to patients, families, and caregivers. We aim to empower those affected by Myositis with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "withgrandma.jpg",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Myositis community.",
