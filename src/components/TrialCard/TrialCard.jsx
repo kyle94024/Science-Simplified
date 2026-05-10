@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, BadgeCheck, FileText, Archive } from "lucide-react";
 import "./TrialCard.scss";
 
 const truncate = (text, len = 160) =>
@@ -21,10 +21,44 @@ const formatStudyType = (type) => {
 
 export default function TrialCard({ trial }) {
   const ageLabel = formatAge(trial.min_age, trial.max_age);
+  const isVerified = !!trial.verified_by;
+  const verifierName = trial.verified_by?.name;
+  const isCompleted = trial.archive_reason === "completed";
+  const hasFindings = !!trial.findings;
+  const similarity = typeof trial.similarity === "number" ? trial.similarity : null;
 
   return (
-    <article className="trial-card article-card">
+    <article className={`trial-card article-card${isVerified ? " trial-card--verified" : ""}`}>
       <div className="trial-card__content">
+        {/* BADGES */}
+        {(isVerified || isCompleted || hasFindings || similarity !== null) && (
+          <div className="trial-card__badges">
+            {similarity !== null && (
+              <span className="trial-card__badge trial-card__badge--fit" title={`Match score: ${Math.round(similarity * 100)}%`}>
+                Best fit: {Math.round(similarity * 100)}%
+              </span>
+            )}
+            {isVerified && (
+              <span className="trial-card__badge trial-card__badge--verified" title={verifierName ? `Verified by ${verifierName}` : "Verified"}>
+                <BadgeCheck size={13} />
+                {verifierName ? `Verified by ${verifierName}` : "Verified"}
+              </span>
+            )}
+            {isCompleted && (
+              <span className="trial-card__badge trial-card__badge--completed">
+                <Archive size={12} />
+                Completed
+              </span>
+            )}
+            {hasFindings && (
+              <span className="trial-card__badge trial-card__badge--findings">
+                <FileText size={12} />
+                Findings published
+              </span>
+            )}
+          </div>
+        )}
+
         {/* TITLE */}
         <h3 className="trial-card__title">
           {trial.short_title || "Clinical Trial"}

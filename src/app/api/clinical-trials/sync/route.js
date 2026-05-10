@@ -1,7 +1,13 @@
 import { sql } from "@/lib/neon";
 import OpenAI from "openai";
-import crypto from "crypto";
 import { tenant as defaultTenant } from "@/lib/config";
+import {
+  TENANT_CONFIG,
+  trialMatchesTenant,
+  buildSourceHash,
+  normalizeDate,
+} from "@/lib/clinicalTrials/tenantConfig";
+import { generateEmbedding } from "@/lib/clinicalTrials/embeddings";
 
 const SYSTEM_PROMPT = `
 You are a medical communicator trained to write clinical information for patients
@@ -19,78 +25,6 @@ Do NOT guarantee benefit.
 Do NOT define the primary condition being studied (e.g. neurofibromatosis, scleroderma, cystic fibrosis, etc.).
 `;
 
-const TENANT_CONFIG = {
-  HS: {
-    required: ["hidradenitis suppurativa", "hidradenitis"],
-    exclude: ["mood", "parkinson", "glioblastoma"],
-  },
-  NF: {
-    required: ["neurofibromatosis", "nf1", "nf2", "schwannomatosis"],
-    exclude: [],
-  },
-  EB: {
-    required: ["epidermolysis bullosa"],
-    exclude: [],
-  },
-  CF: {
-    required: ["cystic fibrosis"],
-    exclude: [],
-  },
-  RUNX1: {
-    required: ["runx1", "familial platelet disorder"],
-    exclude: [],
-  },
-  TURNERS: {
-    required: ["turner syndrome", "turners syndrome", "monosomy x"],
-    exclude: [],
-  },
-  HUNTINGTONS: {
-    required: ["huntington disease", "huntington's disease", "huntingtons"],
-    exclude: [],
-  },
-  PROGERIA: {
-    required: ["progeria", "hutchinson-gilford"],
-    exclude: [],
-  },
-  AICARDI: {
-    required: ["aicardi syndrome", "aicardi-goutieres"],
-    exclude: [],
-  },
-  ASHERMANS: {
-    required: ["asherman syndrome", "ashermans syndrome", "intrauterine adhesion", "intrauterine synechiae"],
-    exclude: [],
-  },
-  CANAVANS: {
-    required: ["canavan disease", "aspartoacylase deficiency"],
-    exclude: [],
-  },
-  RETTS: {
-    required: ["rett syndrome", "mecp2"],
-    exclude: [],
-  },
-  RYR1: {
-    required: ["ryr1", "ryanodine receptor", "malignant hyperthermia", "central core disease"],
-    exclude: [],
-  },
-  ALS: {
-    required: ["amyotrophic lateral sclerosis", "als", "motor neuron disease"],
-    exclude: ["mood", "depression", "caregiver burden"],
-  },
-  VITILIGO: {
-    required: ["vitiligo"],
-    exclude: [],
-  },
-  SCLERODERMA: {
-    required: ["scleroderma", "systemic sclerosis", "morphea"],
-    exclude: [],
-  },
-
-  MYOSITIS: {
-    required: ["myositis", "dermatomyositis", "polymyositis", "inclusion body myositis"],
-    exclude: [],
-  },
-};
-
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const openai = new OpenAI({
@@ -98,72 +32,6 @@ const openai = new OpenAI({
 });
 
 /* ---------------- helpers ---------------- */
-
-function normalizeDate(dateStr) {
-  if (!dateStr) return null;
-  if (/^\d{4}-\d{2}$/.test(dateStr)) return `${dateStr}-01`;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-  return null;
-}
-
-function trialMatchesTenant(trial, tenantKey) {
-  const config = TENANT_CONFIG[tenantKey];
-  if (!config) return false;
-
-  const p = trial.protocolSection;
-
-  /* ---------------- RUNX1 SPECIAL FIX ---------------- */
-  if (tenantKey === "RUNX1") {
-    const haystack = [
-      ...(p.conditionsModule?.conditions || []),
-      ...(p.conditionsModule?.keywords || []),
-      p.identificationModule?.briefTitle || "",
-      p.descriptionModule?.briefSummary || "",
-      p.descriptionModule?.detailedDescription || "",
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    const matchesRequired = config.required.some((term) =>
-      haystack.includes(term.toLowerCase())
-    );
-
-    return matchesRequired;
-  }
-
-  const conditions = p.conditionsModule?.conditions || [];
-  const haystack = conditions.join(" ").toLowerCase();
-
-  const matchesRequired = config.required.some((term) =>
-    haystack.includes(term.toLowerCase())
-  );
-
-  if (!matchesRequired) return false;
-
-  if (config.exclude?.length) {
-    const hasExcluded = config.exclude.some((term) =>
-      haystack.includes(term.toLowerCase())
-    );
-    if (hasExcluded) return false;
-  }
-
-  return true;
-}
-
-function buildSourceHash(trial) {
-  const p = trial.protocolSection;
-  return crypto
-    .createHash("sha256")
-    .update(
-      JSON.stringify({
-        title: p.identificationModule?.briefTitle ?? "",
-        conditions: p.conditionsModule?.conditions ?? [],
-        eligibility: p.eligibilityModule?.eligibilityCriteria ?? "",
-        status: p.statusModule?.overallStatus ?? "",
-      })
-    )
-    .digest("hex");
-}
 
 async function aiCall(prompt) {
   const res = await openai.chat.completions.create({
@@ -483,6 +351,7 @@ async function processStudy(study, tenant) {
   const p = study.protocolSection;
   const nctId = p?.identificationModule?.nctId;
   const newHash = buildSourceHash(study);
+  const isCompleted = p.statusModule?.overallStatus === "COMPLETED";
 
   const aiPayload = {
     shortTitle: await generateShortTitle(study),
@@ -517,7 +386,8 @@ async function processStudy(study, tenant) {
       short_title, ai_summary, ai_summary_updated_at,
       ai_purpose, ai_treatments, ai_design, ai_eligibility,
       ai_participation, ai_leadership, ai_prior_research, ai_locations,
-      source_hash, is_active, last_synced_at
+      source_hash, is_active, last_synced_at,
+      last_seen_at, archive_reason, archived_at
     )
     VALUES (
       ${nctId}, ${tenant}, ${p.statusModule?.overallStatus ?? null},
@@ -538,7 +408,10 @@ async function processStudy(study, tenant) {
       ${aiPayload.leadership},
       ${aiPayload.priorResearch},
       ${aiPayload.locations},
-      ${newHash}, true, NOW()
+      ${newHash}, ${!isCompleted}, NOW(),
+      NOW(),
+      ${isCompleted ? "completed" : null},
+      ${isCompleted ? new Date() : null}
     )
     ON CONFLICT (nct_id) DO UPDATE SET
       short_title = CASE WHEN clinical_trials.short_title_manual IS NULL THEN EXCLUDED.short_title ELSE clinical_trials.short_title END,
@@ -552,6 +425,11 @@ async function processStudy(study, tenant) {
       ai_prior_research = CASE WHEN clinical_trials.ai_prior_research_manual IS NULL THEN EXCLUDED.ai_prior_research ELSE clinical_trials.ai_prior_research END,
       ai_locations = CASE WHEN clinical_trials.ai_locations_manual IS NULL THEN EXCLUDED.ai_locations ELSE clinical_trials.ai_locations END,
       source_hash = CASE WHEN (clinical_trials.short_title_manual IS NOT NULL OR clinical_trials.ai_summary_manual IS NOT NULL OR clinical_trials.ai_purpose_manual IS NOT NULL) THEN clinical_trials.source_hash ELSE EXCLUDED.source_hash END,
+      overall_status = EXCLUDED.overall_status,
+      archive_reason = CASE WHEN EXCLUDED.overall_status = 'COMPLETED' AND clinical_trials.archive_reason IS NULL THEN 'completed' ELSE clinical_trials.archive_reason END,
+      archived_at = CASE WHEN EXCLUDED.overall_status = 'COMPLETED' AND clinical_trials.archived_at IS NULL THEN NOW() ELSE clinical_trials.archived_at END,
+      is_active = CASE WHEN EXCLUDED.overall_status = 'COMPLETED' THEN false ELSE clinical_trials.is_active END,
+      last_seen_at = NOW(),
       last_synced_at = NOW(),
       updated_at = NOW()
   `;
@@ -597,6 +475,9 @@ export async function GET(req) {
         let processed = 0;
         let skipped = 0;
         let errors = 0;
+        const syncStartedAt = new Date();
+        const seenNctIds = [];
+        const processedNctIds = [];
 
         // Step 2: Process each study
         for (let i = 0; i < matchingStudies.length; i++) {
@@ -608,11 +489,15 @@ export async function GET(req) {
             continue;
           }
 
+          seenNctIds.push(nctId);
+
           try {
             const shouldSkip = await checkShouldSkip(nctId, study);
 
             if (shouldSkip) {
               skipped++;
+              // Bump last_seen_at even on skip so lifecycle reconciliation doesn't archive
+              await sql`UPDATE clinical_trials SET last_seen_at = NOW() WHERE nct_id = ${nctId}`;
               send({
                 type: "progress",
                 nctId,
@@ -628,6 +513,7 @@ export async function GET(req) {
             } else {
               await processStudy(study, TENANT);
               processed++;
+              processedNctIds.push(nctId);
               send({
                 type: "progress",
                 nctId,
@@ -656,13 +542,54 @@ export async function GET(req) {
           }
         }
 
-        // Step 3: Complete
+        // Step 3: Lifecycle reconciliation — archive trials we didn't see this run
+        let archivedCount = 0;
+        if (seenNctIds.length > 0) {
+          send({ type: "status", message: "Reconciling lifecycle..." });
+          const archived = await sql`
+            UPDATE clinical_trials
+            SET is_active = false,
+                archive_reason = COALESCE(archive_reason, 'removed_from_ctgov'),
+                archived_at = COALESCE(archived_at, NOW())
+            WHERE LOWER(tenant) = LOWER(${TENANT})
+              AND (last_seen_at IS NULL OR last_seen_at < ${syncStartedAt})
+              AND archive_reason IS NULL
+            RETURNING nct_id
+          `;
+          archivedCount = archived.length;
+        }
+
+        // Step 4: Fire-and-forget embedding generation for processed trials
+        if (processedNctIds.length > 0) {
+          send({ type: "status", message: "Queuing embeddings..." });
+          // Run in background — don't block SSE complete
+          (async () => {
+            try {
+              const trials = await sql`
+                SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
+                       ai_eligibility, ai_eligibility_manual, conditions, embedding_source_hash
+                FROM clinical_trials
+                WHERE nct_id = ANY(${processedNctIds})
+              `;
+              for (let j = 0; j < trials.length; j += 5) {
+                await Promise.allSettled(
+                  trials.slice(j, j + 5).map((t) => generateEmbedding(t))
+                );
+              }
+            } catch (e) {
+              console.error("Embedding generation failed:", e.message);
+            }
+          })();
+        }
+
+        // Step 5: Complete
         send({
           type: "complete",
           message: "Sync complete!",
           processed,
           skipped,
           errors,
+          archived: archivedCount,
           total: matchingStudies.length,
           tenant: TENANT,
         });

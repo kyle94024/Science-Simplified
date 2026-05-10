@@ -78,6 +78,44 @@ export default function SyncPage() {
     }
   };
 
+  const startBackfill = () => {
+    setIsRunning(true);
+    setLog([]);
+    setProgress(null);
+    setStatus('Starting embedding backfill...');
+
+    const eventSource = new EventSource('/api/clinical-trials/backfill-embeddings');
+    eventSourceRef.current = eventSource;
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'status') {
+        setStatus(data.message);
+        setLog((prev) => [...prev, { type: 'info', message: data.message, time: new Date() }]);
+      } else if (data.type === 'progress') {
+        setProgress({ ...data, action: data.status });
+      } else if (data.type === 'complete') {
+        setStatus('Backfill complete!');
+        setIsRunning(false);
+        setLog((prev) => [
+          ...prev,
+          { type: 'complete', message: `🎉 Generated ${data.generated}, skipped ${data.skipped}, empty ${data.empty}, errors ${data.errors}`, time: new Date() },
+        ]);
+        eventSource.close();
+      } else if (data.type === 'fatal') {
+        setStatus('Failed: ' + data.message);
+        setIsRunning(false);
+        eventSource.close();
+      }
+    };
+
+    eventSource.onerror = () => {
+      setIsRunning(false);
+      setStatus('Connection lost');
+      eventSource.close();
+    };
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Clinical Trials Sync</h1>
@@ -86,6 +124,9 @@ export default function SyncPage() {
       <div className="flex gap-4 mb-6">
         <Button onClick={startSync} disabled={isRunning} className="bg-blue-600 hover:bg-blue-700">
           {isRunning ? 'Syncing...' : 'Start Sync'}
+        </Button>
+        <Button onClick={startBackfill} disabled={isRunning} className="bg-purple-600 hover:bg-purple-700">
+          Backfill Embeddings
         </Button>
         {isRunning && (
           <Button onClick={stopSync} variant="destructive">

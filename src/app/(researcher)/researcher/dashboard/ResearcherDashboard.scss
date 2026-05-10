@@ -1,0 +1,141 @@
+.researcher-dashboard {
+  min-height: calc(100vh - 100px);
+  background: #f9fafb;
+  padding: 3rem 1rem;
+
+  &__container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #6b7280;
+      font-size: 1.5rem;
+    }
+  }
+
+  &__loading,
+  &__empty {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 3rem;
+    text-align: center;
+    color: #6b7280;
+
+    p + p {
+      margin-top: 0.4rem;
+      font-size: 1.3rem;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      border-color: var(--color-primary, #4cb19f);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__item-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__item-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: #1f2937;
+  }
+
+  &__item-nct {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: #9ca3af;
+    margin-bottom: 0.6rem;
+  }
+
+  &__item-summary {
+    font-size: 1.3rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  &__item-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    white-space: nowrap;
+
+    &--verified {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    &--completed {
+      background: #f1f1f1;
+      color: #4b5563;
+    }
+
+    &--pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  }
+
+  &__item-arrow {
+    color: #9ca3af;
+    flex-shrink: 0;
+  }
+}

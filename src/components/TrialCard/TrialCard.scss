@@ -76,6 +76,54 @@
   font-weight: 600;
   text-decoration: none;
 }
+.trial-card--verified {
+  border-color: rgba(34, 139, 92, 0.4);
+  box-shadow: 0 0 0 1px rgba(34, 139, 92, 0.15);
+}
+
+.trial-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.trial-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &--verified {
+    background: #e7f5ec;
+    color: #1f7a3c;
+    border: 1px solid #b8e0c4;
+  }
+
+  &--completed {
+    background: #f1f1f1;
+    color: #4b5563;
+    border: 1px solid #d4d4d4;
+  }
+
+  &--findings {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+
+  &--fit {
+    background: rgba(76, 177, 159, 0.12);
+    color: var(--color-primary, #2c7a6c);
+    border: 1px solid rgba(76, 177, 159, 0.3);
+  }
+}
+
 .trial-card__icon {
   width: 48px;
   height: 48px;

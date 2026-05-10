@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/neon";
 import OpenAI from "openai";
-import crypto from "crypto";
-import { Nfc } from "lucide-react";
+import {
+  TENANT_CONFIG,
+  trialMatchesTenant,
+  buildSourceHash,
+  normalizeDate,
+} from "@/lib/clinicalTrials/tenantConfig";
+import { generateEmbedding } from "@/lib/clinicalTrials/embeddings";
 
 const SYSTEM_PROMPT = `
 You are a medical communicator trained to write clinical information for patients
@@ -20,94 +25,6 @@ Do NOT guarantee benefit.
 Do NOT define the primary condition being studied (e.g. neurofibromatosis, scleroderma, cystic fibrosis, etc.).
 `;
 
-const TENANT_CONFIG = {
-
-  HS: {
-    required: ["hidradenitis suppurativa", "hidradenitis"],
-    exclude: ["mood", "parkinson", "glioblastoma"],
-  },
-
-  NF: {
-    required: ["neurofibromatosis", "nf1", "nf2", "schwannomatosis"],
-    exclude: [],
-  },
-
-  EB: {
-    required: ["epidermolysis bullosa"],
-    exclude: [],
-  },
-
-  CF: {
-    required: ["cystic fibrosis"],
-    exclude: [],
-  },
-
-  RUNX1: {
-    required: ["runx1", "familial platelet disorder"],
-    exclude: [],
-  },
-
-  TURNERS: {
-    required: ["turner syndrome", "turners syndrome", "monosomy x"],
-    exclude: [],
-  },
-
-  HUNTINGTONS: {
-    required: ["huntington disease", "huntington's disease", "huntingtons"],
-    exclude: [],
-  },
-
-  PROGERIA: {
-    required: ["progeria", "hutchinson-gilford"],
-    exclude: [],
-  },
-
-  AICARDI: {
-    required: ["aicardi syndrome", "aicardi-goutieres"],
-    exclude: [],
-  },
-
-  ASHERMANS: {
-    required: ["asherman syndrome", "ashermans syndrome", "intrauterine adhesion", "intrauterine synechiae"],
-    exclude: [],
-  },
-
-  CANAVANS: {
-    required: ["canavan disease", "aspartoacylase deficiency"],
-    exclude: [],
-  },
-
-  RETTS: {
-    required: ["rett syndrome", "mecp2"],
-    exclude: [],
-  },
-
-  RYR1: {
-    required: ["ryr1", "ryanodine receptor", "malignant hyperthermia", "central core disease"],
-    exclude: [],
-  },
-
-  ALS: {
-    required: ["amyotrophic lateral sclerosis", "als", "motor neuron disease"],
-    exclude: ["mood", "depression", "caregiver burden"],
-  },
-
-  VITILIGO: {
-    required: ["vitiligo"],
-    exclude: [],
-  },
-
-  SCLERODERMA: {
-    required: ["scleroderma", "systemic sclerosis", "morphea"],
-    exclude: [],
-  },
-
-  MYOSITIS: {
-    required: ["myositis", "dermatomyositis", "polymyositis", "inclusion body myositis"],
-    exclude: [],
-  },
-};
-
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const openai = new OpenAI({
@@ -115,54 +32,6 @@ const openai = new OpenAI({
 });
 
 /* ---------------- helpers ---------------- */
-
-function normalizeDate(dateStr) {
-  if (!dateStr) return null;
-  if (/^\d{4}-\d{2}$/.test(dateStr)) return `${dateStr}-01`;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-  return null;
-}
-
-function trialMatchesTenant(trial, tenantKey) {
-  const config = TENANT_CONFIG[tenantKey];
-  if (!config) return false;
-
-  const conditions = trial.protocolSection?.conditionsModule?.conditions || [];
-
-  const haystack = conditions.join(" ").toLowerCase();
-
-  // MUST match at least one required term
-  const matchesRequired = config.required.some((term) =>
-    haystack.includes(term.toLowerCase())
-  );
-
-  if (!matchesRequired) return false;
-
-  // MUST NOT contain excluded terms
-  if (config.exclude?.length) {
-    const hasExcluded = config.exclude.some((term) =>
-      haystack.includes(term.toLowerCase())
-    );
-    if (hasExcluded) return false;
-  }
-
-  return true;
-}
-
-function buildSourceHash(trial) {
-  const p = trial.protocolSection;
-  return crypto
-    .createHash("sha256")
-    .update(
-      JSON.stringify({
-        title: p.identificationModule?.briefTitle ?? "",
-        conditions: p.conditionsModule?.conditions ?? [],
-        eligibility: p.eligibilityModule?.eligibilityCriteria ?? "",
-        status: p.statusModule?.overallStatus ?? "",
-      })
-    )
-    .digest("hex");
-}
 
 async function aiCall(prompt) {
   const res = await openai.chat.completions.create({
@@ -678,6 +547,9 @@ export async function GET(req, context) {
 
   let allStudies = [];
   let pageToken = null;
+  const syncStartedAt = new Date();
+  const seenNctIds = new Set();
+  const processedTrials = []; // For embedding generation after sync
 
   try {
     do {
@@ -707,6 +579,8 @@ export async function GET(req, context) {
 
       const nctId = p?.identificationModule?.nctId;
       if (!nctId) continue;
+
+      seenNctIds.add(nctId);
 
       const newHash = buildSourceHash(study);
 
@@ -743,7 +617,11 @@ export async function GET(req, context) {
         new Date(existing[0].last_synced_at).getTime() > Date.now() - WEEK_MS &&
         hasAllAI;
 
-      if (shouldSkip) continue;
+      if (shouldSkip) {
+        // Still mark as seen so the lifecycle reconciliation doesn't archive it
+        await sql`UPDATE clinical_trials SET last_seen_at = NOW() WHERE nct_id = ${nctId}`;
+        continue;
+      }
 
       // ---------------- ATOMIC AI GENERATION ----------------
       let aiPayload;
@@ -779,6 +657,8 @@ export async function GET(req, context) {
         continue;
       }
 
+      const isCompleted = p.statusModule?.overallStatus === "COMPLETED";
+
       await sql`
         INSERT INTO clinical_trials (
   nct_id, tenant, overall_status,
@@ -793,7 +673,8 @@ export async function GET(req, context) {
   ai_leadership,
   ai_prior_research,
   ai_locations,
-  source_hash, is_active, last_synced_at
+  source_hash, is_active, last_synced_at,
+  last_seen_at, archive_reason, archived_at
 )
 VALUES (
   ${nctId}, ${tenant}, ${p.statusModule?.overallStatus ?? null},
@@ -817,7 +698,10 @@ VALUES (
   ${aiPayload.priorResearch},
   ${aiPayload.locations},
 
-  ${newHash}, true, NOW()
+  ${newHash}, ${!isCompleted}, NOW(),
+  NOW(),
+  ${isCompleted ? "completed" : null},
+  ${isCompleted ? new Date() : null}
 )
  ON CONFLICT (nct_id) DO UPDATE SET
   short_title = CASE
@@ -893,12 +777,72 @@ VALUES (
     ELSE EXCLUDED.source_hash
   END,
 
+  overall_status = EXCLUDED.overall_status,
+
+  -- Lifecycle: when status flips to COMPLETED, archive but keep
+  archive_reason = CASE
+    WHEN EXCLUDED.overall_status = 'COMPLETED' AND clinical_trials.archive_reason IS NULL
+    THEN 'completed'
+    ELSE clinical_trials.archive_reason
+  END,
+  archived_at = CASE
+    WHEN EXCLUDED.overall_status = 'COMPLETED' AND clinical_trials.archived_at IS NULL
+    THEN NOW()
+    ELSE clinical_trials.archived_at
+  END,
+  is_active = CASE
+    WHEN EXCLUDED.overall_status = 'COMPLETED'
+    THEN false
+    ELSE clinical_trials.is_active
+  END,
+
+  last_seen_at = NOW(),
   last_synced_at = NOW(),
   updated_at = NOW();
       `;
+
+      // Queue for embedding generation post-sync (fire-and-forget)
+      processedTrials.push(nctId);
     }
 
-    return NextResponse.json({ success: true });
+    // Lifecycle reconciliation: trials we have stored for this tenant but didn't see in this sync
+    // are no longer on ClinicalTrials.gov (or no longer match tenant terms). Soft-archive them.
+    if (seenNctIds.size > 0) {
+      await sql`
+        UPDATE clinical_trials
+        SET is_active = false,
+            archive_reason = COALESCE(archive_reason, 'removed_from_ctgov'),
+            archived_at = COALESCE(archived_at, NOW())
+        WHERE LOWER(tenant) = LOWER(${tenant})
+          AND (last_seen_at IS NULL OR last_seen_at < ${syncStartedAt})
+          AND archive_reason IS NULL
+      `;
+    }
+
+    // Fire-and-forget embedding generation for newly-processed trials
+    if (processedTrials.length > 0) {
+      (async () => {
+        try {
+          const trials = await sql`
+            SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
+                   ai_eligibility, ai_eligibility_manual, conditions, embedding_source_hash
+            FROM clinical_trials
+            WHERE nct_id = ANY(${processedTrials})
+          `;
+          for (let i = 0; i < trials.length; i += 5) {
+            await Promise.allSettled(trials.slice(i, i + 5).map((t) => generateEmbedding(t)));
+          }
+        } catch (e) {
+          console.error("Embedding generation failed:", e.message);
+        }
+      })();
+    }
+
+    return NextResponse.json({
+      success: true,
+      processed: processedTrials.length,
+      seen: seenNctIds.size,
+    });
   } catch (err) {
     console.error("SYNC ERROR:", err);
     return NextResponse.json(
