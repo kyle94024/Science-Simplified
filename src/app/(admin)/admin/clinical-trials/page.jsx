@@ -7,11 +7,12 @@ import PageHeader from "@/components/admin/PageHeader";
 import SearchInput from "@/components/admin/SearchInput";
 import EmptyState from "@/components/admin/EmptyState";
 import StatsCard from "@/components/admin/StatsCard";
-
-const TENANTS = ["HS", "NF", "EB"];
+import { tenant } from "@/lib/config";
 
 export default function AdminTrialsPage() {
-    const [tenant, setTenant] = useState("HS");
+    // Each deployment is single-tenant — use the current deployment's tenant directly
+    const currentTenant = tenant.shortName;
+
     const [trials, setTrials] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -21,9 +22,10 @@ export default function AdminTrialsPage() {
 
         async function load() {
             setLoading(true);
-            const res = await fetch(`/api/admin/clinical-trials?tenant=${tenant}`, {
-                cache: "no-store",
-            });
+            const res = await fetch(
+                `/api/admin/clinical-trials?tenant=${currentTenant}`,
+                { cache: "no-store" }
+            );
             const data = await res.json();
 
             if (!cancelled) {
@@ -36,7 +38,7 @@ export default function AdminTrialsPage() {
         return () => {
             cancelled = true;
         };
-    }, [tenant]);
+    }, [currentTenant]);
 
     const filteredTrials = useMemo(() => {
         if (!searchQuery) return trials;
@@ -51,8 +53,8 @@ export default function AdminTrialsPage() {
     return (
         <div className="animate-fadeIn">
             <PageHeader
-                title="Clinical Trials"
-                subtitle="Manage clinical trials content for each tenant"
+                title={`${tenant.name} — Clinical Trials`}
+                subtitle="Manage clinical trials content for this tenant"
                 backHref="/"
                 actions={
                     <Link href="/admin/sync" className="btn btn-primary-green btn-sm">
@@ -61,35 +63,13 @@ export default function AdminTrialsPage() {
                 }
             />
 
-            {/* Stats and Tenant Selector */}
+            {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <StatsCard
                     label="Total Trials"
                     value={loading ? "..." : trials.length}
                     icon={Beaker}
                 />
-                <div className="admin-card p-4 md:col-span-2">
-                    <div className="flex items-center gap-4">
-                        <label className="text-[1.4rem] font-medium text-gray-700">
-                            Current Tenant:
-                        </label>
-                        <div className="flex gap-2">
-                            {TENANTS.map((t) => (
-                                <button
-                                    key={t}
-                                    onClick={() => setTenant(t)}
-                                    className={`px-4 py-2 rounded-lg text-[1.4rem] font-medium transition-all ${
-                                        tenant === t
-                                            ? "bg-[#4cb19f] text-white"
-                                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    {t}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {/* Search */}
@@ -117,7 +97,7 @@ export default function AdminTrialsPage() {
                         description={
                             searchQuery
                                 ? "Try a different search term"
-                                : `No clinical trials available for ${tenant}. Try syncing trials first.`
+                                : `No clinical trials available for ${currentTenant}. Try syncing trials first.`
                         }
                         action={
                             !searchQuery ? (
@@ -132,8 +112,8 @@ export default function AdminTrialsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredTrials.map((trial) => (
                         <Link
-                            key={`${tenant}-${trial.nct_id}`}
-                            href={`/admin/clinical-trials/${trial.nct_id}?tenant=${tenant}`}
+                            key={`${currentTenant}-${trial.nct_id}`}
+                            href={`/admin/clinical-trials/${trial.nct_id}?tenant=${currentTenant}`}
                             className="admin-card admin-card-interactive p-5 block"
                         >
                             <div className="flex items-start justify-between gap-3 mb-3">
