@@ -1,0 +1,188 @@
+{
+  "NF": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992817/simplified/tenants/NF/logo.png",
+      "width": 196,
+      "height": 53,
+      "format": "png",
+      "bytes": 3170,
+      "sourceFile": "NF/NF_logoWithText.png"
+    }
+  },
+  "EB": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992818/simplified/tenants/EB/logo.png",
+      "width": 814,
+      "height": 306,
+      "format": "png",
+      "bytes": 105790,
+      "sourceFile": "EB/EB_logoWithText.png"
+    }
+  },
+  "CF": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992818/simplified/tenants/CF/logo.png",
+      "width": 500,
+      "height": 500,
+      "format": "png",
+      "bytes": 90165,
+      "sourceFile": "CF/CF_text_with_logo.png"
+    }
+  },
+  "Ashermans": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992819/simplified/tenants/Ashermans/logo.png",
+      "width": 874,
+      "height": 285,
+      "format": "png",
+      "bytes": 158530,
+      "sourceFile": "Ashermans/TempAshermans_text_with_logo.png"
+    }
+  },
+  "Aicardi": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992820/simplified/tenants/Aicardi/logo.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "png",
+      "bytes": 1668918,
+      "sourceFile": "Aicardi/Aicardi_logo_w_text.png"
+    }
+  },
+  "RYR1": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992820/simplified/tenants/RYR1/logo.png",
+      "width": 1024,
+      "height": 1024,
+      "format": "png",
+      "bytes": 328918,
+      "sourceFile": "RYR1/RYR1_logo_with_text.png"
+    }
+  },
+  "ALS": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992821/simplified/tenants/ALS/logo.png",
+      "width": 1658,
+      "height": 514,
+      "format": "png",
+      "bytes": 102513,
+      "sourceFile": "ALS/ALS_logo_with_text.png"
+    }
+  },
+  "RETT": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992821/simplified/tenants/RETT/logo.png",
+      "width": 500,
+      "height": 500,
+      "format": "png",
+      "bytes": 90165,
+      "sourceFile": "RETT/CF_text_with_logo.png"
+    }
+  },
+  "Huntingtons": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992822/simplified/tenants/Huntingtons/logo.png",
+      "width": 1536,
+      "height": 1024,
+      "format": "png",
+      "bytes": 370351,
+      "sourceFile": "Huntingtons/HD_logo_with_text.png"
+    }
+  },
+  "Progeria": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992823/simplified/tenants/Progeria/logo.png",
+      "width": 1024,
+      "height": 1024,
+      "format": "png",
+      "bytes": 413805,
+      "sourceFile": "Progeria/Progeria_logo_with_text.png"
+    }
+  },
+  "Canavan": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992823/simplified/tenants/Canavan/logo.png",
+      "width": 1024,
+      "height": 1024,
+      "format": "png",
+      "bytes": 271788,
+      "sourceFile": "Canavan/Canavan_text_with_logo.png"
+    }
+  },
+  "Vitiligo": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992824/simplified/tenants/Vitiligo/logo.png",
+      "width": 1243,
+      "height": 891,
+      "format": "png",
+      "bytes": 753480,
+      "sourceFile": "Vitiligo/VitiligoLogo.png"
+    }
+  },
+  "Turners": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992824/simplified/tenants/Turners/logo.png",
+      "width": 923,
+      "height": 346,
+      "format": "png",
+      "bytes": 59519,
+      "sourceFile": "Turners/Turners_logoWithText.png"
+    }
+  },
+  "HS": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992825/simplified/tenants/HS/logo.png",
+      "width": 433,
+      "height": 269,
+      "format": "png",
+      "bytes": 90979,
+      "sourceFile": "HS/HSSimplifiedLogo.png"
+    },
+    "icon": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992826/simplified/tenants/HS/icon.png",
+      "width": 2048,
+      "height": 2048,
+      "format": "png",
+      "bytes": 567545,
+      "sourceFile": "HS/hslogo.png"
+    }
+  },
+  "RUNX1": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992826/simplified/tenants/RUNX1/logo.png",
+      "width": 400,
+      "height": 120,
+      "format": "png",
+      "bytes": 4235,
+      "sourceFile": "RUNX1/RUNX1_logoWithText.png"
+    },
+    "icon": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992827/simplified/tenants/RUNX1/icon.png",
+      "width": 1699,
+      "height": 1206,
+      "format": "png",
+      "bytes": 323946,
+      "sourceFile": "RUNX1/runx1_logo.png"
+    }
+  },
+  "Myositis": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992827/simplified/tenants/Myositis/logo.png",
+      "width": 2508,
+      "height": 627,
+      "format": "png",
+      "bytes": 433538,
+      "sourceFile": "Myositis/myologo.png"
+    }
+  },
+  "Scleroderma": {
+    "logo": {
+      "url": "https://res.cloudinary.com/nfsimplified-images/image/upload/v1778992828/simplified/tenants/Scleroderma/logo.png",
+      "width": 1575,
+      "height": 327,
+      "format": "png",
+      "bytes": 127605,
+      "sourceFile": "Scleroderma/scleroderma_logo.png"
+    }
+  }
+}
