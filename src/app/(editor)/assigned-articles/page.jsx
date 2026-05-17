@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { FileText, Clock, CheckCircle, ArrowRight } from "lucide-react";
+import { FileText, Clock, CheckCircle, ArrowRight, Star } from "lucide-react";
 import { withEditorAuth } from "@/components/withEditorAuth/withEditorAuth";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
@@ -148,11 +148,26 @@ const EditorAssignedArticles = () => {
                             />
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            {filteredArticles.map((article) => (
-                                <ArticleCard key={article.id} article={article} />
-                            ))}
-                        </div>
+                        <section>
+                            <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-500 text-white">
+                                    <Star size={18} fill="currentColor" />
+                                </div>
+                                <div className="flex-1">
+                                    <h2 className="text-[1.7rem] font-bold text-emerald-900">
+                                        Assigned to you
+                                    </h2>
+                                    <p className="text-[1.3rem] text-emerald-700">
+                                        {filteredArticles.length} article{filteredArticles.length === 1 ? "" : "s"} waiting on your review
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                {filteredArticles.map((article) => (
+                                    <ArticleCard key={article.id} article={article} />
+                                ))}
+                            </div>
+                        </section>
                     )}
 
                     {/* Results count */}
@@ -174,7 +189,7 @@ function ArticleCard({ article }) {
     return (
         <Link
             href={`/assigned-articles/${article.id}`}
-            className="admin-card admin-card-interactive block"
+            className="admin-card admin-card-interactive block border-l-4 border-l-emerald-500"
         >
             <div className="p-5 flex gap-5">
                 {/* Thumbnail */}
