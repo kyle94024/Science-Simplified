@@ -199,11 +199,15 @@ export async function POST(req) {
 
     await storeMagicLink({ email, tokenHash, redirectUrl, expiresAt });
 
+    // tenant.domain already includes the protocol (e.g. "https://www.runx1simplified.org")
+    // so we use it directly without prefixing https://. NEXT_PUBLIC_SITE_URL also includes
+    // the protocol when set on Vercel.
     const baseUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||
       req.headers.get("origin") ||
-      `https://${tenant.domain}`;
-    const magicUrl = `${baseUrl}/api/magic-link/verify?token=${token}`;
+      tenant.domain ||
+      "";
+    const magicUrl = `${baseUrl.replace(/\/$/, "")}/api/magic-link/verify?token=${token}`;
 
     if (sendEmail) {
       try {

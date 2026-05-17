@@ -1100,7 +1100,7 @@ export const sites = {
       fullName: "RUNX1 Simplified",
       disease: "RUNX1",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
-      domain: "https://ssrunx1.vercel.app",
+      domain: "https://www.runx1simplified.org",
 
       theme: { // Theme - Red/Black/White (based on runx1-fpd.org branding)
         primary: "#701616",          // bright red (main branding color)
@@ -1181,7 +1181,7 @@ export const sites = {
       fullName: "Scleroderma Simplified",
       disease: "Scleroderma",
       apiUrl: process.env.NEXT_PUBLIC_SCLERODERMA_API_URL,
-      domain: "https://ssscleroderma.vercel.app",
+      domain: "https://www.sclerodermasimplified.org",
 
       theme: {
         primary: "#004990",             // SRF Blue
@@ -1257,7 +1257,7 @@ export const sites = {
       fullName: "Myositis Simplified",
       disease: "Myositis",
       apiUrl: process.env.NEXT_PUBLIC_MYOSITIS_API_URL,
-      domain: "https://ssmyositis.vercel.app",
+      domain: "https://www.myositissimplified.org",
 
       theme: {
         primary: "#191548",            // Dark navy from logo

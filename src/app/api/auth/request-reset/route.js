@@ -2,6 +2,7 @@ import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "@/lib/email";
+import { tenant } from "@/lib/config";
 
 export async function POST(req) {
     try {
@@ -27,7 +28,15 @@ export async function POST(req) {
             [token, expires, email]
         );
 
-        const resetLink = `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password?token=${token}`;
+        // Prefer the actual host the request came from (most reliable across
+        // tenant deploys); fall back to NEXT_PUBLIC_SITE_URL, then to the
+        // tenant's configured domain in sites.js.
+        const baseUrl =
+            req.headers.get("origin") ||
+            process.env.NEXT_PUBLIC_SITE_URL ||
+            tenant.domain ||
+            "";
+        const resetLink = `${baseUrl.replace(/\/$/, "")}/reset-password?token=${token}`;
 
         //  SEND EMAIL
         await sendResetPasswordEmail({ email, resetLink });
