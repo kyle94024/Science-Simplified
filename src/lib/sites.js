@@ -1298,7 +1298,7 @@ export const sites = {
 
       about_teamMember2Image: "puneet.jpg",
       about_teamMember2Name: "Puneet Mann",
-      about_teamMember2Title: "Medical Student",
+      about_teamMember2Title: "Medical Outreach Lead",
       about_teamMember2Bio: "Puneet Mann is a medical student at the David Geffen School of Medicine at UCLA. She graduated from Pepperdine University in 2022 with a B.A. in Biology and a minor in Art History. Prior to medical school, Puneet spent her gap years working as a researcher at the National Institutes of Health where she studied drug-resistant breast cancer. She is dedicated to making scientific research accessible to all and is passionate about patient education.",
 
       about_teamMember3Image: "paula.jpg",
