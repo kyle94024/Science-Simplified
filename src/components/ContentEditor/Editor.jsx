@@ -34,7 +34,7 @@ import "./Editor.scss";
 const ToggleButton = ({ active, children, ...buttonProps }) => (
   <button
     type="button"
-    aria-selected={active}
+    aria-pressed={active}
     className="editor-button"
     {...buttonProps}
   >
