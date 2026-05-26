@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import React, { useState, useRef } from "react";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, FileUp } from "lucide-react";
 import "react-quill/dist/quill.snow.css";
 import "./EditArticleForm.scss";
 import Image from "next/image";
@@ -121,7 +121,43 @@ const EditArticleForm = ({
     // Additional editors state
     const [additionalEditors, setAdditionalEditors] = useState(articleData?.additional_editors || []);
     const [newAdditionalEditor, setNewAdditionalEditor] = useState("");
- 
+
+    const [docxImporting, setDocxImporting] = useState(false);
+    const docxInputRef = useRef(null);
+
+    const handleDocxImport = async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith(".docx")) {
+            toast.error("Please upload a .docx file");
+            return;
+        }
+        setDocxImporting(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const res = await fetch("/api/articles/import-docx", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message || "Import failed");
+            setContent(data.html);
+            const warnings = (data.messages || []).filter((m) => m.type === "warning").length;
+            toast.success(
+                warnings > 0
+                    ? `Imported with ${warnings} warning${warnings === 1 ? "" : "s"} (some Word features may not have transferred)`
+                    : "Imported successfully"
+            );
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || "Failed to import .docx");
+        } finally {
+            setDocxImporting(false);
+            if (docxInputRef.current) docxInputRef.current.value = "";
+        }
+    };
+
     // Generate image button
     const handleGenerateAIImage = async () => {
     if (!content.trim()) {
@@ -312,6 +348,34 @@ const EditArticleForm = ({
     };
 
    // ADDED: Export article to Word
+// Convert HTML to plain text while preserving paragraph breaks.
+// Block elements (p, div, h1-6, li, br, etc.) become newlines, then tags are stripped.
+const htmlToPlainParagraphs = (html) => {
+    if (!html) return [];
+    let text = html;
+    // Convert block-level closing tags and <br> to newlines
+    text = text.replace(/<br\s*\/?>/gi, "\n");
+    text = text.replace(/<\/(?:p|div|h[1-6]|li|blockquote|tr|section|article)>/gi, "\n");
+    text = text.replace(/<(?:hr)\s*\/?>/gi, "\n");
+    // Strip remaining tags
+    text = text.replace(/<[^>]+>/g, "");
+    // Decode common HTML entities
+    text = text
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&mdash;/gi, "—")
+        .replace(/&ndash;/gi, "–");
+    // Split on newlines, trim, drop empty lines
+    return text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+};
+
 const handleExportToWord = async () => {
     if (!articleData) return;
 
@@ -372,15 +436,13 @@ const handleExportToWord = async () => {
                         spacing: { after: 200 },
                     }),
 
-                    ...summary
-                        .replace(/<[^>]+>/g, "")
-                        .split("\n")
-                        .map(
-                            line =>
-                                new Paragraph({
-                                    children: [new TextRun(line)],
-                                })
-                        ),
+                    ...htmlToPlainParagraphs(summary).map(
+                        (line) =>
+                            new Paragraph({
+                                children: [new TextRun(line)],
+                                spacing: { after: 200 },
+                            })
+                    ),
 
                     new Paragraph({
                         text: "",
@@ -398,15 +460,13 @@ const handleExportToWord = async () => {
                         spacing: { after: 200 },
                     }),
 
-                    ...content
-                        .replace(/<[^>]+>/g, "")
-                        .split("\n")
-                        .map(
-                            line =>
-                                new Paragraph({
-                                    children: [new TextRun(line)],
-                                })
-                        ),
+                    ...htmlToPlainParagraphs(content).map(
+                        (line) =>
+                            new Paragraph({
+                                children: [new TextRun(line)],
+                                spacing: { after: 200 },
+                            })
+                    ),
                 ].filter(Boolean),
             },
         ],
@@ -593,9 +653,37 @@ const handleExportToWord = async () => {
             </div>
 
             <div className="edit-article-form__field">
-                <Label className="edit-article-form__label">
-                    Article Content
-                </Label>
+                <div className="flex items-center justify-between mb-2">
+                    <Label className="edit-article-form__label">
+                        Article Content
+                    </Label>
+                    <div>
+                        <input
+                            ref={docxInputRef}
+                            type="file"
+                            accept=".docx"
+                            onChange={handleDocxImport}
+                            className="hidden"
+                            id="docx-import-edit"
+                        />
+                        <label
+                            htmlFor="docx-import-edit"
+                            className={`inline-flex items-center gap-2 px-3 py-1.5 text-[1.3rem] rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors ${docxImporting ? "opacity-50 pointer-events-none" : ""}`}
+                        >
+                            {docxImporting ? (
+                                <>
+                                    <Loader2 size={14} className="animate-spin" />
+                                    Importing...
+                                </>
+                            ) : (
+                                <>
+                                    <FileUp size={14} />
+                                    Import from Word
+                                </>
+                            )}
+                        </label>
+                    </div>
+                </div>
                 <Editor
                     content={content}
                     onChange={setContent}

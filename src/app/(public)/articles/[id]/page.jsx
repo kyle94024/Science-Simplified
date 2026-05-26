@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { HeartFilledIcon } from "@radix-ui/react-icons";
 import { SUPPORTED_LANGUAGES, TRANSLATION_WARNINGS, TRANSLATION_LOADING_MESSAGES } from "@/lib/translationWarnings";
+import { tenant } from "@/lib/config";
 
 import { format } from "date-fns";
 
@@ -269,7 +270,9 @@ const ArticlePage = ({ params }) => {
                                         <div className="flex">
                                             <div className="article-page__meta hidden">
                                                 <h3 className="body-lg w-700">
-                                                    Summary Prepared By:
+                                                    {tenant.shortName === "HS"
+                                                        ? "Summary Prepared or Reviewed By:"
+                                                        : "Summary Prepared By:"}
                                                 </h3>
                                                 {article.photo && (
                                                     <div className="article-page__photo">

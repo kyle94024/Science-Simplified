@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const articlesWithAssignments = await query(`
-            SELECT 
+            SELECT
                 pa.id AS article_id,
                 pa.title,
                 pa.tags,
@@ -22,7 +22,8 @@ export async function GET() {
                         json_build_object(
                             'id', ec.id,
                             'name', ec.first_name || ' ' || ec.last_name,
-                            'email', ec.email
+                            'email', ec.email,
+                            'is_admin', (au.email IS NOT NULL)
                         )
                     ) FILTER (WHERE ec.id IS NOT NULL),
                     '[]'
@@ -30,8 +31,10 @@ export async function GET() {
             FROM pending_article pa
             LEFT JOIN article_assignments aa ON pa.id = aa.article_id
             LEFT JOIN email_credentials ec ON aa.editor_id = ec.id
+            LEFT JOIN admin_users au ON LOWER(au.email) = LOWER(ec.email)
             WHERE pa.certifiedby IS NULL
             GROUP BY pa.id
+            ORDER BY pa.created_at DESC
         `);
 
         const formattedResponse = articlesWithAssignments.rows.map(

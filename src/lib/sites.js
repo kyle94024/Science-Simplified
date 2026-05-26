@@ -35,7 +35,7 @@ export const sites = {
       text_exploreAllDescription: "Collection of simplified NF articles certified by experts.",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Neurofibromatosis to patients, families, and caregivers. We aim to empower those affected by NF with the knowledge and resources they need to navigate their journey.",
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the NF community.",
@@ -119,7 +119,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Epidermolysis Bullosa to patients, families, and caregivers. We aim to empower those affected by EB with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the EB community.",
@@ -196,7 +196,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Cystic Fibrosis to patients, families, and caregivers. We aim to empower those affected by CF with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the CF community.",
@@ -273,7 +273,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Asherman's Syndrome to patients, families, and caregivers. We aim to empower those affected by Asherman's Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Asherman's Syndrome community.",
@@ -350,7 +350,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Aicardi Syndrome to patients, families, and caregivers. We aim to empower those affected by Aicardi Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
@@ -428,7 +428,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RYR1-related diseases to patients, families, and caregivers. We aim to empower those affected by RYR1-related diseases with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Aicardi Syndrome community.",
@@ -506,7 +506,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about ALS to patients, families, and caregivers. We aim to empower those affected by ALS with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the ALS community.",
@@ -583,7 +583,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Rett Syndrome to patients, families, and caregivers. We aim to empower those affected by Rett Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Rett Syndrome community.",
@@ -661,7 +661,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Huntington's Disease to patients, families, and caregivers. We aim to empower those affected by Huntington's Disease with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Huntington's Disease community.",
@@ -740,7 +740,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Progeria to patients, families, and caregivers. We aim to empower those affected by Progeria with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Progeria community.",
@@ -818,7 +818,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Canavan Disease to patients, families, and caregivers. We aim to empower those affected by Canavan Disease with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Canavan Disease community.",
@@ -897,7 +897,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Vitiligo to patients, families, and caregivers. We aim to empower those affected by Vitiligo with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Vitiligo Disease community.",
@@ -975,7 +975,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Turner Syndrome to patients, families, and caregivers. We aim to empower those affected by Turner Syndrome with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Turner Syndrome community.",
@@ -1054,7 +1054,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about HS to patients, families, and caregivers. We aim to empower those affected by HS with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the HS Disease community.",
@@ -1100,7 +1100,7 @@ export const sites = {
       fullName: "RUNX1 Simplified",
       disease: "RUNX1",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
-      domain: "https://ssrunx1.vercel.app",
+      domain: "https://www.runx1simplified.org",
 
       theme: { // Theme - Red/Black/White (based on runx1-fpd.org branding)
         primary: "#701616",          // bright red (main branding color)
@@ -1135,7 +1135,7 @@ export const sites = {
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about RUNX1 Familial Platelet Disorder to patients, families, and caregivers. We aim to empower those affected by RUNX1-FPD with the knowledge and resources they need to navigate their journey.",
 
       // About
-      about_teamMember1Image: "kyle.png",
+      about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio:  "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the RUNX1-FPD community.",
@@ -1181,7 +1181,7 @@ export const sites = {
       fullName: "Scleroderma Simplified",
       disease: "Scleroderma",
       apiUrl: process.env.NEXT_PUBLIC_SCLERODERMA_API_URL,
-      domain: "https://ssscleroderma.vercel.app",
+      domain: "https://www.sclerodermasimplified.org",
 
       theme: {
         primary: "#004990",             // SRF Blue
@@ -1245,6 +1245,79 @@ export const sites = {
       about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Scleroderma with the community.",
       about_getInvolvedDescription: "Scleroderma Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
       about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Scleroderma community",
+
+      about_our_mission: "our-mission.jpg",
+
+    },
+
+    MYOSITIS: {
+      name: "Myositis Simplified",
+      shortName: "Myositis",
+      pathName: "Myositis",
+      fullName: "Myositis Simplified",
+      disease: "Myositis",
+      apiUrl: process.env.NEXT_PUBLIC_MYOSITIS_API_URL,
+      domain: "https://www.myositissimplified.org",
+
+      theme: {
+        primary: "#191548",            // Dark navy from logo
+        primaryDark: "#0f0d33",        // Deeper navy
+        lightGrey: "#f5f5f5",
+        text: "#0b1618",
+        background: "#ffffff",
+        contactUsColor: "#191548",
+        authorTextColor: "#191548",
+        footerBGColor: "#191548",      // Dark navy footer
+        pillTextColor: "#e8e6f5",
+        footerTextColor: "#FFFFFF",
+      },
+      // Images (Home)
+      homeBG: "topbannermyo.png",
+      homeBG_full: true,
+      homeExploreAllBG: "bottombannermyositis.png",
+      // Images (General)
+      logoWithText: "myologo.png",
+      articleThumbnailPlaceholder: "home/topbannermyo.png",
+      contactUsBGLeft: "home/bottombannermyositis.png",
+      contactUsBGRight: "home/bottombannermyositis.png",
+
+      loginBGTop: "home/topbannermyo.png",
+      loginBGBottom: "home/bottombannermyositis.png",
+
+      //Text
+      text_homeTitleDescription: "Collection of simplified Myositis articles certified by experts.",
+      text_exploreAllTitle: "We give knowledge to Myositis patients, families, and caregivers",
+      text_exploreAllDescription: "Collection of simplified Myositis articles certified by experts.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Myositis to patients, families, and caregivers. We aim to empower those affected by Myositis with the knowledge and resources they need to navigate their journey.",
+
+      // About
+      about_teamMember1Image: "kyleheadshot.jpg",
+      about_teamMember1Name: "Kyle Wan",
+      about_teamMember1Title: "Founder & Lead",
+      about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Myositis community.",
+
+      about_teamMember2Image: "puneet.jpg",
+      about_teamMember2Name: "Puneet Mann",
+      about_teamMember2Title: "Medical Outreach Lead",
+      about_teamMember2Bio: "Puneet Mann is a medical student at the David Geffen School of Medicine at UCLA. She graduated from Pepperdine University in 2022 with a B.A. in Biology and a minor in Art History. Prior to medical school, Puneet spent her gap years working as a researcher at the National Institutes of Health where she studied drug-resistant breast cancer. She is dedicated to making scientific research accessible to all and is passionate about patient education.",
+
+      about_teamMember3Image: "paula.jpg",
+      about_teamMember3Name: "Paula Eichenbrenner, CAE",
+      about_teamMember3Title: "Executive Director, The Myositis Association",
+      about_teamMember3Bio: "Paula became Executive Director of The Myositis Association in December 2023, bringing extensive non-profit leadership experience from her prior roles at the Academy of Managed Care Pharmacy Foundation and the American Society for Nutrition's ASN Foundation. A Certified Association Executive with deep fundraising and public affairs expertise, her passion for patient advocacy was shaped by her role as care partner for her brother.",
+
+      about_supporter1Logo: "tma_logo.jpg",
+      about_supporter1Name: "The Myositis Association",
+      about_supporter1Width: 300,
+      about_supporter1Height: 200,
+      about_supporter1Link: "https://www.myositis.org/",
+
+      about_mission1: "Myositis Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Myositis.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Myositis research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Myositis community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Myositis community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Myositis with the community.",
+      about_getInvolvedDescription: "Myositis Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside The Myositis Association and other organizations dedicated to the Myositis community",
 
       about_our_mission: "our-mission.jpg",
 

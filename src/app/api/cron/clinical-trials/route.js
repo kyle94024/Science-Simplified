@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const TENANTS = [
   "NF", "EB", "HS", "CF", "RUNX1", "TURNERS", "HUNTINGTONS",
   "PROGERIA", "AICARDI", "ASHERMANS", "CANAVANS", "RETTS",
-  "RYR1", "ALS", "VITILIGO", "SCLERODERMA",
+  "RYR1", "ALS", "VITILIGO", "SCLERODERMA", "MYOSITIS",
 ];
 
 export async function GET(req) {

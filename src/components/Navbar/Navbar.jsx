@@ -9,11 +9,21 @@ import { tenant } from "@/lib/config";
 import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
 
+function Badge({ count, dot = false }) {
+    if (!count || count <= 0) return null;
+    return (
+        <span className={`nav-badge${dot ? " nav-badge--dot" : ""}`}>
+            {dot ? "" : count > 99 ? "99+" : count}
+        </span>
+    );
+}
+
 export default function Navbar() {
     const { user, isAdmin, role } = useAuthStore();
     const { logout } = useAuth();
     const [navbarOpen, setNavbarOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [counts, setCounts] = useState({ assignedArticles: 0, assignedTrials: 0, total: 0 });
     const pathname = usePathname();
 
     useEffect(() => {
@@ -22,11 +32,66 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    // Fetch notification counts — only for users who could have assignments
+    useEffect(() => {
+        const shouldFetch =
+            !!user && (isAdmin || role === "editor" || role === "researcher");
+        if (!shouldFetch) {
+            setCounts({ assignedArticles: 0, assignedTrials: 0, total: 0 });
+            return;
+        }
+        let mounted = true;
+        async function load() {
+            // Skip when tab is hidden — assignments change rarely, so there's
+            // no value in polling background tabs (and it keeps the Neon
+            // compute awake unnecessarily).
+            if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+                return;
+            }
+            try {
+                const res = await fetch("/api/notifications/my-counts", { cache: "no-store" });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (mounted) {
+                    setCounts({
+                        assignedArticles: data.assignedArticles || 0,
+                        assignedTrials: data.assignedTrials || 0,
+                        total: data.total || 0,
+                    });
+                }
+            } catch (err) {
+                // ignore
+            }
+        }
+        load();
+        // Poll every 5 minutes while the tab is visible.
+        const interval = setInterval(load, 5 * 60 * 1000);
+        // When the tab becomes visible again, refresh immediately so the
+        // badge feels responsive after returning to the tab.
+        const onVisibility = () => {
+            if (document.visibilityState === "visible") load();
+        };
+        document.addEventListener("visibilitychange", onVisibility);
+        return () => {
+            mounted = false;
+            clearInterval(interval);
+            document.removeEventListener("visibilitychange", onVisibility);
+        };
+    }, [user, isAdmin, role, pathname]);
+
     const toggleNavbar = () => setNavbarOpen(!navbarOpen);
     const navbrand = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 
+    // Notification logic — only show on Editor Tools menu trigger
+    const isEditor = role === "editor";
+    const isResearcher = role === "researcher";
+    const showEditorTools = isEditor || isAdmin;
+    const showResearcherLink = isResearcher || isAdmin;
+    // Editor Tools dropdown badge = articles count (editors care about pending articles)
+    const editorToolsCount = showEditorTools ? counts.assignedArticles : 0;
+
     return (
-        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : tenant.shortName === "Scleroderma" ? "scleroderma-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
+        <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : tenant.shortName === "Scleroderma" ? "scleroderma-mode" : tenant.shortName === "Myositis" ? "myositis-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
             <div className="navbar-inner boxed padding">
                 {/* Left logo */}
                 <Link href="/" className="navbrand">
@@ -62,17 +127,21 @@ export default function Navbar() {
                             </Link>
                         </li>
                     ))}
-                    
+
 
                     {/* Editor dropdown */}
-                    {(role === "editor" || isAdmin) && (
+                    {showEditorTools && (
                         <li className="dropdown">
-                            <span>Editor Tools ▾</span>
+                            <span className="nav-with-badge">
+                                Editor Tools ▾
+                                <Badge count={editorToolsCount} />
+                            </span>
                             <ul className="dropdown-menu">
-                                {role === "editor" && (
+                                {isEditor && (
                                     <li>
-                                        <Link href="/assigned-articles">
-                                            Assigned Articles
+                                        <Link href="/assigned-articles" className="nav-dropdown-link">
+                                            <span>Assigned Articles</span>
+                                            <Badge count={counts.assignedArticles} />
                                         </Link>
                                     </li>
                                 )}
@@ -101,6 +170,24 @@ export default function Navbar() {
                         </li>
                     )}
 
+                    {/* Researcher dashboard link — for researchers (admins too) */}
+                    {isResearcher && (
+                        <li className="dropdown">
+                            <span className="nav-with-badge">
+                                Expert Tools ▾
+                                <Badge count={counts.total} />
+                            </span>
+                            <ul className="dropdown-menu">
+                                <li>
+                                    <Link href="/researcher/dashboard" className="nav-dropdown-link">
+                                        <span>My Assignments</span>
+                                        <Badge count={counts.total} />
+                                    </Link>
+                                </li>
+                            </ul>
+                        </li>
+                    )}
+
                     {/* Admin dropdown */}
                     {isAdmin && (
                         <li className="dropdown">
@@ -125,9 +212,20 @@ export default function Navbar() {
                                 <li>
                                     <Link href="/admin/clinical-trials">Edit Trials</Link>
                                 </li>
+                                <li>
+                                    <Link href="/admin/researchers">Researchers</Link>
+                                </li>
+                                {showResearcherLink && (
+                                    <li>
+                                        <Link href="/researcher/dashboard" className="nav-dropdown-link">
+                                            <span>Expert Dashboard</span>
+                                            <Badge count={counts.assignedTrials} />
+                                        </Link>
+                                    </li>
+                                )}
                             </ul>
                         </li>
-                        
+
                     )}
 
                     {/* Profile dropdown */}

@@ -108,9 +108,13 @@ export async function GET(req) {
       path: "/",
     });
 
-    // Redirect to frontend
+    // Redirect to stored redirect_url (or fallback). Researcher invites use /researcher/dashboard,
+    // legacy editor invites use /assigned-articles.
     const domain = tenant_domain || "http://localhost:3000";
-    const finalUrl = `${domain}/assigned-articles`;
+    const redirectPath = magicLink.redirect_url || "/assigned-articles";
+    const finalUrl = redirectPath.startsWith("http")
+      ? redirectPath
+      : `${domain}${redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath}`;
 
     const response = NextResponse.redirect(finalUrl);
     response.headers.set("Set-Cookie", cookie);

@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
 
-export async function sendMagicLinkEmail({ tenant, email, url }) {
-    const magicUrl = url; // EXACT URL passed from create route
+export async function sendMagicLinkEmail({ tenant, email, url, subject, intro }) {
+    const magicUrl = url;
+    const tenantName = tenant?.name || "Simplified";
+    const primary = tenant?.theme?.primary || "#4cb19f";
 
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -14,19 +16,50 @@ export async function sendMagicLinkEmail({ tenant, email, url }) {
     });
 
     await transporter.sendMail({
-        from: `"Simplified Login" <${process.env.EMAIL_USER}>`,
+        from: `"${tenantName}" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Your Magic Login Link",
+        subject: subject || "Your Magic Login Link",
         html: `
-            <p>Click to sign in:</p>
-            <a href="${magicUrl}" style="color: #4cb19f; font-size: 18px;">
-                Login to your account
-            </a>
-            <p>This link expires in 30 days.</p>
+            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
+                ${intro ? `<p style="color:#333; font-size:15px;">${intro}</p>` : `<p style="color:#333;">Click to sign in:</p>`}
+                <p style="margin: 24px 0;">
+                    <a href="${magicUrl}" style="background:${primary}; color:#fff; padding:12px 22px; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block;">
+                        Sign in to ${tenantName}
+                    </a>
+                </p>
+                <p style="color: #888; font-size: 13px;">This link expires in 30 days.</p>
+                <p style="color: #aaa; font-size: 12px; margin-top: 30px;">If you didn't expect this email, you can safely ignore it.</p>
+            </div>
         `,
     });
 
     return true;
+}
+
+/**
+ * Specialized email for researcher invites — adds clarifying intro text.
+ */
+export async function sendResearcherInviteEmail({ tenant, email, url, inviterName, trialCount = 0, articleCount = 0 }) {
+    const tenantName = tenant?.name || "Simplified";
+    const total = trialCount + articleCount;
+    const subject = `You've been invited to verify content on ${tenantName}`;
+    const assignmentLines = [];
+    if (trialCount > 0) {
+        assignmentLines.push(`<strong>${trialCount}</strong> clinical ${trialCount === 1 ? "trial" : "trials"}`);
+    }
+    if (articleCount > 0) {
+        assignmentLines.push(`<strong>${articleCount}</strong> ${articleCount === 1 ? "article" : "articles"}`);
+    }
+    const assignmentSummary = assignmentLines.length > 0
+        ? `<br/><br/>You have ${assignmentLines.join(" and ")} assigned for review.`
+        : "";
+    const intro = `
+        ${inviterName ? `${inviterName} has invited you` : "You've been invited"} to ${tenantName}
+        as an expert to review and verify ${total > 0 ? "the items below" : "clinical trials and articles"}.
+        Click the button below to access your dashboard.
+        ${assignmentSummary}
+    `;
+    return sendMagicLinkEmail({ tenant, email, url, subject, intro });
 }
 export async function sendResetPasswordEmail({ email, resetLink }) {
     const transporter = nodemailer.createTransport({

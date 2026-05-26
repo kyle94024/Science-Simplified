@@ -2,6 +2,51 @@
 .navbar {
     font-family: var(--font-onest);
 }
+
+// Red notification badge (circle with count)
+.nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    margin-left: 0.4rem;
+    box-shadow: 0 0 0 2px #eaf8f2; // ring matches default navbar bg
+
+    &--dot {
+        min-width: 8px;
+        width: 8px;
+        height: 8px;
+        padding: 0;
+    }
+}
+
+// On colored navbar modes the ring should match the bg color, but we can fall back
+.navbar.hs-mode .nav-badge { box-shadow: 0 0 0 2px transparent; }
+.navbar.runx1-mode .nav-badge { box-shadow: 0 0 0 2px #151611; }
+.navbar.scleroderma-mode .nav-badge { box-shadow: 0 0 0 2px #FFFFFF; }
+.navbar.myositis-mode .nav-badge { box-shadow: 0 0 0 2px #e8e6f5; }
+
+.nav-with-badge {
+    display: inline-flex;
+    align-items: center;
+}
+
+.nav-dropdown-link {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    // Inside the dropdown menu, the ring color is white
+    .nav-badge { box-shadow: 0 0 0 2px #fff; }
+}
 header {
     width: 100%;
     z-index: 1000;
@@ -239,6 +284,34 @@ header {
         }
     }
 
+    &.myositis-mode {
+        background: #e8e6f5; // Pale blue/lavender tint
+        .nav-links > li > a,
+        .dropdown > span {
+            color: #191548; // Dark navy text
+        }
+        .nav-links > li:hover > a,
+        .nav-links > li:hover > span {
+            color: #5a4fa0;
+        }
+        .nav-links > li > a.active {
+            color: #191548;
+            font-weight: 700;
+        }
+        .auth-buttons .btn {
+            color: #191548;
+            border-color: #191548;
+        }
+        .auth-buttons .btn-primary {
+            background: #191548;
+            border-color: #191548;
+            color: #fff;
+        }
+        .mobile-toggle {
+            color: #191548;
+        }
+    }
+
     &.scleroderma-mode {
         background: #FFFFFF;
         .nav-links > li > a,
@@ -408,6 +481,16 @@ header {
         a,
         button {
             color: #333333;
+        }
+    }
+
+    &.myositis-mode .mobile-menu {
+        background: #e8e6f5;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+        a,
+        button {
+            color: #191548;
         }
     }
 

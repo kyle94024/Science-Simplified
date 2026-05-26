@@ -1,0 +1,91 @@
+<!--
+  RUNX1 Simplified attribution credit — drop this into a Squarespace Code Block
+  ABOVE the main article-list block on runx1-fpd.org's articles page.
+
+  After uploading the RUNX1 logo to Cloudinary (scripts/upload-tenant-logos.js
+  writes the URL to docs/tenant-logos.md), paste the Cloudinary URL into the
+  data-logo src below. A placeholder is provided.
+-->
+
+<div class="rxs-credit" role="region" aria-label="Article attribution">
+  <a class="rxs-credit__link" href="https://runx1simplified.org" target="_blank" rel="noopener">
+    <img
+      class="rxs-credit__logo"
+      src="https://res.cloudinary.com/nfsimplified-images/image/upload/simplified/tenants/RUNX1/icon.png"
+      alt="RUNX1 Simplified"
+      loading="lazy"
+    />
+    <span class="rxs-credit__text">
+      These articles are written in collaboration with
+      <strong>RUNX1 Simplified</strong>
+      <span class="rxs-credit__arrow" aria-hidden="true">→</span>
+    </span>
+  </a>
+</div>
+
+<style>
+  .rxs-credit {
+    max-width: 1200px;
+    margin: 0 auto 1.5rem;
+    padding: 0.9rem 1.2rem;
+    background: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-left: 4px solid #701616;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .rxs-credit__link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    text-decoration: none;
+    color: #1a1a1a;
+    transition: color 0.2s;
+  }
+  .rxs-credit__link:hover,
+  .rxs-credit__link:focus-visible {
+    color: #701616;
+    outline: none;
+  }
+  .rxs-credit__logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .rxs-credit__text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #555;
+  }
+  .rxs-credit__text strong {
+    color: #0d1b3d;
+    font-weight: 700;
+  }
+  .rxs-credit__link:hover .rxs-credit__text strong,
+  .rxs-credit__link:focus-visible .rxs-credit__text strong {
+    color: #701616;
+  }
+  .rxs-credit__arrow {
+    display: inline-block;
+    margin-left: 0.3rem;
+    transition: transform 0.2s;
+  }
+  .rxs-credit__link:hover .rxs-credit__arrow,
+  .rxs-credit__link:focus-visible .rxs-credit__arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 480px) {
+    .rxs-credit__logo {
+      width: 36px;
+      height: 36px;
+    }
+    .rxs-credit__text {
+      font-size: 0.88rem;
+    }
+  }
+</style>

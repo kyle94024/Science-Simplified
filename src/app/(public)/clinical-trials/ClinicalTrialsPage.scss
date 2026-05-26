@@ -146,3 +146,101 @@
     margin-bottom: 3rem;
   }
 }
+/* ---------- TABS ---------- */
+.clinical-trials-page__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.clinical-trials-page__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: #1f2937;
+  }
+
+  &--active {
+    color: var(--color-primary, #4cb19f);
+    border-bottom-color: var(--color-primary, #4cb19f);
+  }
+}
+
+.clinical-trials-page__tab-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: #e5e7eb;
+  color: #4b5563;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+
+.clinical-trials-page__tab--active .clinical-trials-page__tab-count {
+  background: var(--color-primary, #4cb19f);
+  color: #fff;
+}
+
+/* ---------- SECTIONS ---------- */
+.clinical-trials-page__section {
+  margin-bottom: 4rem;
+}
+
+.clinical-trials-page__section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f7a3c;
+  margin-bottom: 0.4rem;
+
+  &--secondary {
+    color: #4b5563;
+  }
+}
+
+.clinical-trials-page__section-count {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #9ca3af;
+  margin-left: 0.4rem;
+}
+
+.clinical-trials-page__section-subtitle {
+  font-size: 1.3rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- SEMANTIC SEARCH HINT ---------- */
+.clinical-trials-page__semantic-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  color: var(--color-primary, #4cb19f);
+  font-style: italic;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.clinical-trials-page__filters--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

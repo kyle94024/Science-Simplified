@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import React, { useState, useRef } from "react";
 // const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
-import { X } from "lucide-react";
+import { X, FileUp } from "lucide-react";
 import "./AddArticleForm.scss";
 import { cleanName } from "@/lib/utils";
 
@@ -58,6 +58,8 @@ const AddArticleForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(null);
     const [pdfLoader, setPdfLoader] = useState(false);
+    const [docxImporting, setDocxImporting] = useState(false);
+    const docxInputRef = useRef(null);
 
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
@@ -85,6 +87,40 @@ const AddArticleForm = () => {
 
     const handleRemoveTag = (tagToRemove) => {
         setTags(tags.filter((tag) => tag !== tagToRemove));
+    };
+
+    const handleDocxImport = async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith(".docx")) {
+            toast.error("Please upload a .docx file");
+            return;
+        }
+        setDocxImporting(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const res = await fetch("/api/articles/import-docx", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message || "Import failed");
+            setContent(data.html);
+            const warnings = (data.messages || []).filter((m) => m.type === "warning").length;
+            toast.success(
+                warnings > 0
+                    ? `Imported with ${warnings} warning${warnings === 1 ? "" : "s"} (some Word features may not have transferred)`
+                    : "Imported successfully"
+            );
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || "Failed to import .docx");
+        } finally {
+            setDocxImporting(false);
+            // Reset input so the same file can be re-uploaded
+            if (docxInputRef.current) docxInputRef.current.value = "";
+        }
     };
 
     const handlePDFUpload = async (event) => {
@@ -554,9 +590,37 @@ const AddArticleForm = () => {
 
 
             <div className="add-article-form__field">
-                <Label className="add-article-form__label">
-                    Article Content
-                </Label>
+                <div className="flex items-center justify-between mb-2">
+                    <Label className="add-article-form__label">
+                        Article Content
+                    </Label>
+                    <div>
+                        <input
+                            ref={docxInputRef}
+                            type="file"
+                            accept=".docx"
+                            onChange={handleDocxImport}
+                            className="hidden"
+                            id="docx-import-add"
+                        />
+                        <label
+                            htmlFor="docx-import-add"
+                            className={`inline-flex items-center gap-2 px-3 py-1.5 text-[1.3rem] rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors ${docxImporting ? "opacity-50 pointer-events-none" : ""}`}
+                        >
+                            {docxImporting ? (
+                                <>
+                                    <Loader2 size={14} className="animate-spin" />
+                                    Importing...
+                                </>
+                            ) : (
+                                <>
+                                    <FileUp size={14} />
+                                    Import from Word
+                                </>
+                            )}
+                        </label>
+                    </div>
+                </div>
                 {/* <ReactQuill
                     ref={quillRef}
                     value={content}

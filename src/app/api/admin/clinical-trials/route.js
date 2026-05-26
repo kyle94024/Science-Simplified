@@ -12,16 +12,22 @@ export async function GET(req) {
   const trials = await sql`
     SELECT
       nct_id,
-      COALESCE(short_title_manual, short_title) AS short_title
+      COALESCE(short_title_manual, short_title) AS short_title,
+      verified_by,
+      verified_at,
+      archive_reason,
+      overall_status
     FROM clinical_trials
     WHERE LOWER(tenant) = LOWER(${tenant})
       AND is_active = true
       AND overall_status IN (
         'RECRUITING',
-        'NOT_YET_RECRITING',
+        'NOT_YET_RECRUITING',
         'ENROLLING_BY_INVITATION'
       )
-    ORDER BY last_synced_at DESC
+    ORDER BY
+      (verified_by IS NOT NULL) ASC,  -- unverified first (need attention)
+      last_synced_at DESC
   `;
 
   return NextResponse.json({ trials });

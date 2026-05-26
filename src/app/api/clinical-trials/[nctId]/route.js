@@ -13,6 +13,7 @@ export async function GET(req, { params }) {
   }
 
   try {
+    // Note: include both active AND archived (completed) trials so detail pages work for both
     const result = await sql`
       SELECT
         nct_id,
@@ -36,11 +37,21 @@ export async function GET(req, { params }) {
         COALESCE(ai_locations_manual, ai_locations)             AS ai_locations,
         COALESCE(ai_prior_research_manual, ai_prior_research)   AS ai_prior_research,
 
+        verified_by,
+        verified_at,
+        archive_reason,
+        archived_at,
+        findings,
+        findings_url,
+        findings_published_at,
+        custom_questions,
+        hidden_questions,
+        is_active,
+
         raw_data
       FROM clinical_trials
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})
-        AND is_active = true
       LIMIT 1
     `;
 

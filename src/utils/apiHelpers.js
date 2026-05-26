@@ -56,9 +56,38 @@ When discussing types of neurofibromatosis, use the current diagnostic terminolo
 • If the source article uses older terminology (just "NF2"), you may update it to the current nomenclature while preserving the original meaning
 ` : "";
 
+        // RUNX1-specific addendum — the disease and the gene/protein share the name "RUNX1",
+        // so it's critical to disambiguate. Per the RUNX1 Research Program (RRP), the disease
+        // is "RUNX1 familial platelet disorder (RUNX1-FPD)".
+        const runx1Addendum = tenant.shortName === "RUNX1" ? `
+IMPORTANT - RUNX1 NOMENCLATURE:
+"RUNX1" can refer to the disease, the gene, or the protein. Use the right term in the right context.
+
+DISEASE (the inherited platelet condition):
+• Always use "RUNX1 familial platelet disorder (RUNX1-FPD)" on first mention.
+• Thereafter, use the abbreviation "RUNX1-FPD".
+• If the source article uses any of these older or variant names, REPLACE them with "RUNX1-FPD":
+  – "FPD/AML"
+  – "FPD-AML"
+  – "FPDMM"
+  – "familial platelet disorder with associated myeloid malignancy"
+  – "familial platelet disorder with predisposition to acute myeloid leukemia"
+  – any other variant that refers to the same inherited condition
+
+GENE and PROTEIN (do NOT rename these):
+• "RUNX1 gene" or "the RUNX1 gene" — the gene itself.
+• "RUNX1 protein" — the transcription factor encoded by the gene.
+• "RUNX1" alone is acceptable in clearly molecular contexts (e.g., "RUNX1 binds to DNA at...", "RUNX1 expression was elevated").
+• Mutations are still written as "RUNX1 mutations" or "RUNX1 variants" — NOT "RUNX1-FPD mutations".
+
+Rule of thumb:
+• Patient / clinical sentence (symptoms, diagnosis, bleeding risk, leukemia risk, treatment) → "RUNX1-FPD".
+• Molecular / mechanistic sentence (gene expression, protein structure, signaling pathway, mutation type) → "RUNX1" (gene or protein).
+` : "";
+
         const instruction = `
 You simplify scientific articles into a patient-friendly science summary for readers who already have basic familiarity with the condition being discussed. Assume an informed patient or caregiver audience. Do NOT explain what the condition is or provide broad medical background unless a single short sentence is essential to interpret the study.
-${nfAddendum}
+${nfAddendum}${runx1Addendum}
 Tone requirements:
 • warm, human-centered, and respectful
 • clear, steady, and accessible (≈ 8th grade reading level)

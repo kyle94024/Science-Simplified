@@ -86,7 +86,8 @@ function HomeContent() {
                           tenant.shortName === "Aicardi" ||
                           tenant.shortName === "TS" ||
                           tenant.shortName === "RUNX1" ||
-                          tenant.shortName === "Scleroderma"
+                          tenant.shortName === "Scleroderma" ||
+                          tenant.shortName === "Myositis"
                         ? "background-alt"
                         : ""
                 }`}

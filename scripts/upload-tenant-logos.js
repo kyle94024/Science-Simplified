@@ -1,0 +1,163 @@
+/**
+ * Upload each tenant's logo(s) to Cloudinary so they can be referenced from
+ * anywhere (Squarespace embeds, email templates, partner pages, etc.) without
+ * depending on the Vercel deployment being reachable.
+ *
+ * Run from repo root:
+ *   node scripts/upload-tenant-logos.js
+ *
+ * Reads Cloudinary creds from .env.local (NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+ * CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET).
+ *
+ * Output:
+ *   - Uploads to Cloudinary under  simplified/tenants/<tenant>/<asset>
+ *   - Writes a manifest to        docs/tenant-logos.json
+ *   - Writes a human-readable     docs/tenant-logos.md
+ */
+const fs = require("fs");
+const path = require("path");
+const { v2: cloudinary } = require("cloudinary");
+
+// Load .env / .env.local manually (no dotenv dependency)
+for (const fname of [".env", ".env.local"]) {
+  const envFile = path.join(__dirname, "..", fname);
+  if (!fs.existsSync(envFile)) continue;
+  const content = fs.readFileSync(envFile, "utf8");
+  content.split("\n").forEach((line) => {
+    const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+    if (m && !process.env[m[1]]) {
+      // Strip surrounding single or double quotes
+      process.env[m[1]] = m[2].replace(/^['"]|['"]$/g, "");
+    }
+  });
+}
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+if (!cloudinary.config().cloud_name) {
+  console.error("❌ Cloudinary not configured. Check .env.local");
+  process.exit(1);
+}
+
+// Map of tenant pathName -> { primary: relative_path, icon?: relative_path }
+// Picked manually so we don't accidentally upload random PNGs.
+const TENANTS = {
+  NF:           { primary: "NF/NF_logoWithText.png" },
+  EB:           { primary: "EB/EB_logoWithText.png" },
+  CF:           { primary: "CF/CF_text_with_logo.png" },
+  Ashermans:    { primary: "Ashermans/TempAshermans_text_with_logo.png" },
+  Aicardi:      { primary: "Aicardi/Aicardi_logo_w_text.png" },
+  RYR1:         { primary: "RYR1/RYR1_logo_with_text.png" },
+  ALS:          { primary: "ALS/ALS_logo_with_text.png" },
+  RETT:         { primary: "RETT/CF_text_with_logo.png" }, // intentionally — site config uses RETT_symbol.png but file missing
+  Huntingtons:  { primary: "Huntingtons/HD_logo_with_text.png" },
+  Progeria:     { primary: "Progeria/Progeria_logo_with_text.png" },
+  Canavan:      { primary: "Canavan/Canavan_text_with_logo.png" },
+  Vitiligo:     { primary: "Vitiligo/VitiligoLogo.png" },
+  Turners:      { primary: "Turners/Turners_logoWithText.png" },
+  HS:           { primary: "HS/HSSimplifiedLogo.png", icon: "HS/hslogo.png" },
+  RUNX1:        { primary: "RUNX1/RUNX1_logoWithText.png", icon: "RUNX1/runx1_logo.png" },
+  Myositis:     { primary: "Myositis/myologo.png" },
+  Scleroderma:  { primary: "Scleroderma/scleroderma_logo.png" },
+};
+
+const ASSETS_ROOT = path.join(__dirname, "..", "public", "assets");
+
+async function uploadOne(tenantKey, relativePath, variant) {
+  const fullPath = path.join(ASSETS_ROOT, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    console.warn(`  ⚠ skip ${variant}: ${relativePath} not found`);
+    return null;
+  }
+
+  // public_id is what we name the asset in Cloudinary (no extension).
+  // Folder: simplified/tenants/<tenant>/<variant>
+  const publicId = `simplified/tenants/${tenantKey}/${variant}`;
+
+  try {
+    const result = await cloudinary.uploader.upload(fullPath, {
+      public_id: publicId,
+      overwrite: true,
+      resource_type: "image",
+      // Preserve quality but allow optimized delivery
+      tags: ["tenant-logo", `tenant-${tenantKey.toLowerCase()}`],
+    });
+    console.log(`  ✓ ${variant}: ${result.secure_url}`);
+    return {
+      url: result.secure_url,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+      bytes: result.bytes,
+      sourceFile: relativePath,
+    };
+  } catch (err) {
+    console.error(`  ✗ ${variant} failed: ${err.message}`);
+    return null;
+  }
+}
+
+(async function main() {
+  const manifest = {};
+  for (const [tenant, files] of Object.entries(TENANTS)) {
+    console.log(`\n[${tenant}]`);
+    manifest[tenant] = {};
+    if (files.primary) {
+      const r = await uploadOne(tenant, files.primary, "logo");
+      if (r) manifest[tenant].logo = r;
+    }
+    if (files.icon) {
+      const r = await uploadOne(tenant, files.icon, "icon");
+      if (r) manifest[tenant].icon = r;
+    }
+  }
+
+  // Write JSON manifest
+  const docsDir = path.join(__dirname, "..", "docs");
+  if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
+  const jsonPath = path.join(docsDir, "tenant-logos.json");
+  fs.writeFileSync(jsonPath, JSON.stringify(manifest, null, 2));
+  console.log(`\n→ ${jsonPath}`);
+
+  // Write human-readable MD
+  const lines = [
+    "# Tenant logo URLs (Cloudinary)",
+    "",
+    "Auto-generated by `scripts/upload-tenant-logos.js`. Re-run that script after",
+    "swapping a logo file in `public/assets/` to refresh.",
+    "",
+    "All assets are stored under the Cloudinary folder `simplified/tenants/<tenant>/`",
+    "and are public/CDN-cached. Use these URLs in Squarespace embeds, partner code blocks,",
+    "email templates, or anywhere else where you need a tenant logo without depending on",
+    "the Vercel deployment.",
+    "",
+    "| Tenant | Logo (with text) | Icon (no text) |",
+    "| --- | --- | --- |",
+  ];
+  for (const [tenant, entries] of Object.entries(manifest)) {
+    const logo = entries.logo?.url ? `[link](${entries.logo.url})` : "—";
+    const icon = entries.icon?.url ? `[link](${entries.icon.url})` : "—";
+    lines.push(`| ${tenant} | ${logo} | ${icon} |`);
+  }
+  lines.push("");
+  lines.push("## Raw URLs");
+  lines.push("");
+  for (const [tenant, entries] of Object.entries(manifest)) {
+    lines.push(`### ${tenant}`);
+    if (entries.logo) {
+      lines.push(`- **Logo**: \`${entries.logo.url}\` (${entries.logo.width}x${entries.logo.height}, ${entries.logo.format})`);
+    }
+    if (entries.icon) {
+      lines.push(`- **Icon**: \`${entries.icon.url}\` (${entries.icon.width}x${entries.icon.height}, ${entries.icon.format})`);
+    }
+    lines.push("");
+  }
+
+  const mdPath = path.join(docsDir, "tenant-logos.md");
+  fs.writeFileSync(mdPath, lines.join("\n"));
+  console.log(`→ ${mdPath}\n`);
+})();

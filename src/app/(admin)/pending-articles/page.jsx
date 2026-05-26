@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { FileText, Clock, CheckCircle, Users } from "lucide-react";
+import { FileText, Clock, CheckCircle, Users, Star } from "lucide-react";
 import { withAuth } from "@/components/withAuth/withAuth";
+import useAuthStore from "@/store/useAuthStore";
 import PageHeader from "@/components/admin/PageHeader";
 import EmptyState from "@/components/admin/EmptyState";
 import SearchInput from "@/components/admin/SearchInput";
@@ -16,10 +17,14 @@ const PendingArticles = () => {
     const [error, setError] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const { user } = useAuthStore();
+    const currentUserId = user?.userId;
+
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch("/api/articles/pending");
+                // Use the assignments-aware route so we can split the list.
+                const response = await fetch("/api/articles/pending-with-assignments");
                 if (!response.ok) throw new Error("Failed to fetch articles");
                 const data = await response.json();
                 setArticles(data);
@@ -35,33 +40,53 @@ const PendingArticles = () => {
     }, []);
 
     // Filter articles based on search
-   const filteredArticles = useMemo(() => {
-    const queryLower = searchQuery.toLowerCase();
+    const filteredArticles = useMemo(() => {
+        const queryLower = searchQuery.toLowerCase();
+        return articles.filter((article) => {
+            if (!queryLower) return true;
+            const titleMatch = article.title?.toLowerCase().includes(queryLower);
+            const authorsMatch =
+                Array.isArray(article.authors) &&
+                article.authors.join(" ").toLowerCase().includes(queryLower);
+            return titleMatch || authorsMatch;
+        });
+    }, [articles, searchQuery]);
 
-    return articles.filter((article) => {
-        const titleMatch =
-            article.title?.toLowerCase().includes(queryLower);
+    // Split into "assigned to me" and "everything else"
+    const { assignedToMe, others } = useMemo(() => {
+        const mine = [];
+        const rest = [];
+        for (const article of filteredArticles) {
+            const isMine =
+                currentUserId &&
+                Array.isArray(article.assigned_editors) &&
+                article.assigned_editors.some((e) => e.id === currentUserId);
+            if (isMine) mine.push(article);
+            else rest.push(article);
+        }
+        return { assignedToMe: mine, others: rest };
+    }, [filteredArticles, currentUserId]);
 
-        const authorsMatch =
-            Array.isArray(article.authors) &&
-            article.authors.join(" ").toLowerCase().includes(queryLower);
-
-        return titleMatch || authorsMatch;
-    });
-}, [articles, searchQuery]);
-
-    // Calculate stats
+    // Calculate stats (over the full unfiltered list)
     const stats = useMemo(() => {
         const total = articles.length;
         const withEditors = articles.filter(
             (a) => a.assigned_editors?.length > 0
         ).length;
+        const mine = currentUserId
+            ? articles.filter(
+                  (a) =>
+                      Array.isArray(a.assigned_editors) &&
+                      a.assigned_editors.some((e) => e.id === currentUserId)
+              ).length
+            : 0;
         return {
             total,
             withEditors,
             unassigned: total - withEditors,
+            mine,
         };
-    }, [articles]);
+    }, [articles, currentUserId]);
 
     if (loading) {
         return (
@@ -126,7 +151,12 @@ const PendingArticles = () => {
             />
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <StatsCard
+                    label="Assigned to you"
+                    value={stats.mine}
+                    icon={Star}
+                />
                 <StatsCard
                     label="Total Pending"
                     value={stats.total}
@@ -154,7 +184,6 @@ const PendingArticles = () => {
                 />
             </div>
 
-            {/* Articles List */}
             {filteredArticles.length === 0 ? (
                 <div className="admin-card">
                     <EmptyState
@@ -168,11 +197,66 @@ const PendingArticles = () => {
                     />
                 </div>
             ) : (
-                <div className="space-y-4">
-                    {filteredArticles.map((article) => (
-                        <ArticleCard key={article.id} article={article} />
-                    ))}
-                </div>
+                <>
+                    {/* Assigned to you — green-highlighted section */}
+                    {assignedToMe.length > 0 && (
+                        <section className="mb-8">
+                            <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-500 text-white">
+                                    <Star size={18} fill="currentColor" />
+                                </div>
+                                <div className="flex-1">
+                                    <h2 className="text-[1.7rem] font-bold text-emerald-900">
+                                        Assigned to you
+                                    </h2>
+                                    <p className="text-[1.3rem] text-emerald-700">
+                                        {assignedToMe.length} article{assignedToMe.length === 1 ? "" : "s"} waiting on your review
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                {assignedToMe.map((article) => (
+                                    <ArticleCard
+                                        key={article.id}
+                                        article={article}
+                                        currentUserId={currentUserId}
+                                        highlight
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* All other pending articles */}
+                    {others.length > 0 && (
+                        <section>
+                            {assignedToMe.length > 0 && (
+                                <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200">
+                                    <div className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-400 text-white">
+                                        <FileText size={18} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h2 className="text-[1.7rem] font-bold text-gray-800">
+                                            All other pending articles
+                                        </h2>
+                                        <p className="text-[1.3rem] text-gray-600">
+                                            {others.length} article{others.length === 1 ? "" : "s"}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="space-y-4">
+                                {others.map((article) => (
+                                    <ArticleCard
+                                        key={article.id}
+                                        article={article}
+                                        currentUserId={currentUserId}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                </>
             )}
 
             {/* Results count */}
@@ -185,13 +269,15 @@ const PendingArticles = () => {
     );
 };
 
-function ArticleCard({ article }) {
+function ArticleCard({ article, currentUserId, highlight }) {
     const hasEditors = article.assigned_editors?.length > 0;
 
     return (
         <Link
             href={`/pending-articles/${article.id}`}
-            className="admin-card admin-card-interactive block"
+            className={`admin-card admin-card-interactive block ${
+                highlight ? "border-l-4 border-l-emerald-500" : ""
+            }`}
         >
             <div className="p-5 flex gap-5">
                 {/* Thumbnail */}
@@ -209,10 +295,16 @@ function ArticleCard({ article }) {
                         <h3 className="text-[1.6rem] font-semibold text-gray-900 line-clamp-2">
                             {article.title}
                         </h3>
-                        <StatusBadge
-                            variant={hasEditors ? "success" : "warning"}
-                            label={hasEditors ? "Assigned" : "Unassigned"}
-                        />
+                        {highlight ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[1.1rem] font-bold whitespace-nowrap">
+                                <Star size={11} fill="currentColor" /> You
+                            </span>
+                        ) : (
+                            <StatusBadge
+                                variant={hasEditors ? "success" : "warning"}
+                                label={hasEditors ? "Assigned" : "Unassigned"}
+                            />
+                        )}
                     </div>
 
                     {article.authors && (
@@ -221,7 +313,7 @@ function ArticleCard({ article }) {
                         </p>
                     )}
 
-                    <div className="flex items-center gap-4 text-[1.2rem] text-gray-500">
+                    <div className="flex items-center gap-4 text-[1.2rem] text-gray-500 flex-wrap">
                         {article.created_at && (
                             <span className="flex items-center gap-1">
                                 <Clock size={14} />
@@ -231,8 +323,9 @@ function ArticleCard({ article }) {
                         {hasEditors && (
                             <span className="flex items-center gap-1">
                                 <Users size={14} />
-                                {article.assigned_editors.length} editor
-                                {article.assigned_editors.length !== 1 ? "s" : ""}
+                                {article.assigned_editors
+                                    .map((e) => e.name || e.email)
+                                    .join(", ")}
                             </span>
                         )}
                     </div>

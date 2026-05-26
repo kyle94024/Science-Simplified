@@ -12,7 +12,7 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
-import { Loader2, Edit, Users, FileText, CheckCircle } from "lucide-react";
+import { Loader2, Edit, Users, FileText, CheckCircle, Shield } from "lucide-react";
 import PageHeader from "@/components/admin/PageHeader";
 import SearchInput from "@/components/admin/SearchInput";
 import EmptyState from "@/components/admin/EmptyState";
@@ -376,6 +376,7 @@ function ArticleItem({ article, isSelected, onSelect, onUnassign }) {
                 <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => onSelect(article.id)}
+                    onClick={(e) => e.stopPropagation()}
                     className="mt-1 w-5 h-5"
                 />
                 <img
@@ -432,6 +433,7 @@ function EditorItem({ editor, isSelected, onSelect }) {
                 <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => onSelect(editor.id)}
+                    onClick={(e) => e.stopPropagation()}
                     className="w-5 h-5"
                 />
                 {editor.image ? (
@@ -446,9 +448,19 @@ function EditorItem({ editor, isSelected, onSelect }) {
                     <FallbackAuthorImage authorName={editor.name} size="sm" />
                 )}
                 <div className="flex-1 min-w-0">
-                    <p className="text-[1.4rem] font-medium text-gray-900 truncate">
-                        {editor.name}
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <p className="text-[1.4rem] font-medium text-gray-900 truncate">
+                            {editor.name || editor.email}
+                        </p>
+                        {editor.is_admin && (
+                            <span
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[1.1rem] font-semibold"
+                                title="Admin user"
+                            >
+                                <Shield size={10} /> Admin
+                            </span>
+                        )}
+                    </div>
                     <p className="text-[1.2rem] text-gray-500 truncate">
                         {editor.email}
                     </p>
