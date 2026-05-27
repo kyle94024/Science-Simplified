@@ -68,12 +68,30 @@
             }
 
             p,
-            pre,
-            blockquote,
-            h1, h2 , h3, h4, h5, h6 {
-                margin:0;
-                padding:0
-            }
+pre,
+blockquote,
+h1, h2 , h3, h4, h5, h6 {
+    margin:0;
+    padding:0
+}
+
+ul,
+ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+ul {
+    list-style-type: disc;
+}
+
+ol {
+    list-style-type: decimal;
+}
+
+li {
+    margin: 0.25rem 0;
+}
 
             h1 { font-size: 2em; }
             h2 { font-size: 1.5em; }

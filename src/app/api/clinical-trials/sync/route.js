@@ -340,10 +340,9 @@ async function checkShouldSkip(nctId, study) {
     existing[0]?.ai_locations;
 
   const shouldSkip =
-    existing.length &&
-    existing[0].source_hash === newHash &&
-    new Date(existing[0].last_synced_at).getTime() > Date.now() - WEEK_MS &&
-    hasAllAI;
+  existing.length &&
+  existing[0].source_hash === newHash &&
+  hasAllAI;
 
   return shouldSkip;
 }

@@ -30,7 +30,7 @@ const ArticlePage = ({ params }) => {
     // Favorite state
     const [isFavorited, setIsFavorited] = useState(false);
     const [favoriting, setFavoriting] = useState(false);
-    const [authorsExpanded, setAuthorsExpanded] = useState(false);
+    const [authorsExpanded, setAuthorsExpanded] = useState(true);
 
     // Translation state
     const [selectedLanguage, setSelectedLanguage] = useState(null);
