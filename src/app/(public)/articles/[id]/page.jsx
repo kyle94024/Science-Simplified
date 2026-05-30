@@ -30,7 +30,7 @@ const ArticlePage = ({ params }) => {
     // Favorite state
     const [isFavorited, setIsFavorited] = useState(false);
     const [favoriting, setFavoriting] = useState(false);
-    const [authorsExpanded, setAuthorsExpanded] = useState(false);
+    const [authorsExpanded, setAuthorsExpanded] = useState(true);
 
     // Translation state
     const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -47,23 +47,7 @@ const ArticlePage = ({ params }) => {
     const { isAdmin, user } = useAuthStore(); // Access user and admin state from Zustand
     const { email, userId, name } = user || {};
 
-    // Fetch the favorite status for the article
-    const fetchFavoriteStatus = async () => {
-        if (!userId) return;
-        try {
-            const res = await fetch(
-                `/api/articles/${id}/like?userId=${userId}`,
-                {
-                    method: "GET",
-                }
-            );
-            const { success, data, message } = await res.json();
-            if (!success) throw new Error(message);
-            setIsFavorited(data.isFavorited || false);
-        } catch (e) {
-            console.error("Error fetching favorite status:", e);
-        }
-    };
+    // Note: favorite status is fetched inline where the article is loaded
 
     // Toggle favorite/unfavorite with optimistic update
     const toggleFavoriteArticle = async () => {
@@ -134,7 +118,22 @@ const ArticlePage = ({ params }) => {
         };
 
         fetchArticle();
-        if (userId) fetchFavoriteStatus(); // Fetch favorite status when user is logged in
+
+        if (userId) {
+            const fetchFavoriteStatus = async () => {
+                try {
+                    const res = await fetch(`/api/articles/${id}/like?userId=${userId}`, {
+                        method: "GET",
+                    });
+                    const { success, data, message } = await res.json();
+                    if (!success) throw new Error(message);
+                    setIsFavorited(data.isFavorited || false);
+                } catch (e) {
+                    console.error("Error fetching favorite status:", e);
+                }
+            };
+            fetchFavoriteStatus(); // Fetch favorite status when user is logged in
+        }
     }, [id, userId]);
 
     // Scroll progress bar
@@ -176,7 +175,7 @@ const ArticlePage = ({ params }) => {
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [isAdmin, article?.id, article?.audio_url, id]);
+    }, [isAdmin, article, id]);
 
     const handleTranslate = async (langCode) => {
         if (langCode === selectedLanguage) {

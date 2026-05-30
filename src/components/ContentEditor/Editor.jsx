@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 import { EditorContent, useEditor, BubbleMenu, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-// import individual nodes to extend for class attributes
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
 import Blockquote from "@tiptap/extension-blockquote";
@@ -42,42 +41,50 @@ const ToggleButton = ({ active, children, ...buttonProps }) => (
   </button>
 );
 
+// Extend each node to accept a `class` attribute
+const ExtendedParagraph = Paragraph.extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
+const ExtendedHeading = Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }).extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
+const ExtendedBlockquote = Blockquote.extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
+const ExtendedBulletList = BulletList.extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
+const ExtendedOrderedList = OrderedList.extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
+const ExtendedListItem = ListItem.extend({
+  addAttributes() {
+    return { class: { default: null } };
+  },
+});
+
 export const Editor = ({ content, onChange }) => {
   const oldSelection = useRef(null);
 
   const editor = useEditor({
     extensions: [
-      Paragraph.extend({
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
-      Heading.extend({
-        levels: [1, 2, 3, 4, 5, 6],
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
-      Blockquote.extend({
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
-      BulletList.extend({
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
-      OrderedList.extend({
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
-      ListItem.extend({
-        addAttributes() {
-          return { class: { default: null } };
-        },
-      }),
+      // StarterKit with ALL list/paragraph/heading/blockquote nodes disabled
+      // so our extended versions are the sole registered copies
       StarterKit.configure({
         paragraph: false,
         heading: false,
@@ -86,6 +93,13 @@ export const Editor = ({ content, onChange }) => {
         orderedList: false,
         listItem: false,
       }),
+      // Our extended versions — registered after StarterKit so they win
+      ExtendedParagraph,
+      ExtendedHeading,
+      ExtendedBlockquote,
+      ExtendedBulletList,
+      ExtendedOrderedList,
+      ExtendedListItem,
       Image.configure({
         HTMLAttributes: { class: "apicss-image" },
       }),
@@ -119,7 +133,6 @@ export const Editor = ({ content, onChange }) => {
     },
   });
 
-  // keep external "content" in sync
   useEffect(() => {
     if (!editor) return;
     if (content && content !== editor.getHTML()) {
@@ -186,29 +199,37 @@ export const Editor = ({ content, onChange }) => {
           title="Link"
           onClick={() => {
             if (editorState.isLink) {
-              editor.chain().focus().unsetMark('link').run();
+              editor.chain().focus().unsetMark("link").run();
             } else {
-              editor.chain().focus().toggleLink({ href: null }).run()
+              editor.chain().focus().toggleLink({ href: null }).run();
             }
           }}
           active={editorState.isLink}
         ><LinkIcon size={16} /></ToggleButton>
+        {/* Fix: clearNodes() resets block types; unsetAllMarks() strips inline marks */}
         <button
           type="button"
+          title="Remove Formatting"
           className="editor-button"
-          onClick={() => editor.chain().focus().unsetAllMarks().run()}
+          onClick={() =>
+            editor.chain().focus().clearNodes().unsetAllMarks().run()
+          }
         ><RemoveFormatting size={16} /></button>
       </div>
 
       <BubbleMenu
         editor={editor}
-        tippyOptions={{ placement: 'bottom' }}
+        tippyOptions={{ placement: "bottom" }}
         shouldShow={({ editor }) => editor.isActive("link")}
       >
         <LinkEditor
           href={editor.getAttributes("link").href}
-          onChange={(href) => editor.chain().extendMarkRange("link").setLink({ href }).run()}
-          onDelete={() => editor.chain().extendMarkRange("link").unsetLink().run()}
+          onChange={(href) =>
+            editor.chain().extendMarkRange("link").setLink({ href }).run()
+          }
+          onDelete={() =>
+            editor.chain().extendMarkRange("link").unsetLink().run()
+          }
         />
       </BubbleMenu>
 

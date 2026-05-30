@@ -32,6 +32,9 @@ const openai = new OpenAI({
 });
 
 /* ---------------- helpers ---------------- */
+// Helpers are imported from `@/lib/clinicalTrials/tenantConfig` to avoid
+// duplication and keep tenant-specific rules in one place. Use the
+// imported `normalizeDate`, `trialMatchesTenant`, and `buildSourceHash`.
 
 async function aiCall(prompt) {
   const res = await openai.chat.completions.create({
@@ -337,10 +340,9 @@ async function checkShouldSkip(nctId, study) {
     existing[0]?.ai_locations;
 
   const shouldSkip =
-    existing.length &&
-    existing[0].source_hash === newHash &&
-    new Date(existing[0].last_synced_at).getTime() > Date.now() - WEEK_MS &&
-    hasAllAI;
+  existing.length &&
+  existing[0].source_hash === newHash &&
+  hasAllAI;
 
   return shouldSkip;
 }
