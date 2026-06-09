@@ -6,6 +6,7 @@ import TeamSection from "./TeamSection";
 import ContributorsSection from "./ContributorsSection";
 import GetInvolvedSection from "./GetInvolvedSection";
 import SupportersSection from "./SupportersSection";
+import PartnershipSection from "./PartnershipSection";
 
 export const sectionRegistry = {
   hero: HeroSection,
@@ -16,6 +17,7 @@ export const sectionRegistry = {
   contributors: ContributorsSection,
   getInvolved: GetInvolvedSection,
   supporters: SupportersSection,
+  partnership: PartnershipSection,
 };
 
 export const sectionLabels = {
@@ -27,4 +29,5 @@ export const sectionLabels = {
   contributors: "Scientific Contributors",
   getInvolved: "Get Involved",
   supporters: "Community Supporters",
+  partnership: "Partnership",
 };

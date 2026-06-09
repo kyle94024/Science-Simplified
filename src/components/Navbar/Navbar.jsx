@@ -90,29 +90,65 @@ export default function Navbar() {
     // Editor Tools dropdown badge = articles count (editors care about pending articles)
     const editorToolsCount = showEditorTools ? counts.assignedArticles : 0;
 
+    // Scleroderma is presented as "Science Simplified, in partnership with the
+    // Scleroderma Research Foundation" — its own entity collaborating with SRF.
+    // It also hides the Clinical Trials feature.
+    const isScleroderma = tenant.shortName === "Scleroderma";
+
+    const navItems = [
+        { href: "/", label: "Home" },
+        { href: "/articles", label: "Articles" },
+        { href: "/clinical-trials", label: "Clinical Trials" },
+        { href: "/about", label: "About" },
+        { href: "/contact", label: "Contact Us" },
+    ].filter((item) => !(isScleroderma && item.href === "/clinical-trials"));
+
     return (
+        <>
+        {isScleroderma && (
+            <div className="partner-bar">
+                <div className="partner-bar__inner boxed padding">
+                    <span className="partner-bar__text">
+                        <strong>Science Simplified</strong>
+                        <span className="partner-bar__sep">in partnership with the</span>
+                        <span className="partner-bar__org">Scleroderma Research Foundation</span>
+                    </span>
+                    <a
+                        className="partner-bar__link"
+                        href="https://srfcure.org/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Visit srfcure.org →
+                    </a>
+                </div>
+            </div>
+        )}
         <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : tenant.shortName === "Scleroderma" ? "scleroderma-mode" : tenant.shortName === "Myositis" ? "myositis-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
             <div className="navbar-inner boxed padding">
-                {/* Left logo */}
-                <Link href="/" className="navbrand">
-                    <Image
-                        width={100}
-                        height={50}
-                        src={navbrand}
-                        alt="Logo"
-                        className="navbrand-img"
-                    />
-                </Link>
+                {/* Left logo — Scleroderma uses a Science Simplified wordmark + partner subtitle */}
+                {isScleroderma ? (
+                    <Link href="/" className="navbrand navbrand--text">
+                        <span className="navbrand-title">Science Simplified</span>
+                        <span className="navbrand-subtitle">
+                            partnered with the Scleroderma Research Foundation
+                        </span>
+                    </Link>
+                ) : (
+                    <Link href="/" className="navbrand">
+                        <Image
+                            width={100}
+                            height={50}
+                            src={navbrand}
+                            alt="Logo"
+                            className="navbrand-img"
+                        />
+                    </Link>
+                )}
 
                 {/* Main nav */}
                 <ul className="nav-links">
-                    {[
-                        { href: "/", label: "Home" },
-                        { href: "/articles", label: "Articles" },
-                        { href: "/clinical-trials", label: "Clinical Trials" },
-                        { href: "/about", label: "About" },
-                        { href: "/contact", label: "Contact Us" },
-                    ].map((item) => (
+                    {navItems.map((item) => (
                         <li key={item.href}>
                             <Link
                                 href={item.href}
@@ -275,17 +311,11 @@ export default function Navbar() {
             {/* Mobile dropdown fallback */}
             {navbarOpen && (
                 <div className="mobile-menu">
-                    {[
-  { name: "Home", href: "/" },
-  { name: "Articles", href: "/articles" },
-  { name: "Clinical Trials", href: "/clinical-trials" },
-  { name: "About", href: "/about" },
-  { name: "Contact Us", href: "/contact" },
-].map((item) => (
-  <Link key={item.name} href={item.href} onClick={toggleNavbar}>
-    {item.name}
-  </Link>
-))}
+                    {navItems.map((item) => (
+                        <Link key={item.href} href={item.href} onClick={toggleNavbar}>
+                            {item.label}
+                        </Link>
+                    ))}
                     {user ? (
                         <button
                             onClick={logout}
@@ -309,5 +339,6 @@ export default function Navbar() {
                 </div>
             )}
         </nav>
+        </>
     );
 }

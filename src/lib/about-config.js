@@ -57,6 +57,29 @@ export function buildDefaultSections(tenantConfig) {
     },
   });
 
+  // Partnership — for tenants that operate in partnership with an organization
+  // (e.g. Scleroderma Simplified × Scleroderma Research Foundation). Clarifies
+  // that Science Simplified is its own entity collaborating with the partner.
+  if (t.about_partnershipBody || t.about_partnershipTitle) {
+    sections.push({
+      id: "partnership-default",
+      type: "partnership",
+      visible: true,
+      content: {
+        title: t.about_partnershipTitle || "Our Partnership",
+        body: t.about_partnershipBody || "",
+        logoUrl: t.about_partnershipLogo
+          ? `${assetBase}/${t.about_partnershipLogo}`
+          : "",
+        logoAlt: t.about_partnershipLogoAlt || t.about_partnershipTitle || "Partner organization",
+        logoWidth: t.about_partnershipLogoWidth || 320,
+        logoHeight: t.about_partnershipLogoHeight || 160,
+        ctaText: t.about_partnershipCtaText || "",
+        ctaLink: t.about_partnershipCtaLink || "",
+      },
+    });
+  }
+
   // Process (How It Works) - new section, no sites.js default
   sections.push({
     id: "process-default",

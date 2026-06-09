@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { Unplug, BadgeCheck, Sparkles } from "lucide-react";
@@ -28,6 +29,10 @@ const CONTINENT_MAP = {
 };
 
 const ClinicalTrialsPage = () => {
+  const router = useRouter();
+  // Scleroderma does not use the Clinical Trials feature — send visitors home.
+  const trialsDisabled = tenant.shortName === "Scleroderma";
+
   const { searchQuery, semanticResults = [], semanticLoading } = useSearchStore();
   const [tab, setTab] = useState("recruiting"); // recruiting | completed
   const [recruitingTrials, setRecruitingTrials] = useState([]);
@@ -41,8 +46,14 @@ const ClinicalTrialsPage = () => {
   const [locationFilter, setLocationFilter] = useState("all");
   const [trialTypeFilter, setTrialTypeFilter] = useState("all");
 
+  // Tenants with the trials feature disabled (Scleroderma) are redirected home.
+  useEffect(() => {
+    if (trialsDisabled) router.replace("/");
+  }, [trialsDisabled, router]);
+
   // Fetch recruiting trials on mount
   useEffect(() => {
+    if (trialsDisabled) return;
     (async () => {
       try {
         const res = await fetch("/api/clinical-trials/active");
@@ -55,7 +66,7 @@ const ClinicalTrialsPage = () => {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [trialsDisabled]);
 
   // Fetch completed trials when tab switches
   useEffect(() => {
@@ -121,6 +132,9 @@ const ClinicalTrialsPage = () => {
   const unverifiedTrials = filteredTrials.filter((t) => !t.verified_by);
 
   const isLoading = tab === "recruiting" ? loading : completedLoading;
+
+  // Feature disabled for this tenant — render nothing while redirecting home.
+  if (trialsDisabled) return null;
 
   return (
     <div className="clinical-trials-page">
