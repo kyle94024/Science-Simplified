@@ -124,8 +124,12 @@ treat them as hints.
 
 | Tenant(s) | What | File |
 |---|---|---|
-| **Scleroderma** | Team subtitle "Core Team" → **"Partners"** | `src/components/about/sections/TeamSection.jsx` (~L10) |
-| **Scleroderma** | Dedicated **"Partnership" section** injected (via `about_partnership*` config fields) | `src/lib/about-config.js` (~L60); component `src/components/about/sections/PartnershipSection.jsx`; registered in `sections/index.js` |
+| **Scleroderma** | **Team** section = Science Simplified team only (Kyle); the 2 placeholder advisor slots are hidden (`about_teamMember2/3Hidden`). Team subtitle is the normal "Core Team". | `src/lib/sites.js` (Scleroderma block) |
+| **Scleroderma** | Separate **"Partners" people section** (Hannah Young + SRF) — distinct from the SS team. Built from `about_partnerN*` config fields. | `src/lib/about-config.js` (~L120); component `src/components/about/sections/PartnersSection.jsx`; registered in `sections/index.js` as type `partners` |
+| **Scleroderma** | Dedicated **"Partnership" narrative section** (the "In Partnership with SRF" block + CTA) via `about_partnership*` config fields | `src/lib/about-config.js` (~L60); component `src/components/about/sections/PartnershipSection.jsx`; registered in `sections/index.js` |
+
+> Note: the generic `TeamSection` no longer hardcodes a tenant check — its
+> subtitle defaults to "Core Team" and is overridable via `content.subtitle`.
 
 ---
 

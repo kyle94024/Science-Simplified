@@ -141,6 +141,34 @@ export function buildDefaultSections(tenantConfig) {
     },
   });
 
+  // Partners — people from a partner organization (e.g. the Scleroderma
+  // Research Foundation: Hannah Young + the rest of SRF). Distinct from the
+  // Science Simplified team above. Built from about_partnerN* fields.
+  const partners = [];
+  for (let i = 1; i <= 6; i++) {
+    const name = t[`about_partner${i}Name`];
+    if (!name || t[`about_partner${i}Hidden`]) continue;
+    partners.push({
+      id: `partner-default-${i}`,
+      name,
+      title: t[`about_partner${i}Title`] || "",
+      bio: t[`about_partner${i}Bio`] || "",
+      imageUrl: t[`about_partner${i}Image`] ? `${assetBase}/${t[`about_partner${i}Image`]}` : "",
+    });
+  }
+  if (partners.length > 0) {
+    sections.push({
+      id: "partners-default",
+      type: "partners",
+      visible: true,
+      content: {
+        title: t.about_partnersTitle || "Our Partners",
+        description: t.about_partnersDescription || "",
+        partners,
+      },
+    });
+  }
+
   // Contributors (dynamic from DB - just stores title/description)
   sections.push({
     id: "contributors-default",

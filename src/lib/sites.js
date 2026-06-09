@@ -1222,15 +1222,29 @@ export const sites = {
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Scleroderma community.",
 
+      // Science Simplified team is Kyle for now; the placeholder advisor slots
+      // are hidden so the Team section shows only real members. SRF people live
+      // in the separate Partners section below (about_partner*).
       about_teamMember2Image: "expert-placeholder.png",
       about_teamMember2Name: "Expert Advisor Placeholder",
       about_teamMember2Title: "Expert Advisor Placeholder",
       about_teamMember2Bio: "Placeholder Bio",
+      about_teamMember2Hidden: true,
 
       about_teamMember3Image: "expert-placeholder.png",
       about_teamMember3Name: "Expert Advisor Placeholder",
       about_teamMember3Title: "Expert Advisor Placeholder",
       about_teamMember3Bio: "Placeholder Bio",
+      about_teamMember3Hidden: true,
+
+      // Partners — the Scleroderma Research Foundation (Hannah Young + team).
+      // These are SRF representatives, NOT the Science Simplified team.
+      about_partnersTitle: "Our Partners",
+      about_partnersDescription: "We work hand in hand with the Scleroderma Research Foundation — the nation's leading nonprofit investor in scleroderma research — to bring trusted, up-to-date science to the scleroderma community.",
+      about_partner1Image: "expert-placeholder.png",
+      about_partner1Name: "Hannah Young",
+      about_partner1Title: "Scleroderma Research Foundation",
+      about_partner1Bio: "",
 
       about_supporter1Logo: "expert-placeholder.png",
       about_supporter1Name: "Scleroderma Research Foundation",
