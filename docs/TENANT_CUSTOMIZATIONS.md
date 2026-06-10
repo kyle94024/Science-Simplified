@@ -124,12 +124,14 @@ treat them as hints.
 
 | Tenant(s) | What | File |
 |---|---|---|
-| **Scleroderma** | **Team** section = Science Simplified team only (Kyle); the 2 placeholder advisor slots are hidden (`about_teamMember2/3Hidden`). Team subtitle is the normal "Core Team". | `src/lib/sites.js` (Scleroderma block) |
-| **Scleroderma** | The SRF relationship is shown via the **"Partnership" narrative section** + top partner bar — **no individual SRF people are listed.** | `src/lib/about-config.js` (~L60); `PartnershipSection.jsx` |
-| (none currently) | A generic **"Partners" people section** exists (type `partners`, `about_partnerN*` fields) for tenants that want to list partner-org people. Unused at present — Scleroderma intentionally does not list SRF individuals. | `src/components/about/sections/PartnersSection.jsx`; builder in `src/lib/about-config.js` (~L120) |
+| **Scleroderma** | **Team** section shows only the Science Simplified team (Kyle). `TeamSection.jsx` filters out SRF reps (title references SRF) and placeholder rows **at render time** — the live site uses a saved CMS config that still lists Hannah Young + a placeholder, and we deliberately don't mutate that DB. (`sites.js` also hides the placeholder slots in the defaults fallback.) | `src/components/about/sections/TeamSection.jsx`; `src/lib/sites.js` |
+| **Scleroderma** | The SRF relationship is shown via the top **partner bar** (always) and, where the About page uses sites.js defaults, the **"Partnership" narrative section**. No individual SRF people are listed. | `src/components/Navbar/Navbar.jsx`; `src/lib/about-config.js` (~L60); `PartnershipSection.jsx` |
+| (none currently) | A generic **"Partners" people section** exists (type `partners`, `about_partnerN*` fields) for tenants that want to list partner-org people. Unused at present. | `src/components/about/sections/PartnersSection.jsx`; builder in `src/lib/about-config.js` (~L120) |
 
-> Note: the generic `TeamSection` no longer hardcodes a tenant check — its
-> subtitle defaults to "Core Team" and is overridable via `content.subtitle`.
+> Note: the Scleroderma About page renders a **saved CMS config** (`source: db`),
+> which overrides `sites.js` defaults. So About-page changes for Scleroderma must
+> be made either at render time (like the team filter above) or via the admin CMS
+> — editing `sites.js` alone won't show.
 
 ---
 

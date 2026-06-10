@@ -1,7 +1,26 @@
 import Image from "next/image";
+import { tenant } from "@/lib/config";
+
+// The Scleroderma site's saved CMS config still lists SRF representatives and a
+// placeholder in the Team section. We don't mutate their DB — instead we hide
+// those rows at render time so the Team section shows only the Science
+// Simplified team (Kyle). Drops anyone whose title references SRF, plus any
+// "placeholder" rows.
+function hideSclerodermaNonTeam(members) {
+  return members.filter((m) => {
+    const name = (m.name || "").toLowerCase();
+    const title = (m.title || "").toLowerCase();
+    if (name.includes("placeholder") || title.includes("placeholder")) return false;
+    if (title.includes("scleroderma research foundation") || /\bsrf\b/.test(title)) return false;
+    return true;
+  });
+}
 
 export default function TeamSection({ content }) {
-  const members = content.members || [];
+  let members = content.members || [];
+  if (tenant.shortName === "Scleroderma") {
+    members = hideSclerodermaNonTeam(members);
+  }
   // Secondary heading under the section title. Defaults to "Core Team";
   // an explicit content.subtitle (including "") from the CMS overrides it.
   const subtitle = content.subtitle ?? "Core Team";
