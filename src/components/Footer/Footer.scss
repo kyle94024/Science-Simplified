@@ -22,6 +22,27 @@
         width: 18rem;
     }
 
+    &__wordmark {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    &__wordmark-title {
+        font-size: 2.6rem;
+        font-weight: 700;
+        line-height: 1.05;
+        color: var(--color-footer-text, #ffffff);
+    }
+
+    &__wordmark-subtitle {
+        font-size: 1.4rem;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--color-footer-text, #ffffff);
+        opacity: 0.85;
+    }
+
     &__description {
         color: var(--color-footer-text, #676767);
 

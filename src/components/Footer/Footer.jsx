@@ -6,6 +6,7 @@ import Image from "next/image";
 import { tenant } from "@/lib/config";
 
 const brandlogo = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
+const isScleroderma = tenant.shortName === "Scleroderma";
 
 const Footer = () => {
     return (
@@ -13,13 +14,22 @@ const Footer = () => {
             <div className="boxed">
                 <div className="footer__content">
                     <div className="footer__branding">
-                        <Image
-                            src={brandlogo}
-                            alt="logo"
-                            className="footer__logo"
-                            width={100}
-                            height={100}
-                        />
+                        {isScleroderma ? (
+                            <div className="footer__wordmark">
+                                <span className="footer__wordmark-title">Science Simplified</span>
+                                <span className="footer__wordmark-subtitle">
+                                    partnered with the Scleroderma Research Foundation
+                                </span>
+                            </div>
+                        ) : (
+                            <Image
+                                src={brandlogo}
+                                alt="logo"
+                                className="footer__logo"
+                                width={100}
+                                height={100}
+                            />
+                        )}
                         <p className="footer__description">
                             {tenant.text_footerDescription}
                         </p>

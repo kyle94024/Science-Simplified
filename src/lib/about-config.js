@@ -57,6 +57,29 @@ export function buildDefaultSections(tenantConfig) {
     },
   });
 
+  // Partnership — for tenants that operate in partnership with an organization
+  // (e.g. Scleroderma Simplified × Scleroderma Research Foundation). Clarifies
+  // that Science Simplified is its own entity collaborating with the partner.
+  if (t.about_partnershipBody || t.about_partnershipTitle) {
+    sections.push({
+      id: "partnership-default",
+      type: "partnership",
+      visible: true,
+      content: {
+        title: t.about_partnershipTitle || "Our Partnership",
+        body: t.about_partnershipBody || "",
+        logoUrl: t.about_partnershipLogo
+          ? `${assetBase}/${t.about_partnershipLogo}`
+          : "",
+        logoAlt: t.about_partnershipLogoAlt || t.about_partnershipTitle || "Partner organization",
+        logoWidth: t.about_partnershipLogoWidth || 320,
+        logoHeight: t.about_partnershipLogoHeight || 160,
+        ctaText: t.about_partnershipCtaText || "",
+        ctaLink: t.about_partnershipCtaLink || "",
+      },
+    });
+  }
+
   // Process (How It Works) - new section, no sites.js default
   sections.push({
     id: "process-default",
@@ -117,6 +140,34 @@ export function buildDefaultSections(tenantConfig) {
       members,
     },
   });
+
+  // Partners — people from a partner organization (e.g. the Scleroderma
+  // Research Foundation: Hannah Young + the rest of SRF). Distinct from the
+  // Science Simplified team above. Built from about_partnerN* fields.
+  const partners = [];
+  for (let i = 1; i <= 6; i++) {
+    const name = t[`about_partner${i}Name`];
+    if (!name || t[`about_partner${i}Hidden`]) continue;
+    partners.push({
+      id: `partner-default-${i}`,
+      name,
+      title: t[`about_partner${i}Title`] || "",
+      bio: t[`about_partner${i}Bio`] || "",
+      imageUrl: t[`about_partner${i}Image`] ? `${assetBase}/${t[`about_partner${i}Image`]}` : "",
+    });
+  }
+  if (partners.length > 0) {
+    sections.push({
+      id: "partners-default",
+      type: "partners",
+      visible: true,
+      content: {
+        title: t.about_partnersTitle || "Our Partners",
+        description: t.about_partnersDescription || "",
+        partners,
+      },
+    });
+  }
 
   // Contributors (dynamic from DB - just stores title/description)
   sections.push({

@@ -3,6 +3,113 @@
     font-family: var(--font-onest);
 }
 
+// ───────────────────────────────────────────────────────────
+// Partner bar (Scleroderma only) — slim strip above the navbar
+// signalling the Science Simplified × Scleroderma Research
+// Foundation collaboration, linking out to srfcure.org.
+// ───────────────────────────────────────────────────────────
+.partner-bar {
+    width: 100%;
+    background: #002952; // SRF dark blue
+    color: #ffffff;
+    font-family: var(--font-onest);
+    z-index: 101;
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-top: 0.55rem;
+        padding-bottom: 0.55rem;
+        flex-wrap: wrap;
+    }
+
+    &__text {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        font-size: 1.35rem;
+        line-height: 1.3;
+
+        strong {
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+    }
+
+    &__sep {
+        opacity: 0.8;
+    }
+
+    &__org {
+        font-weight: 600;
+        color: #FEC916; // SRF yellow accent
+    }
+
+    &__link {
+        flex-shrink: 0;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 1.3rem;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s;
+
+        &:hover {
+            color: #FEC916;
+        }
+    }
+}
+
+// Text wordmark used in place of an image logo (Scleroderma)
+.navbrand--text {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.1rem;
+    text-decoration: none;
+    width: auto;
+
+    .navbrand-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1.05;
+        color: #004990; // SRF blue
+        letter-spacing: -0.01em;
+    }
+
+    .navbrand-subtitle {
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.2;
+        color: #5a6573;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .partner-bar__inner {
+        justify-content: center;
+        text-align: center;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .partner-bar__text {
+        font-size: 1.15rem;
+        justify-content: center;
+    }
+    .partner-bar__link {
+        font-size: 1.15rem;
+    }
+    .navbrand--text .navbrand-title {
+        font-size: 1.8rem;
+    }
+    .navbrand--text .navbrand-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
 // Red notification badge (circle with count)
 .nav-badge {
     display: inline-flex;

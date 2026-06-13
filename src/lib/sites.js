@@ -1222,15 +1222,22 @@ export const sites = {
       about_teamMember1Title: "Founder & Lead",
       about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Scleroderma community.",
 
+      // Science Simplified team is Kyle for now; the placeholder advisor slots
+      // are hidden so the Team section shows only real members. The SRF
+      // relationship is conveyed by the Partnership narrative section below
+      // (about_partnership*) and the top partner bar — we intentionally do NOT
+      // list individual people from SRF.
       about_teamMember2Image: "expert-placeholder.png",
       about_teamMember2Name: "Expert Advisor Placeholder",
       about_teamMember2Title: "Expert Advisor Placeholder",
       about_teamMember2Bio: "Placeholder Bio",
+      about_teamMember2Hidden: true,
 
       about_teamMember3Image: "expert-placeholder.png",
       about_teamMember3Name: "Expert Advisor Placeholder",
       about_teamMember3Title: "Expert Advisor Placeholder",
       about_teamMember3Bio: "Placeholder Bio",
+      about_teamMember3Hidden: true,
 
       about_supporter1Logo: "expert-placeholder.png",
       about_supporter1Name: "Scleroderma Research Foundation",
@@ -1239,12 +1246,18 @@ export const sites = {
       about_supporter1Link: "https://srfcure.org/",
       about_supporter1Hidden: true,
 
-      about_mission1: "Scleroderma Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Scleroderma.",
-      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Scleroderma research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Scleroderma community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
-      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Scleroderma community.",
-      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Scleroderma with the community.",
-      about_getInvolvedDescription: "Scleroderma Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
-      about_supportersDescription: "We're proud to work alongside and be supported by organizations dedicated to the Scleroderma community",
+      about_mission1: "Scleroderma Simplified — a Science Simplified platform created in partnership with the Scleroderma Research Foundation — is dedicated to making scientific research more accessible and understandable for individuals and families affected by scleroderma.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in scleroderma research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the scleroderma community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "Science Simplified is a volunteer-led team of scientists, clinicians, developers, and advocates working to bridge the gap between research and the scleroderma community — in collaboration with the Scleroderma Research Foundation.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in scleroderma with the community.",
+      about_getInvolvedDescription: "Science Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
+      about_supportersDescription: "We're proud to work alongside organizations dedicated to the scleroderma community",
+
+      // Partnership section (Science Simplified × Scleroderma Research Foundation)
+      about_partnershipTitle: "In Partnership with the Scleroderma Research Foundation",
+      about_partnershipBody: "<p>Scleroderma Simplified is a <strong>Science Simplified</strong> platform — an independent initiative dedicated to making complex medical research understandable for everyone. We're proud to collaborate with the <strong>Scleroderma Research Foundation (SRF)</strong>, the nation's leading nonprofit investor in scleroderma research.</p><p>Through this partnership, Science Simplified translates the latest peer-reviewed scleroderma research into clear, expert-reviewed summaries — helping patients, families, and caregivers stay informed about the science shaping their care. Science Simplified builds and maintains this platform; the Scleroderma Research Foundation helps connect it with the community it serves.</p>",
+      about_partnershipCtaText: "Visit the Scleroderma Research Foundation",
+      about_partnershipCtaLink: "https://srfcure.org/",
 
       about_our_mission: "our-mission.jpg",
 

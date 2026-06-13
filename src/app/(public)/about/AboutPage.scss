@@ -628,6 +628,62 @@
 }
 
 // ============================================
+// Partnership Section (e.g. Scleroderma × SRF)
+// ============================================
+.about-partnership {
+  background: var(--color-light-grey, #f7f7f7);
+  border-radius: 1.5rem;
+  padding: 4rem;
+  margin-top: 2rem;
+  border-left: 6px solid var(--color-primary, #004990);
+
+  @media (max-width: 600px) {
+    padding: 2.5rem;
+  }
+
+  &__container {
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+
+    @media (max-width: 850px) {
+      flex-direction: column;
+      gap: 3rem;
+    }
+  }
+
+  &__content {
+    flex: 1.4;
+  }
+
+  &__body {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: #3e5154;
+
+    p {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  &__cta {
+    margin-top: 1rem;
+  }
+
+  &__logo-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__logo {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+// ============================================
 // Supporters Section
 // ============================================
 .about-supporters {
