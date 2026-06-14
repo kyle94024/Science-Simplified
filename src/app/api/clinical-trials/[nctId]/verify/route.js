@@ -54,13 +54,20 @@ export async function POST(req, context) {
     };
 
     const result = await sql`
-      UPDATE clinical_trials
-      SET verified_by = ${JSON.stringify(verifiedBy)}::jsonb,
-          verified_at = NOW()
-      WHERE nct_id = ${nctId}
-        AND LOWER(tenant) = LOWER(${tenant})
-      RETURNING nct_id, verified_by, verified_at
-    `;
+  UPDATE clinical_trials
+  SET verified_by = ${JSON.stringify(verifiedBy)}::jsonb,
+      verified_at = NOW(),
+      workflow_status = 'published',
+      published_at = NOW()
+  WHERE nct_id = ${nctId}
+    AND LOWER(tenant) = LOWER(${tenant})
+  RETURNING
+    nct_id,
+    verified_by,
+    verified_at,
+    workflow_status,
+    published_at
+`;
 
     if (result.length === 0) {
       return NextResponse.json(
@@ -93,7 +100,9 @@ export async function DELETE(req, context) {
     const result = await sql`
       UPDATE clinical_trials
       SET verified_by = NULL,
-          verified_at = NULL
+          verified_at = NULL,
+          workflow_status = 'editing',
+          published_at = NULL
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})
       RETURNING nct_id
