@@ -197,7 +197,9 @@ export async function POST(req) {
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
     const redirectUrl = "/researcher/dashboard";
 
-    await storeMagicLink({ email, tokenHash, redirectUrl, expiresAt });
+    console.log("Storing magic link...");
+
+    await storeMagicLink({ tenant, email, tokenHash, redirectUrl, expiresAt });
 
     // tenant.domain already includes the protocol (e.g. "https://www.runx1simplified.org")
     // so we use it directly without prefixing https://. NEXT_PUBLIC_SITE_URL also includes
@@ -207,6 +209,9 @@ export async function POST(req) {
       req.headers.get("origin") ||
       tenant.domain ||
       "";
+
+      console.log("NEXT_PUBLIC_SITE_URL =", process.env.NEXT_PUBLIC_SITE_URL);
+console.log("BASE URL =", baseUrl);
     const magicUrl = `${baseUrl.replace(/\/$/, "")}/api/magic-link/verify?token=${token}`;
 
     if (sendEmail) {

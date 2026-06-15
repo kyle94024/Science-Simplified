@@ -1,14 +1,21 @@
 import { getTenantPool } from "./tenantDb.js";
 
 // Store token
-export async function storeMagicLink({ tenant, email, tokenHash, redirectUrl }) {
-    const pool = getTenantPool(tenant);
+export async function storeMagicLink({
+  tenant,
+  email,
+  tokenHash,
+  redirectUrl,
+}) {
+  console.log("Magic link tenant:", tenant);
 
-    await pool.query(
-        `INSERT INTO magic_links (email, token_hash, redirect_url)
-         VALUES ($1, $2, $3)`,
-        [email, tokenHash, redirectUrl]
-    );
+  const pool = getTenantPool(tenant);
+
+  await pool.query(
+    `INSERT INTO magic_links (email, token_hash, redirect_url)
+     VALUES ($1, $2, $3)`,
+    [email, tokenHash, redirectUrl]
+  );
 }
 
 // Fetch + validate token
