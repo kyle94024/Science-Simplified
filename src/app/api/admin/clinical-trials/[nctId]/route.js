@@ -116,6 +116,11 @@ export async function PATCH(req, context) {
         findings                  = ${body.findings ?? null},
         findings_url              = ${body.findings_url ?? null},
         findings_published_at     = ${body.findings ? new Date() : null},
+        workflow_status = CASE
+          WHEN workflow_status = 'published'
+          THEN workflow_status
+          ELSE 'editing'
+        END,
         updated_at = NOW()
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})

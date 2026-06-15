@@ -110,7 +110,12 @@ export async function GET(req) {
 
     // Redirect to stored redirect_url (or fallback). Researcher invites use /researcher/dashboard,
     // legacy editor invites use /assigned-articles.
-    const domain = tenant_domain || "http://localhost:3000";
+    const origin = new URL(req.url).origin;
+
+const domain =
+  process.env.NODE_ENV === "development"
+    ? origin
+    : tenant_domain;
     const redirectPath = magicLink.redirect_url || "/assigned-articles";
     const finalUrl = redirectPath.startsWith("http")
       ? redirectPath

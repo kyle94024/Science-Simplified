@@ -22,6 +22,7 @@ const DEFAULT_QUESTION_FIELDS = [
  * mode='researcher' hides: removing verification, tenant switcher
  */
 export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
+  console.log("TRIAL EDITOR MODE" , mode);
   const [trial, setTrial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -144,6 +145,32 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
       alert("Failed to remove verification");
     }
   }
+
+  async function submitForReview() {
+  try {
+    const res = await fetch(
+      `/api/researcher/assigned-trials/${nctId}/submit`,
+      {
+        method: "POST",
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed");
+    }
+
+    alert("Submitted for review");
+
+    setTrial((prev) => ({
+      ...prev,
+      workflow_status: "review_submitted",
+    }));
+  } catch (err) {
+    alert(err.message);
+  }
+}
 
   const isVerified = !!trial.verified_by;
   const isCompleted = trial.archive_reason === "completed";
@@ -313,17 +340,32 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
       </section>
 
       {/* ---------- SAVE ---------- */}
-      <div className="trial-editor__actions">
-        <button className="trial-editor__save" onClick={save} disabled={saving}>
-          {saving ? (
-            <>
-              <Loader2 size={16} className="animate-spin" /> Saving…
-            </>
-          ) : (
-            "Save Changes"
-          )}
-        </button>
-      </div>
+<div className="trial-editor__actions">
+  <button
+    className="trial-editor__save"
+    onClick={save}
+    disabled={saving}
+  >
+    {saving ? (
+      <>
+        <Loader2 size={16} className="animate-spin" /> Saving…
+      </>
+    ) : (
+      "Save Changes"
+    )}
+  </button>
+
+  {mode === "researcher" && (
+    <button
+      type="button"
+      className="trial-editor__verify-btn"
+      onClick={submitForReview}
+      style={{ marginLeft: "12px" }}
+    >
+      Submit for Review
+    </button>
+  )}
+</div>
     </div>
   );
 }

@@ -22,7 +22,6 @@ const formatStudyType = (type) => {
 export default function TrialCard({ trial }) {
   const ageLabel = formatAge(trial.min_age, trial.max_age);
   const isVerified = !!trial.verified_by;
-  const verifierName = trial.verified_by?.name;
   const isCompleted = trial.archive_reason === "completed";
   const hasFindings = !!trial.findings;
   const similarity = typeof trial.similarity === "number" ? trial.similarity : null;
@@ -39,11 +38,14 @@ export default function TrialCard({ trial }) {
               </span>
             )}
             {isVerified && (
-              <span className="trial-card__badge trial-card__badge--verified" title={verifierName ? `Verified by ${verifierName}` : "Verified"}>
-                <BadgeCheck size={13} />
-                {verifierName ? `Verified by ${verifierName}` : "Verified"}
-              </span>
-            )}
+  <span
+    className="trial-card__badge trial-card__badge--verified"
+    title="Editor Verified"
+  >
+    <BadgeCheck size={13} />
+    Editor Verified
+  </span>
+)}
             {isCompleted && (
               <span className="trial-card__badge trial-card__badge--completed">
                 <Archive size={12} />
