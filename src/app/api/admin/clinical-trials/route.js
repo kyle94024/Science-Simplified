@@ -16,7 +16,9 @@ export async function GET(req) {
       verified_by,
       verified_at,
       archive_reason,
-      overall_status
+      overall_status,
+      workflow_status,
+      published_at
     FROM clinical_trials
     WHERE LOWER(tenant) = LOWER(${tenant})
       AND is_active = true
@@ -26,7 +28,9 @@ export async function GET(req) {
         'ENROLLING_BY_INVITATION'
       )
     ORDER BY
-      (verified_by IS NOT NULL) ASC,  -- unverified first (need attention)
+      -- trials a researcher submitted for review need the admin's attention first
+      (workflow_status = 'review_submitted') DESC,
+      (verified_by IS NOT NULL) ASC,  -- then unverified
       last_synced_at DESC
   `;
 

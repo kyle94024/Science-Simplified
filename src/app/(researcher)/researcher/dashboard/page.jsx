@@ -104,6 +104,7 @@ function ResearcherDashboard() {
                 {trials.map((t) => {
                   const isVerified = !!t.verified_by;
                   const isCompleted = t.archive_reason === "completed";
+                  const isSubmitted = !isVerified && t.workflow_status === "review_submitted";
                   return (
                     <li key={t.nct_id} className="researcher-dashboard__item">
                       <Link href={`/researcher/trials/${t.nct_id}`} className="researcher-dashboard__link">
@@ -131,7 +132,12 @@ function ResearcherDashboard() {
                                 <Archive size={12} /> Completed
                               </span>
                             )}
-                            {!isVerified && !isCompleted && (
+                            {isSubmitted && !isCompleted && (
+                              <span className="researcher-dashboard__badge researcher-dashboard__badge--submitted">
+                                Submitted for review
+                              </span>
+                            )}
+                            {!isVerified && !isCompleted && !isSubmitted && (
                               <span className="researcher-dashboard__badge researcher-dashboard__badge--pending">
                                 Needs review
                               </span>

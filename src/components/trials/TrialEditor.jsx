@@ -22,7 +22,6 @@ const DEFAULT_QUESTION_FIELDS = [
  * mode='researcher' hides: removing verification, tenant switcher
  */
 export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
-  console.log("TRIAL EDITOR MODE" , mode);
   const [trial, setTrial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

@@ -7,8 +7,6 @@ export async function storeMagicLink({
   tokenHash,
   redirectUrl,
 }) {
-  console.log("Magic link tenant:", tenant);
-
   const pool = getTenantPool(tenant);
 
   await pool.query(

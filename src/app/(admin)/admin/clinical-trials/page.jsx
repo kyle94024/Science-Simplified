@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { Beaker, ExternalLink, BadgeCheck, AlertCircle } from "lucide-react";
+import { Beaker, ExternalLink, BadgeCheck, AlertCircle, ClipboardList } from "lucide-react";
 import PageHeader from "@/components/admin/PageHeader";
 import SearchInput from "@/components/admin/SearchInput";
 import EmptyState from "@/components/admin/EmptyState";
@@ -40,11 +40,16 @@ export default function AdminTrialsPage() {
         [trials]
     );
     const unverifiedCount = trials.length - verifiedCount;
+    const awaitingReviewCount = useMemo(
+        () => trials.filter((t) => t.workflow_status === "review_submitted").length,
+        [trials]
+    );
 
     const filteredTrials = useMemo(() => {
         let list = trials;
         if (filter === "verified") list = list.filter((t) => t.verified_by);
         if (filter === "unverified") list = list.filter((t) => !t.verified_by);
+        if (filter === "review") list = list.filter((t) => t.workflow_status === "review_submitted");
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             list = list.filter(
@@ -69,10 +74,11 @@ export default function AdminTrialsPage() {
                 }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <StatsCard label="Total Trials" value={loading ? "..." : trials.length} icon={Beaker} />
                 <StatsCard label="Verified" value={loading ? "..." : verifiedCount} icon={BadgeCheck} />
                 <StatsCard label="Awaiting Verification" value={loading ? "..." : unverifiedCount} icon={AlertCircle} />
+                <StatsCard label="Submitted for Review" value={loading ? "..." : awaitingReviewCount} icon={ClipboardList} />
             </div>
 
             <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -100,6 +106,14 @@ export default function AdminTrialsPage() {
                         }`}
                     >
                         ⚠ Unverified ({unverifiedCount})
+                    </button>
+                    <button
+                        onClick={() => setFilter("review")}
+                        className={`px-3 py-1.5 rounded-md text-[1.3rem] font-medium transition-colors ${
+                            filter === "review" ? "bg-white text-blue-700 shadow-sm" : "text-gray-600 hover:text-blue-700"
+                        }`}
+                    >
+                        📋 Awaiting Review ({awaitingReviewCount})
                     </button>
                 </div>
                 <SearchInput
@@ -139,15 +153,18 @@ export default function AdminTrialsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredTrials.map((trial) => {
                         const isVerified = !!trial.verified_by;
+                        const isAwaitingReview =
+                            !isVerified && trial.workflow_status === "review_submitted";
+                        const borderClass = isVerified
+                            ? "border-l-green-500 bg-green-50/40"
+                            : isAwaitingReview
+                                ? "border-l-blue-500 bg-blue-50/40"
+                                : "border-l-amber-400 bg-amber-50/30";
                         return (
                             <Link
                                 key={`${currentTenant}-${trial.nct_id}`}
                                 href={`/admin/clinical-trials/${trial.nct_id}?tenant=${currentTenant}`}
-                                className={`admin-card admin-card-interactive p-5 block border-l-4 ${
-                                    isVerified
-                                        ? "border-l-green-500 bg-green-50/40"
-                                        : "border-l-amber-400 bg-amber-50/30"
-                                }`}
+                                className={`admin-card admin-card-interactive p-5 block border-l-4 ${borderClass}`}
                             >
                                 <div className="flex items-start justify-between gap-3 mb-3">
                                     <div className="flex items-center gap-2 flex-wrap">
@@ -155,6 +172,10 @@ export default function AdminTrialsPage() {
                                         {isVerified ? (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[1.1rem] font-semibold bg-green-100 text-green-800">
                                                 <BadgeCheck size={12} /> Verified
+                                            </span>
+                                        ) : isAwaitingReview ? (
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[1.1rem] font-semibold bg-blue-100 text-blue-800">
+                                                <ClipboardList size={12} /> Submitted for review
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[1.1rem] font-semibold bg-amber-100 text-amber-800">

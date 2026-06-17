@@ -84,7 +84,6 @@ export default function TrialDetailPage() {
   const maxAge = protocol?.eligibilityModule?.maximumAge;
 
   const isVerified = !!trial.verified_by;
-  const verifier = trial.verified_by || {};
   const isCompleted = trial.archive_reason === "completed";
   const hasFindings = !!trial.findings;
 
@@ -124,11 +123,6 @@ export default function TrialDetailPage() {
               <BadgeCheck size={24} />
               <div>
                 <strong>Editor Verified</strong>
-{trial.verified_at && (
-  <span className="trial-detail__verified-date">
-    {" "}— reviewed {formatVerifiedDate(trial.verified_at)}
-  </span>
-)}
                 {trial.verified_at && (
                   <span className="trial-detail__verified-date">
                     {" "}— reviewed {formatVerifiedDate(trial.verified_at)}

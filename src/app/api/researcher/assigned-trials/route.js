@@ -43,6 +43,7 @@ export async function GET(req) {
                COALESCE(ct.ai_summary_manual, ct.ai_summary) AS ai_summary,
                ct.overall_status,
                ct.verified_by,
+               ct.workflow_status,
                ct.archive_reason,
                ct.is_active,
                NULL AS assigned_at
@@ -58,6 +59,7 @@ export async function GET(req) {
                COALESCE(ct.ai_summary_manual, ct.ai_summary) AS ai_summary,
                ct.overall_status,
                ct.verified_by,
+               ct.workflow_status,
                ct.archive_reason,
                ct.is_active,
                ta.assigned_at
