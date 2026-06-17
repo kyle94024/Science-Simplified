@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BadgeCheck, ShieldOff, Loader2 } from "lucide-react";
+import { BadgeCheck, ShieldOff, Loader2, Pencil } from "lucide-react";
 import CustomQuestionsEditor from "@/components/admin/trials/CustomQuestionsEditor";
 import "./TrialEditor.scss";
 
@@ -27,6 +27,11 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
   const [saving, setSaving] = useState(false);
   const [profiles, setProfiles] = useState([]);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
+  // Editable reviewer details (name/degree/university) used by the verify modal
+  // and by the "edit details" form shown when a trial is already verified.
+  const emptyVerifier = { profileId: null, name: "", degree: "", university: "" };
+  const [verifierForm, setVerifierForm] = useState(emptyVerifier);
+  const [editingVerifier, setEditingVerifier] = useState(false);
 
   useEffect(() => {
     if (!tenant && mode === "admin") return;
@@ -109,26 +114,88 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
     });
   }
 
-  async function handleVerify(profileId) {
+  // Pre-fill the editable fields from a selected profile (admin can then tweak).
+  function selectProfile(p) {
+    setVerifierForm({
+      profileId: p.user_id || p.id,
+      name: p.name || "",
+      degree: p.degree || "",
+      university: p.university || "",
+    });
+  }
+
+  // Shared POST to the verify endpoint with the current verifierForm values.
+  async function postVerify(payload) {
+    const res = await fetch(`/api/clinical-trials/${nctId}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Verify failed");
+    }
+    return (await res.json()).trial;
+  }
+
+  // Confirm a NEW verification using the (possibly edited) name/degree.
+  async function confirmVerify() {
+    if (!verifierForm.name.trim()) {
+      alert("Enter a reviewer name (or pick a profile).");
+      return;
+    }
     try {
-      const res = await fetch(`/api/clinical-trials/${nctId}/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profileId }),
+      const t = await postVerify({
+        profileId: verifierForm.profileId,
+        name: verifierForm.name,
+        degree: verifierForm.degree,
+        university: verifierForm.university,
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Verify failed");
-      }
-      const data = await res.json();
       setTrial((prev) => ({
         ...prev,
-        verified_by: data.trial.verified_by,
-        verified_at: data.trial.verified_at,
+        verified_by: t.verified_by,
+        verified_at: t.verified_at,
+        workflow_status: t.workflow_status,
       }));
       setShowVerifyModal(false);
+      setVerifierForm(emptyVerifier);
     } catch (err) {
       alert(`Verify failed: ${err.message}`);
+    }
+  }
+
+  // Open the inline "edit reviewer details" form for an already-verified trial.
+  function startEditVerifier() {
+    setVerifierForm({
+      profileId: trial.verified_by?.userId ?? null,
+      name: trial.verified_by?.name || "",
+      degree: trial.verified_by?.degree || "",
+      university: trial.verified_by?.university || "",
+    });
+    setEditingVerifier(true);
+  }
+
+  // Save edited name/degree/university into the existing verified_by snapshot
+  // (no profileId → the endpoint merges over the current snapshot, keeps date).
+  async function saveVerifierDetails() {
+    if (!verifierForm.name.trim()) {
+      alert("Reviewer name can't be empty.");
+      return;
+    }
+    try {
+      const t = await postVerify({
+        name: verifierForm.name,
+        degree: verifierForm.degree,
+        university: verifierForm.university,
+      });
+      setTrial((prev) => ({
+        ...prev,
+        verified_by: t.verified_by,
+        verified_at: t.verified_at,
+      }));
+      setEditingVerifier(false);
+    } catch (err) {
+      alert(`Save failed: ${err.message}`);
     }
   }
 
@@ -185,25 +252,75 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
         <section className="trial-editor__section trial-editor__verification">
           <h2>Verification</h2>
           {isVerified ? (
-            <div className="trial-editor__verified">
-              <BadgeCheck size={20} />
-              <div>
-                <strong>{trial.verified_by.name}</strong>
-                {trial.verified_by.degree ? `, ${trial.verified_by.degree}` : ""}
-                {trial.verified_by.university ? ` (${trial.verified_by.university})` : ""}
-                <div className="trial-editor__verified-date">
-                  Verified {trial.verified_at ? new Date(trial.verified_at).toLocaleDateString() : ""}
+            editingVerifier ? (
+              <div className="trial-editor__verifier-edit">
+                <p className="trial-editor__hint">
+                  Edit how this reviewer appears on the public trial page.
+                </p>
+                <div className="trial-editor__field">
+                  <label>Reviewer name</label>
+                  <input
+                    value={verifierForm.name}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, name: e.target.value }))}
+                    placeholder="Dr. Jane Smith"
+                  />
+                </div>
+                <div className="trial-editor__field">
+                  <label>Degree / credentials</label>
+                  <input
+                    value={verifierForm.degree}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, degree: e.target.value }))}
+                    placeholder="MD, PhD"
+                  />
+                </div>
+                <div className="trial-editor__field">
+                  <label>Affiliation (optional)</label>
+                  <input
+                    value={verifierForm.university}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, university: e.target.value }))}
+                    placeholder="Stanford University"
+                  />
+                </div>
+                <div className="trial-editor__verifier-edit-actions">
+                  <button type="button" className="trial-editor__verify-btn" onClick={saveVerifierDetails}>
+                    Save reviewer details
+                  </button>
+                  <button
+                    type="button"
+                    className="trial-editor__modal-cancel"
+                    onClick={() => setEditingVerifier(false)}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
-              <button type="button" className="trial-editor__unverify-btn" onClick={handleUnverify}>
-                <ShieldOff size={14} /> Remove verification
-              </button>
-            </div>
+            ) : (
+              <div className="trial-editor__verified">
+                <BadgeCheck size={20} />
+                <div>
+                  <strong>{trial.verified_by.name}</strong>
+                  {trial.verified_by.degree ? `, ${trial.verified_by.degree}` : ""}
+                  {trial.verified_by.university ? ` (${trial.verified_by.university})` : ""}
+                  <div className="trial-editor__verified-date">
+                    Verified {trial.verified_at ? new Date(trial.verified_at).toLocaleDateString() : ""}
+                  </div>
+                </div>
+                <button type="button" className="trial-editor__verify-btn" onClick={startEditVerifier}>
+                  <Pencil size={14} /> Edit name / degree
+                </button>
+                <button type="button" className="trial-editor__unverify-btn" onClick={handleUnverify}>
+                  <ShieldOff size={14} /> Remove verification
+                </button>
+              </div>
+            )
           ) : (
             <button
               type="button"
               className="trial-editor__verify-btn"
-              onClick={() => setShowVerifyModal(true)}
+              onClick={() => {
+                setVerifierForm(emptyVerifier);
+                setShowVerifyModal(true);
+              }}
             >
               <BadgeCheck size={16} /> Verify this trial
             </button>
@@ -212,33 +329,71 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
           {showVerifyModal && (
             <div className="trial-editor__modal" onClick={() => setShowVerifyModal(false)}>
               <div className="trial-editor__modal-content" onClick={(e) => e.stopPropagation()}>
-                <h3>Select verifier</h3>
-                <p>Pick the researcher whose name will appear on the trial.</p>
+                <h3>Verify trial</h3>
+                <p>
+                  Pick a researcher to pre-fill their details, then edit the name or
+                  degree if needed. The name and degree below are what appear publicly.
+                </p>
                 <div className="trial-editor__profile-list">
                   {profiles.length === 0 ? (
                     <p>Loading profiles…</p>
                   ) : (
-                    profiles.map((p) => (
-                      <button
-                        key={p.user_id || p.id}
-                        type="button"
-                        className="trial-editor__profile-item"
-                        onClick={() => handleVerify(p.user_id || p.id)}
-                      >
-                        <strong>{p.name}</strong>
-                        {p.degree && <span>, {p.degree}</span>}
-                        {p.university && <div className="trial-editor__profile-univ">{p.university}</div>}
-                      </button>
-                    ))
+                    profiles.map((p) => {
+                      const id = p.user_id || p.id;
+                      const selected = verifierForm.profileId === id;
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`trial-editor__profile-item${selected ? " trial-editor__profile-item--selected" : ""}`}
+                          onClick={() => selectProfile(p)}
+                        >
+                          <strong>{p.name}</strong>
+                          {p.degree && <span>, {p.degree}</span>}
+                          {p.university && <div className="trial-editor__profile-univ">{p.university}</div>}
+                        </button>
+                      );
+                    })
                   )}
                 </div>
-                <button
-                  type="button"
-                  className="trial-editor__modal-cancel"
-                  onClick={() => setShowVerifyModal(false)}
-                >
-                  Cancel
-                </button>
+
+                <div className="trial-editor__field">
+                  <label>Reviewer name (shown publicly)</label>
+                  <input
+                    value={verifierForm.name}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, name: e.target.value }))}
+                    placeholder="Dr. Jane Smith"
+                  />
+                </div>
+                <div className="trial-editor__field">
+                  <label>Degree / credentials</label>
+                  <input
+                    value={verifierForm.degree}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, degree: e.target.value }))}
+                    placeholder="MD, PhD"
+                  />
+                </div>
+                <div className="trial-editor__field">
+                  <label>Affiliation (optional)</label>
+                  <input
+                    value={verifierForm.university}
+                    onChange={(e) => setVerifierForm((f) => ({ ...f, university: e.target.value }))}
+                    placeholder="Stanford University"
+                  />
+                </div>
+
+                <div className="trial-editor__verifier-edit-actions">
+                  <button type="button" className="trial-editor__verify-btn" onClick={confirmVerify}>
+                    <BadgeCheck size={16} /> Confirm verification
+                  </button>
+                  <button
+                    type="button"
+                    className="trial-editor__modal-cancel"
+                    onClick={() => setShowVerifyModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}

@@ -37,11 +37,22 @@ Removing verification (`DELETE …/verify`) reverts `published → editing` and 
 6. **Admin verifies** (picks a reviewer profile) → `published`, `verified_by` snapshot stored.
 7. **Public** trial page + cards show **"Editor Verified"** (reviewer name is NOT exposed publicly; it's retained internally for auditing).
 
-## Public-facing privacy
+## Public-facing reviewer attribution
 
-Per PR #31: public pages show "Editor Verified" / "This summary has been reviewed
-and editor verified." — never the reviewer's name. The reviewer identity lives in
-`verified_by` for internal/admin use only.
+Public pages show **"Verified by {Name}, {Degree}"** (and affiliation when set) —
+the reviewer's name and credentials are a deliberate trust signal.
+
+When an admin verifies a trial they pick a researcher profile to pre-fill the
+details, then **can edit the displayed name / degree / affiliation** before
+confirming. They can also edit those fields later via "Edit name / degree" on an
+already-verified trial — this merges into the existing `verified_by` snapshot and
+preserves the original verification date. (`POST …/verify` accepts
+`{ profileId?, name?, degree?, university?, title? }`; sending only the override
+fields edits an existing verification.)
+
+> Note: this reverses PR #31's "Editor Verified" (name-hidden) treatment, per
+> product decision to keep named attribution. If a tenant ever wants the name
+> hidden, gate the label on a tenant flag rather than hard-coding it.
 
 ## Schema
 

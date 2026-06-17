@@ -191,6 +191,23 @@
       background: #f0fdf4;
       border-color: var(--color-primary, #4cb19f);
     }
+
+    &--selected {
+      background: #ecfdf5;
+      border-color: var(--color-primary, #4cb19f);
+      box-shadow: 0 0 0 1px var(--color-primary, #4cb19f) inset;
+    }
+  }
+
+  &__verifier-edit {
+    width: 100%;
+  }
+
+  &__verifier-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
   }
 
   &__profile-univ {
