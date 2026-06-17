@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BadgeCheck, ShieldOff, Loader2, Pencil } from "lucide-react";
+import { BadgeCheck, ShieldOff, Loader2, Pencil, Search } from "lucide-react";
 import CustomQuestionsEditor from "@/components/admin/trials/CustomQuestionsEditor";
 import "./TrialEditor.scss";
 
@@ -27,6 +27,7 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
   const [saving, setSaving] = useState(false);
   const [profiles, setProfiles] = useState([]);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [profileSearch, setProfileSearch] = useState("");
   // Editable reviewer details (name/degree/university) used by the verify modal
   // and by the "edit details" form shown when a trial is already verified.
   const emptyVerifier = { profileId: null, name: "", degree: "", university: "" };
@@ -242,6 +243,17 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
   const isCompleted = trial.archive_reason === "completed";
   const hidden = new Set(trial.hidden_questions || []);
 
+  const filteredProfiles = profileSearch.trim()
+    ? profiles.filter((p) => {
+        const q = profileSearch.trim().toLowerCase();
+        return (
+          (p.name || "").toLowerCase().includes(q) ||
+          (p.degree || "").toLowerCase().includes(q) ||
+          (p.university || "").toLowerCase().includes(q)
+        );
+      })
+    : profiles;
+
   return (
     <div className="trial-editor">
       <h1>Edit Trial: {trial.short_title_manual || trial.short_title}</h1>
@@ -328,58 +340,81 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
 
           {showVerifyModal && (
             <div className="trial-editor__modal" onClick={() => setShowVerifyModal(false)}>
-              <div className="trial-editor__modal-content" onClick={(e) => e.stopPropagation()}>
+              <div
+                className="trial-editor__modal-content trial-editor__modal-content--wide"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <h3>Verify trial</h3>
                 <p>
                   Pick a researcher to pre-fill their details, then edit the name or
-                  degree if needed. The name and degree below are what appear publicly.
+                  degree if needed. The name and degree on the right are what appear publicly.
                 </p>
-                <div className="trial-editor__profile-list">
-                  {profiles.length === 0 ? (
-                    <p>Loading profiles…</p>
-                  ) : (
-                    profiles.map((p) => {
-                      const id = p.user_id || p.id;
-                      const selected = verifierForm.profileId === id;
-                      return (
-                        <button
-                          key={id}
-                          type="button"
-                          className={`trial-editor__profile-item${selected ? " trial-editor__profile-item--selected" : ""}`}
-                          onClick={() => selectProfile(p)}
-                        >
-                          <strong>{p.name}</strong>
-                          {p.degree && <span>, {p.degree}</span>}
-                          {p.university && <div className="trial-editor__profile-univ">{p.university}</div>}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
 
-                <div className="trial-editor__field">
-                  <label>Reviewer name (shown publicly)</label>
-                  <input
-                    value={verifierForm.name}
-                    onChange={(e) => setVerifierForm((f) => ({ ...f, name: e.target.value }))}
-                    placeholder="Dr. Jane Smith"
-                  />
-                </div>
-                <div className="trial-editor__field">
-                  <label>Degree / credentials</label>
-                  <input
-                    value={verifierForm.degree}
-                    onChange={(e) => setVerifierForm((f) => ({ ...f, degree: e.target.value }))}
-                    placeholder="MD, PhD"
-                  />
-                </div>
-                <div className="trial-editor__field">
-                  <label>Affiliation (optional)</label>
-                  <input
-                    value={verifierForm.university}
-                    onChange={(e) => setVerifierForm((f) => ({ ...f, university: e.target.value }))}
-                    placeholder="Stanford University"
-                  />
+                <div className="trial-editor__verify-grid">
+                  {/* LEFT: searchable researcher list */}
+                  <div className="trial-editor__verify-col trial-editor__verify-col--list">
+                    <div className="trial-editor__profile-search">
+                      <Search size={14} />
+                      <input
+                        type="text"
+                        value={profileSearch}
+                        onChange={(e) => setProfileSearch(e.target.value)}
+                        placeholder="Search researchers…"
+                      />
+                    </div>
+                    <div className="trial-editor__profile-list">
+                      {profiles.length === 0 ? (
+                        <p className="trial-editor__profile-empty">Loading profiles…</p>
+                      ) : filteredProfiles.length === 0 ? (
+                        <p className="trial-editor__profile-empty">No researchers match “{profileSearch}”.</p>
+                      ) : (
+                        filteredProfiles.map((p) => {
+                          const id = p.user_id || p.id;
+                          const selected = verifierForm.profileId === id;
+                          return (
+                            <button
+                              key={id}
+                              type="button"
+                              className={`trial-editor__profile-item${selected ? " trial-editor__profile-item--selected" : ""}`}
+                              onClick={() => selectProfile(p)}
+                            >
+                              <strong>{p.name}</strong>
+                              {p.degree && <span>, {p.degree}</span>}
+                              {p.university && <div className="trial-editor__profile-univ">{p.university}</div>}
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT: editable reviewer details (what shows publicly) */}
+                  <div className="trial-editor__verify-col trial-editor__verify-col--form">
+                    <div className="trial-editor__field">
+                      <label>Reviewer name (shown publicly)</label>
+                      <input
+                        value={verifierForm.name}
+                        onChange={(e) => setVerifierForm((f) => ({ ...f, name: e.target.value }))}
+                        placeholder="Dr. Jane Smith"
+                      />
+                    </div>
+                    <div className="trial-editor__field">
+                      <label>Degree / credentials</label>
+                      <input
+                        value={verifierForm.degree}
+                        onChange={(e) => setVerifierForm((f) => ({ ...f, degree: e.target.value }))}
+                        placeholder="MD, PhD"
+                      />
+                    </div>
+                    <div className="trial-editor__field">
+                      <label>Affiliation (optional)</label>
+                      <input
+                        value={verifierForm.university}
+                        onChange={(e) => setVerifierForm((f) => ({ ...f, university: e.target.value }))}
+                        placeholder="Stanford University"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="trial-editor__verifier-edit-actions">
