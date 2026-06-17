@@ -1,15 +1,15 @@
 /**
  * Apply 2026-clinical-trials-workflow.sql to every tenant database.
  *
- * The editorial-workflow code (PR #31) reads/writes workflow_status +
- * published_at on clinical_trials. These columns don't exist yet, so this must
- * run on ALL tenant DBs before the merged code is exercised in production.
+ * The editorial workflow needs ONE small new table (trial_review_submissions);
+ * the clinical_trials schema is left untouched (workflow status is derived in
+ * code). Run on ALL tenant DBs before the merged code is exercised in prod.
  *
  * RUN FROM THE MAIN REPO ROOT (where .env.tenants lives):
  *   node ".claude/worktrees/recursing-easley/scripts/migrations/run-clinical-trials-workflow.js"
  *
- * The migration is idempotent (ADD COLUMN IF NOT EXISTS + re-runnable UPDATEs),
- * so running it more than once is safe.
+ * The migration is idempotent (CREATE TABLE IF NOT EXISTS), so running it more
+ * than once is safe.
  *
  * It discovers tenant connection strings from .env.tenants / .env: every value
  * that looks like a postgres URL is treated as one tenant DB (deduped). Your

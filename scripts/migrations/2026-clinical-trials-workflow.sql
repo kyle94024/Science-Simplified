@@ -1,42 +1,23 @@
 -- ============================================================================
--- Clinical Trials editorial workflow (PR #31 blend)
+-- Clinical Trials editorial workflow — minimal-footprint version
 -- ----------------------------------------------------------------------------
--- Adds the workflow_status + published_at columns the editorial-workflow code
--- (verify / submit-for-review / admin PATCH routes) reads and writes. Our
--- earlier clinical-trials overhaul did NOT add these, so they must be created
--- on every tenant DB or those routes will throw.
+-- We deliberately DO NOT add workflow_status / published_at columns to the
+-- clinical_trials table. The editorial state is derived from data that already
+-- exists, plus one tiny new table for the only genuinely-new piece of state:
 --
--- workflow_status values: 'unassigned' | 'editing' | 'review_submitted' | 'published'
+--   published        ⟺ clinical_trials.verified_by IS NOT NULL  (published_at = verified_at)
+--   review_submitted ⟺ a row exists in trial_review_submissions
+--   editing          ⟺ the trial is assigned (row in trial_assignments) and not the above
+--   unassigned       ⟺ none of the above
+--
+-- This keeps verified_by as the single source of truth for "published" (no
+-- column to drift out of sync) and leaves the core schema untouched.
 --
 -- Idempotent: safe to run repeatedly on any tenant DB.
 -- ============================================================================
 
-ALTER TABLE clinical_trials
-  ADD COLUMN IF NOT EXISTS workflow_status TEXT DEFAULT 'unassigned',
-  ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ;
-
--- Backfill: a trial that already has a verifier is effectively published.
-UPDATE clinical_trials
-  SET workflow_status = 'published',
-      published_at = COALESCE(published_at, verified_at, NOW())
-  WHERE verified_by IS NOT NULL
-    AND (workflow_status IS NULL OR workflow_status <> 'published');
-
--- Backfill: trials currently assigned to a researcher (and not yet published)
--- are in the editorial pipeline → mark them 'editing' so admins can see them.
-UPDATE clinical_trials ct
-  SET workflow_status = 'editing'
-  WHERE ct.verified_by IS NULL
-    AND (ct.workflow_status IS NULL OR ct.workflow_status = 'unassigned')
-    AND EXISTS (
-      SELECT 1 FROM trial_assignments ta WHERE ta.nct_id = ct.nct_id
-    );
-
--- Anything still NULL gets the default.
-UPDATE clinical_trials
-  SET workflow_status = 'unassigned'
-  WHERE workflow_status IS NULL;
-
--- Helpful index for admin "awaiting review" / status filtering.
-CREATE INDEX IF NOT EXISTS idx_clinical_trials_workflow_status
-  ON clinical_trials (workflow_status);
+CREATE TABLE IF NOT EXISTS trial_review_submissions (
+  nct_id        TEXT PRIMARY KEY,
+  submitted_at  TIMESTAMPTZ DEFAULT NOW(),
+  submitted_by  INTEGER
+);

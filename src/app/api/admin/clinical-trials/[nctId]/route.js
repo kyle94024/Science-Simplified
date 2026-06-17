@@ -116,15 +116,14 @@ export async function PATCH(req, context) {
         findings                  = ${body.findings ?? null},
         findings_url              = ${body.findings_url ?? null},
         findings_published_at     = ${body.findings ? new Date() : null},
-        workflow_status = CASE
-          WHEN workflow_status = 'published'
-          THEN workflow_status
-          ELSE 'editing'
-        END,
         updated_at = NOW()
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})
     `;
+
+    // Editing a trial supersedes a pending "submitted for review" state — it
+    // drops back to 'editing' (derived). No-op for trials with no submission.
+    await sql`DELETE FROM trial_review_submissions WHERE nct_id = ${nctId}`;
 
     return NextResponse.json({ success: true });
   } catch (err) {

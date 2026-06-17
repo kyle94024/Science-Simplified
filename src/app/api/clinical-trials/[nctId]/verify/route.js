@@ -97,22 +97,19 @@ export async function POST(req, context) {
       );
     }
 
-    // COALESCE preserves the original verification/publish timestamps when an
-    // admin is only editing the reviewer's displayed details.
+    // verified_by IS the source of truth for "published" — no separate
+    // workflow_status/published_at columns. COALESCE preserves the original
+    // verification date when an admin is only editing the reviewer's details.
     const result = await sql`
       UPDATE clinical_trials
       SET verified_by = ${JSON.stringify(verifiedBy)}::jsonb,
-          verified_at = COALESCE(verified_at, NOW()),
-          workflow_status = 'published',
-          published_at = COALESCE(published_at, NOW())
+          verified_at = COALESCE(verified_at, NOW())
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})
       RETURNING
         nct_id,
         verified_by,
-        verified_at,
-        workflow_status,
-        published_at
+        verified_at
     `;
 
     if (result.length === 0) {
@@ -121,6 +118,9 @@ export async function POST(req, context) {
         { status: 404 }
       );
     }
+
+    // Publishing supersedes any pending "submitted for review" state.
+    await sql`DELETE FROM trial_review_submissions WHERE nct_id = ${nctId}`;
 
     return NextResponse.json({ success: true, trial: result[0] });
   } catch (err) {
@@ -146,9 +146,7 @@ export async function DELETE(req, context) {
     const result = await sql`
       UPDATE clinical_trials
       SET verified_by = NULL,
-          verified_at = NULL,
-          workflow_status = 'editing',
-          published_at = NULL
+          verified_at = NULL
       WHERE nct_id = ${nctId}
         AND LOWER(tenant) = LOWER(${tenant})
       RETURNING nct_id
@@ -160,6 +158,10 @@ export async function DELETE(req, context) {
         { status: 404 }
       );
     }
+
+    // Removing verification drops it back to 'editing' (derived from the
+    // assignment); clear any stale review-submission row just in case.
+    await sql`DELETE FROM trial_review_submissions WHERE nct_id = ${nctId}`;
 
     return NextResponse.json({ success: true });
   } catch (err) {

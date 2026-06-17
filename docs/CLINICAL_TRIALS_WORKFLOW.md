@@ -4,7 +4,10 @@ How a clinical trial moves from synced data to a public, editor-verified summary
 This blends our overhaul (verification, assignments, semantic search, translation,
 lifecycle) with Timi's editorial-workflow layer (PR #31).
 
-## State machine — `clinical_trials.workflow_status`
+## State machine — `workflow_status` is DERIVED, not stored
+
+To keep the core `clinical_trials` schema untouched, `workflow_status` is **not a
+column**. It's computed from data that already exists plus one tiny table:
 
 ```
 unassigned ──assign──▶ editing ──submit──▶ review_submitted ──verify──▶ published
@@ -13,19 +16,28 @@ unassigned ──assign──▶ editing ──submit──▶ review_submitted 
                           ▲────────────── remove verification ─────────────┘
 ```
 
-| status | meaning | set by |
+| status | derived when… | source of truth |
 |---|---|---|
-| `unassigned` | synced, no researcher assigned / no action | default; sync |
-| `editing` | assigned & in progress (or edited) | assignment (`POST /api/admin/trial-assignments`), and any save (`PATCH /api/admin/clinical-trials/[nctId]`) |
-| `review_submitted` | researcher submitted for admin review | `POST /api/researcher/assigned-trials/[nctId]/submit` |
-| `published` | admin verified → live in Verified section | `POST /api/clinical-trials/[nctId]/verify` (also sets `verified_by`, `verified_at`, `published_at`) |
+| `published` | `clinical_trials.verified_by IS NOT NULL` | the verification (publish date = `verified_at`) |
+| `review_submitted` | a row exists in `trial_review_submissions` (and not verified) | `POST /api/researcher/assigned-trials/[nctId]/submit` inserts; verify/edit delete it |
+| `editing` | the trial has a row in `trial_assignments` (and not the above) | assignment membership |
+| `unassigned` | none of the above | — |
 
-Removing verification (`DELETE …/verify`) reverts `published → editing` and clears
-`verified_by` / `published_at`.
+State transitions are driven by **side effects**, not a status column:
+- **assign** → row in `trial_assignments` (derives `editing`)
+- **submit** → row in `trial_review_submissions` (derives `review_submitted`)
+- **edit** (`PATCH …/[nctId]`) → deletes the submission row (back to `editing`)
+- **verify** (`POST …/verify`) → sets `verified_by` + deletes the submission row (`published`)
+- **remove verification** (`DELETE …/verify`) → clears `verified_by` (back to `editing`/`unassigned`)
 
-> `verified_by` (JSONB snapshot of the reviewer) and `workflow_status='published'`
-> are kept in sync by the verify route. Public listing splits Verified vs. other
-> by `verified_by`; the workflow_status drives the **admin/researcher** views.
+The status CASE lives in the admin list (`/api/admin/clinical-trials`) and the
+researcher dashboard (`/api/researcher/assigned-trials`) queries; APIs return a
+`workflow_status` string so the UI is unchanged. `published_at` is returned as an
+alias of `verified_at`.
+
+> Why derived: `verified_by` stays the **single source of truth** for "published",
+> so a status column can never drift out of sync with the verification. The only
+> genuinely-new state (`review_submitted`) lives in its own table.
 
 ## End-to-end flow
 
@@ -56,7 +68,18 @@ fields edits an existing verification.)
 
 ## Schema
 
-`workflow_status TEXT DEFAULT 'unassigned'` and `published_at TIMESTAMPTZ` were added
-by `scripts/migrations/2026-clinical-trials-workflow.sql`. **Run it on all tenant DBs**
-(`scripts/migrations/run-clinical-trials-workflow.js`) — the workflow routes assume
-these columns exist. Migration is idempotent.
+**The `clinical_trials` table is unchanged.** The only schema addition is one small
+table:
+
+```sql
+CREATE TABLE IF NOT EXISTS trial_review_submissions (
+  nct_id        TEXT PRIMARY KEY,
+  submitted_at  TIMESTAMPTZ DEFAULT NOW(),
+  submitted_by  INTEGER
+);
+```
+
+Created by `scripts/migrations/2026-clinical-trials-workflow.sql`. **Run it on all
+tenant DBs** via `scripts/migrations/run-clinical-trials-workflow.js`. Idempotent.
+No columns are added to `clinical_trials`; everything else is derived (see the
+state-machine section above).

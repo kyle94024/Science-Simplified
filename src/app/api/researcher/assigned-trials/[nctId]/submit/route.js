@@ -44,15 +44,15 @@ export async function POST(req, { params }) {
       );
     }
 
-    const tenant = process.env.NEXT_PUBLIC_SITE_KEY;
-
-await sql`
-  UPDATE clinical_trials
-  SET workflow_status = 'review_submitted',
-      updated_at = NOW()
-  WHERE nct_id = ${nctId}
-    AND LOWER(tenant) = LOWER(${tenant})
-`;
+    // Record the "submitted for review" state in its own table — the trial's
+    // workflow status is derived (verified → published, assigned → editing,
+    // this row → review_submitted), so the clinical_trials schema is untouched.
+    await sql`
+      INSERT INTO trial_review_submissions (nct_id, submitted_by)
+      VALUES (${nctId}, ${payload.id})
+      ON CONFLICT (nct_id)
+      DO UPDATE SET submitted_at = NOW(), submitted_by = ${payload.id}
+    `;
 
     return NextResponse.json({ success: true });
   } catch (err) {

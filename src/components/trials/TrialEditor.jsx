@@ -155,7 +155,7 @@ export default function TrialEditor({ nctId, tenant, mode = "admin" }) {
         ...prev,
         verified_by: t.verified_by,
         verified_at: t.verified_at,
-        workflow_status: t.workflow_status,
+        workflow_status: "published",
       }));
       setShowVerifyModal(false);
       setVerifierForm(emptyVerifier);

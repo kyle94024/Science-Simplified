@@ -177,16 +177,8 @@ export async function POST(req) {
           ON CONFLICT (researcher_id, nct_id) DO NOTHING
         `;
       }
-      // Move freshly assigned trials into the editorial pipeline so they show as
-      // in-progress to admins/researchers — unless already submitted/published.
-      const tenantKey = process.env.NEXT_PUBLIC_SITE_KEY;
-      await sql`
-        UPDATE clinical_trials
-        SET workflow_status = 'editing'
-        WHERE nct_id = ANY(${nctIds})
-          AND LOWER(tenant) = LOWER(${tenantKey})
-          AND COALESCE(workflow_status, 'unassigned') NOT IN ('published', 'review_submitted')
-      `;
+      // No workflow_status write needed — a trial with an assignment row derives
+      // 'editing' automatically (see the status CASE in the list/dashboard APIs).
     }
 
     // Assign articles (reuse article_assignments table — editor_id column also holds researcher_id)

@@ -36,6 +36,8 @@ export async function GET(req) {
 
     // Admin sees all trials for this tenant; researcher sees only assigned
     let trials;
+    // workflow_status is derived (no column): published from verified_by,
+    // review_submitted from trial_review_submissions, else editing/unassigned.
     if (payload.isAdmin && !payload.role) {
       trials = await sql`
         SELECT ct.nct_id,
@@ -43,7 +45,12 @@ export async function GET(req) {
                COALESCE(ct.ai_summary_manual, ct.ai_summary) AS ai_summary,
                ct.overall_status,
                ct.verified_by,
-               ct.workflow_status,
+               CASE
+                 WHEN ct.verified_by IS NOT NULL THEN 'published'
+                 WHEN EXISTS (SELECT 1 FROM trial_review_submissions trs WHERE trs.nct_id = ct.nct_id) THEN 'review_submitted'
+                 WHEN EXISTS (SELECT 1 FROM trial_assignments ta WHERE ta.nct_id = ct.nct_id) THEN 'editing'
+                 ELSE 'unassigned'
+               END AS workflow_status,
                ct.archive_reason,
                ct.is_active,
                NULL AS assigned_at
@@ -59,7 +66,11 @@ export async function GET(req) {
                COALESCE(ct.ai_summary_manual, ct.ai_summary) AS ai_summary,
                ct.overall_status,
                ct.verified_by,
-               ct.workflow_status,
+               CASE
+                 WHEN ct.verified_by IS NOT NULL THEN 'published'
+                 WHEN EXISTS (SELECT 1 FROM trial_review_submissions trs WHERE trs.nct_id = ct.nct_id) THEN 'review_submitted'
+                 ELSE 'editing'
+               END AS workflow_status,
                ct.archive_reason,
                ct.is_active,
                ta.assigned_at
