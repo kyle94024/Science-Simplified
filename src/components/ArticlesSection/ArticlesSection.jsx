@@ -56,7 +56,7 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
                                     date={article.date}
                                     title={article.title}
                                     summary={article.summary}
-                                    authorImageUrl={credit.replaced ? null : article.photo}
+                                    authorImageUrl={credit.replaced ? credit.avatarUrl : article.photo}
                                     authorName={credit.name}
                                     authorCreds={credit.replaced ? null : article.degree}
                                     authorInstitution={credit.replaced ? null : article.university}

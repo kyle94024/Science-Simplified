@@ -142,7 +142,7 @@ export default function ArticlesListPaginated({
               date={article.publication_date ?? article.date ?? ""}
               title={article.title}
               summary={article.summary}
-              authorImageUrl={credit.replaced ? null : article.photo}
+              authorImageUrl={credit.replaced ? credit.avatarUrl : article.photo}
               authorName={authorName}
               authorCreds={
                 credit.replaced

@@ -1,0 +1,11 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#DCFCE7"/>
+  <rect x="96" y="110" width="8" height="70" rx="4" fill="#86EFAC"/>
+    <ellipse cx="118" cy="150" rx="16" ry="9" transform="rotate(25 118 150)" fill="#86EFAC"/>
+    <g fill="#BBF7D0">
+      <circle cx="100" cy="64" r="20"/><circle cx="128" cy="86" r="20"/>
+      <circle cx="118" cy="118" r="20"/><circle cx="82" cy="118" r="20"/>
+      <circle cx="72" cy="86" r="20"/>
+    </g>
+    <circle cx="100" cy="92" r="18" fill="#FDE68A"/>
+</svg>

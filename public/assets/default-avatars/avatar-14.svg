@@ -1,0 +1,8 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#FFEDD5"/>
+  <polygon points="38,168 92,58 146,168" fill="#FED7AA"/>
+    <polygon points="106,168 150,88 196,168" fill="#FDBA74"/>
+    <polygon points="78,98 92,58 106,98 92,108" fill="#ffffff"/>
+    <polygon points="138,112 150,88 162,112 150,120" fill="#ffffff"/>
+    <rect x="0" y="166" width="200" height="34" fill="#BBF7D0"/>
+</svg>

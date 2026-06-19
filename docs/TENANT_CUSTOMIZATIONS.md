@@ -100,7 +100,7 @@ treat them as hints.
 |---|---|---|
 | HS | Article search page + list get `hs-mode` styling | `src/app/(public)/articles/page.jsx` (~L27, L111); `src/components/ArticlesListPaginated/ArticlesListPaginated.jsx` (~L27) |
 | HS | Article byline label reads **"Summary Prepared or Reviewed By:"** (others: "Summary Prepared By:") | `src/app/(public)/articles/[id]/page.jsx` (~L272) — note: this byline block is currently `hidden` |
-| **HS** | On article **cards**, a certifier whose name contains "Foundation" is visually replaced with the **paper's first author** (`authors[0]`), dropping the foundation's degree/affiliation/photo. Render-time only; DB unchanged. Match is `/foundation/i` — adjust `FOUNDATION_RE` if HSF articles are credited under a person's name. | `src/lib/articleAuthor.js` (`resolveArticleCredit`); applied in `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
+| **HS** | On article **cards**, a certifier whose name contains "Foundation" is visually replaced with the **paper's first author** (`authors[0]`), dropping the foundation's degree/affiliation/photo. The first author (no photo) gets a deterministic pastel **default avatar**. Render-time only; DB unchanged. Match is `/foundation/i` — adjust `FOUNDATION_RE` if HSF articles are credited under a person's name. | `src/lib/articleAuthor.js` (`resolveArticleCredit`); `src/lib/defaultAvatar.js`; 20 SVGs in `public/assets/default-avatars/` (regenerate via `scripts/generate-default-avatars.js`); applied in `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
 
 ### Auth pages
 

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#E0F2FE"/>
+  <g fill="none" stroke-width="13" stroke-linecap="round">
+      <path d="M36 168 A64 64 0 0 1 164 168" stroke="#BAE6FD"/>
+      <path d="M54 168 A46 46 0 0 1 146 168" stroke="#7DD3FC"/>
+      <path d="M72 168 A28 28 0 0 1 128 168" stroke="#FDE68A"/>
+    </g>
+    <g fill="#ffffff">
+      <circle cx="92" cy="170" r="12"/><circle cx="112" cy="170" r="14"/>
+      <rect x="92" y="168" width="34" height="14" rx="7"/>
+    </g>
+</svg>

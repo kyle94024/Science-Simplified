@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#FFE4E6"/>
+  <circle cx="96" cy="104" r="46" fill="#FDA4AF"/>
+    <circle cx="116" cy="90" r="40" fill="#FFE4E6"/>
+    <g fill="#BAE6FD">
+      <circle cx="58" cy="58" r="5"/><circle cx="150" cy="150" r="4"/>
+      <circle cx="150" cy="62" r="3.5"/><circle cx="66" cy="140" r="3.5"/>
+    </g>
+</svg>

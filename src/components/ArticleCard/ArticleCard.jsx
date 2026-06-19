@@ -170,6 +170,12 @@ function ArticleCard({
                             width={50}
                             height={50}
                             className="article-card__author-image"
+                            // Local pastel default avatars are SVGs — skip the
+                            // image optimizer (it 400s on SVG without config).
+                            unoptimized={
+                                typeof authorImageUrl === "string" &&
+                                authorImageUrl.endsWith(".svg")
+                            }
                         />
                     ) : (
                         <FallbackAuthorImage authorName={displayName} />

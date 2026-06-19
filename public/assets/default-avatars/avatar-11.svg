@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#DCFCE7"/>
+  <path d="M100 38 C146 62 146 138 100 168 C54 138 54 62 100 38 Z" fill="#BBF7D0"/>
+    <path d="M100 50 V160" stroke="#86EFAC" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <g stroke="#86EFAC" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M100 78 L78 92"/><path d="M100 78 L122 92"/>
+      <path d="M100 108 L76 124"/><path d="M100 108 L124 124"/>
+    </g>
+</svg>

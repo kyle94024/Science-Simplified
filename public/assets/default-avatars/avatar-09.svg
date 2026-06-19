@@ -1,0 +1,6 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#EDE9FE"/>
+  <path d="M70 50 C110 40 140 64 138 100 C136 134 104 150 76 138 C44 124 38 60 70 50 Z" fill="#DDD6FE"/>
+    <path d="M118 92 C150 86 166 116 150 142 C132 168 92 162 86 132 C82 108 96 96 118 92 Z" fill="#C4B5FD"/>
+    <circle cx="74" cy="150" r="20" fill="#FBCFE8"/>
+</svg>

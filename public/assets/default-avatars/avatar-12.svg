@@ -1,0 +1,7 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative avatar">
+  <rect width="200" height="200" fill="#FEF9C3"/>
+  <path d="M100 36 C140 36 156 70 156 92 C156 120 128 138 100 138 C72 138 44 120 44 92 C44 70 60 36 100 36 Z" fill="#FEF08A"/>
+    <path d="M100 36 C112 36 120 66 120 92 C120 116 112 134 100 138 C88 134 80 116 80 92 C80 66 88 36 100 36 Z" fill="#FACC72"/>
+    <g stroke="#94843B" stroke-width="2.5"><path d="M86 134 L92 162"/><path d="M114 134 L108 162"/></g>
+    <rect x="88" y="160" width="24" height="18" rx="4" fill="#A7F3D0"/>
+</svg>
