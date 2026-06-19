@@ -24,6 +24,9 @@ export function resolveArticleCredit(article, baseName) {
       const firstName = first.toString().trim();
       return { name: firstName, replaced: true, avatarUrl: defaultAvatar(firstName) };
     }
+    // No paper author available — still don't surface the foundation; use the
+    // site name ("HS Simplified") instead.
+    return { name: "HS Simplified", replaced: true, avatarUrl: defaultAvatar("HS Simplified") };
   }
   return { name, replaced: false, avatarUrl: null };
 }

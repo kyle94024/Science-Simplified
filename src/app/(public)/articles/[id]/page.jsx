@@ -240,6 +240,14 @@ const ArticlePage = ({ params }) => {
         }
     };
 
+    // For HS (now independent of the HS Foundation), don't surface the
+    // foundation as the reviewer — show the site name instead, for the time being.
+    const hsFoundationCertifier =
+        !!article &&
+        tenant.shortName === "HS" &&
+        /foundation/i.test(article.name || "");
+    const bylineName = hsFoundationCertifier ? "HS Simplified" : article?.name;
+
     return (
         <div className="article-page">
             <div
@@ -273,7 +281,7 @@ const ArticlePage = ({ params }) => {
                                                         ? "Summary Prepared or Reviewed By:"
                                                         : "Summary Prepared By:"}
                                                 </h3>
-                                                {article.photo && (
+                                                {!hsFoundationCertifier && article.photo && (
                                                     <div className="article-page__photo">
                                                         <Image
                                                             src={article.photo}
@@ -287,18 +295,19 @@ const ArticlePage = ({ params }) => {
                                                 )}
                                                 <div className="article-page__meta__description">
                                                     <div className="flex items-center gap-[10px]">
-                                                        {article.name && (
+                                                        {bylineName && (
                                                             <p className="article-page__name">
-                                                                {article.name},
+                                                                {bylineName}
+                                                                {hsFoundationCertifier ? "" : ","}
                                                             </p>
                                                         )}
-                                                        {article.degree && (
+                                                        {!hsFoundationCertifier && article.degree && (
                                                             <p className="article-page__degree">
                                                                 {article.degree}
                                                             </p>
                                                         )}
                                                     </div>
-                                                    {article.university && (
+                                                    {!hsFoundationCertifier && article.university && (
                                                         <p className="article-page__university">
                                                             {article.university}
                                                         </p>
