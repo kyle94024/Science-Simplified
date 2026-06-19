@@ -30,8 +30,9 @@ const CONTINENT_MAP = {
 
 const ClinicalTrialsPage = () => {
   const router = useRouter();
-  // Scleroderma does not use the Clinical Trials feature — send visitors home.
-  const trialsDisabled = tenant.shortName === "Scleroderma";
+  // Scleroderma and HS don't use the Clinical Trials feature — send visitors home.
+  const trialsDisabled =
+    tenant.shortName === "Scleroderma" || tenant.shortName === "HS";
 
   const { searchQuery, semanticResults = [], semanticLoading } = useSearchStore();
   const [tab, setTab] = useState("recruiting"); // recruiting | completed
