@@ -43,7 +43,7 @@ env var. Customization happens at three layers:
 | shortName | Disease | Domain | Notable customizations |
 |---|---|---|---|
 | `NF` | Neurofibromatosis | nfsimplified.com | full-width home bg; AI nomenclature addendum; HSF-style ids n/a |
-| `HS` | Hidradenitis Suppurativa | hssimplified.org | `hs-mode` theming; HSF deep-link redirects; byline wording; RSS exclusions |
+| `HS` | Hidradenitis Suppurativa | hssimplified.org | **independent of the HS Foundation:** "Science Simplified" wordmark + solo top bar; About shows only the founder (HSF experts + supporters hidden); foundation-certified articles credit the paper's first author; `hs-mode` theming; HSF deep-link redirects; RSS exclusions |
 | `EB` | Epidermolysis Bullosa | sseb.vercel.app | config only |
 | `CF` | Cystic Fibrosis | sscf-coral.vercel.app | `background-alt` banners |
 | `RUNX1` | RUNX1-FPD | www.runx1simplified.org | `runx1-mode` theming; italic "RUNX1-FPD" hero; dark hero bg; login skin; AI nomenclature addendum; partner embed/credit |
@@ -73,6 +73,7 @@ treat them as hints.
 |---|---|---|
 | HS, RUNX1, Scleroderma, Myositis | Navbar gets a tenant "mode" class (`hs-mode` / `runx1-mode` / `scleroderma-mode` / `myositis-mode`) driving themed nav colors | `src/components/Navbar/Navbar.jsx` (~L127); styles in `Navbar.scss` (~L362–600) |
 | **Scleroderma** | Slim **partner bar** above the navbar linking to srfcure.org; **"Science Simplified" text wordmark** replaces the image logo; **Clinical Trials nav item hidden** (desktop + mobile) | `src/components/Navbar/Navbar.jsx` (~L96–151); styles in `Navbar.scss` (partner-bar / navbrand--text) |
+| **HS** | **"Science Simplified" wordmark** (subtitle "Hidradenitis Suppurativa") replaces the image logo in navbar + footer; a **solo top bar** (`partner-bar--solo`, purple, no link) reads "Science Simplified". Now independent of the HS Foundation. | `src/components/Navbar/Navbar.jsx`, `src/components/Footer/Footer.jsx`; styles in `Navbar.scss` (`partner-bar--solo`, `hs-mode .navbrand-title`); `footerTextColor` added to HS theme in `sites.js` |
 | **Scleroderma** | Footer uses the **"Science Simplified" wordmark** instead of the image logo | `src/components/Footer/Footer.jsx` (~L9); `Footer.scss` (`&__wordmark`) |
 
 ### Home page (`src/app/page.jsx`)
@@ -98,7 +99,8 @@ treat them as hints.
 | Tenant(s) | What | File |
 |---|---|---|
 | HS | Article search page + list get `hs-mode` styling | `src/app/(public)/articles/page.jsx` (~L27, L111); `src/components/ArticlesListPaginated/ArticlesListPaginated.jsx` (~L27) |
-| HS | Article byline label reads **"Summary Prepared or Reviewed By:"** (others: "Summary Prepared By:") | `src/app/(public)/articles/[id]/page.jsx` (~L272) |
+| HS | Article byline label reads **"Summary Prepared or Reviewed By:"** (others: "Summary Prepared By:") | `src/app/(public)/articles/[id]/page.jsx` (~L272) — note: this byline block is currently `hidden` |
+| **HS** | On article **cards**, a certifier whose name contains "Foundation" is visually replaced with the **paper's first author** (`authors[0]`), dropping the foundation's degree/affiliation/photo. Render-time only; DB unchanged. Match is `/foundation/i` — adjust `FOUNDATION_RE` if HSF articles are credited under a person's name. | `src/lib/articleAuthor.js` (`resolveArticleCredit`); applied in `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
 
 ### Auth pages
 
@@ -126,6 +128,7 @@ treat them as hints.
 |---|---|---|
 | **Scleroderma** | **Team** section shows only the Science Simplified team (Kyle). `TeamSection.jsx` filters out SRF reps (title references SRF) and placeholder rows **at render time** — the live site uses a saved CMS config that still lists Hannah Young + a placeholder, and we deliberately don't mutate that DB. (`sites.js` also hides the placeholder slots in the defaults fallback.) | `src/components/about/sections/TeamSection.jsx`; `src/lib/sites.js` |
 | **Scleroderma** | The SRF relationship is shown via the top **partner bar** (always) and, where the About page uses sites.js defaults, the **"Partnership" narrative section**. No individual SRF people are listed. | `src/components/Navbar/Navbar.jsx`; `src/lib/about-config.js` (~L60); `PartnershipSection.jsx` |
+| **HS** | **Team** section shows only the founder (Kyle) — `TeamSection.jsx` keeps members whose title matches `/founder/i`, hiding the HSF CEO + advisors. The **Scientific Contributors** (HSF experts) and **Community Supporters** sections are dropped entirely for HS in the about-page renderer. Render-time; DB unchanged. | `src/components/about/sections/TeamSection.jsx`; `src/app/(public)/about/page.jsx` (`hiddenTypes`) |
 | (none currently) | A generic **"Partners" people section** exists (type `partners`, `about_partnerN*` fields) for tenants that want to list partner-org people. Unused at present. | `src/components/about/sections/PartnersSection.jsx`; builder in `src/lib/about-config.js` (~L120) |
 
 > Note: the Scleroderma About page renders a **saved CMS config** (`source: db`),

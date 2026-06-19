@@ -2,6 +2,7 @@ import "./ArticlesSection.scss";
 import ArticleCard from "../ArticleCard/ArticleCard";
 import { ArticleCardSkeleton } from "../ArticleCardSkeleton/ArticleCardSkeleton";
 import { Unplug } from "lucide-react";
+import { resolveArticleCredit } from "@/lib/articleAuthor";
 
 const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
     return (
@@ -44,6 +45,9 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
                                 authorName = article.publisher_name;
                             }
 
+                            // HS: foundation-certified articles credit the paper's first author.
+                            const credit = resolveArticleCredit(article, authorName);
+
                             return (
                                 <ArticleCard
                                     id={article.id}
@@ -52,10 +56,10 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
                                     date={article.date}
                                     title={article.title}
                                     summary={article.summary}
-                                    authorImageUrl={article.photo}
-                                    authorName={authorName} // Pass the author's name
-                                    authorCreds={article.degree}
-                                    authorInstitution={article.university}
+                                    authorImageUrl={credit.replaced ? null : article.photo}
+                                    authorName={credit.name}
+                                    authorCreds={credit.replaced ? null : article.degree}
+                                    authorInstitution={credit.replaced ? null : article.university}
                                 />
                             );
                         })}

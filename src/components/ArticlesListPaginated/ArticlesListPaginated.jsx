@@ -2,6 +2,7 @@
 import "./ArticlesListPaginated.scss";
 import React, { useState, useEffect } from "react";
 import ArticleCard from "@/components/ArticleCard/ArticleCard";
+import { resolveArticleCredit } from "@/lib/articleAuthor";
 import {
   Pagination,
   PaginationContent,
@@ -126,10 +127,11 @@ export default function ArticlesListPaginated({
     <div className={`article-list ${isHS ? "hs-mode" : ""}`}>
       <div className="article-list__items">
         {selectedArticles.map((article) => {
-          let authorName =
-            article.name ||
-            article.publisher_name ||
-            (article.certifiedby ? "Anonymous" : "Anonymous");
+          const baseName =
+            article.name || article.publisher_name || "Anonymous";
+          // HS: foundation-certified articles credit the paper's first author.
+          const credit = resolveArticleCredit(article, baseName);
+          const authorName = credit.name;
 
           return (
             <ArticleCard
@@ -140,14 +142,16 @@ export default function ArticlesListPaginated({
               date={article.publication_date ?? article.date ?? ""}
               title={article.title}
               summary={article.summary}
-              authorImageUrl={article.photo}
+              authorImageUrl={credit.replaced ? null : article.photo}
               authorName={authorName}
               authorCreds={
-                article.degree && article.degree !== "No Degree"
+                credit.replaced
+                  ? null
+                  : article.degree && article.degree !== "No Degree"
                   ? article.degree
                   : null
               }
-              authorInstitution={article.university}
+              authorInstitution={credit.replaced ? null : article.university}
             />
           );
         })}

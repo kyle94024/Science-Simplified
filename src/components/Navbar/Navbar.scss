@@ -61,6 +61,18 @@
             color: #FEC916;
         }
     }
+
+    // Solo branding bar (HS) — no partner, no link. Uses HS purple.
+    &--solo {
+        background: #7B2CBF;
+
+        .partner-bar__inner {
+            justify-content: center;
+        }
+        .partner-bar__sep {
+            opacity: 0.85;
+        }
+    }
 }
 
 // Text wordmark used in place of an image logo (Scleroderma)
@@ -86,6 +98,11 @@
         line-height: 1.2;
         color: #5a6573;
     }
+}
+
+// HS wordmark uses the HS purple instead of SRF blue.
+.navbar.hs-mode .navbrand--text .navbrand-title {
+    color: #7B2CBF;
 }
 
 @media screen and (max-width: 600px) {

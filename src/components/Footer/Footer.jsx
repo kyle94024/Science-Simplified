@@ -7,6 +7,8 @@ import { tenant } from "@/lib/config";
 
 const brandlogo = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 const isScleroderma = tenant.shortName === "Scleroderma";
+const isHS = tenant.shortName === "HS";
+const useWordmark = isScleroderma || isHS;
 
 const Footer = () => {
     return (
@@ -14,11 +16,13 @@ const Footer = () => {
             <div className="boxed">
                 <div className="footer__content">
                     <div className="footer__branding">
-                        {isScleroderma ? (
+                        {useWordmark ? (
                             <div className="footer__wordmark">
                                 <span className="footer__wordmark-title">Science Simplified</span>
                                 <span className="footer__wordmark-subtitle">
-                                    partnered with the Scleroderma Research Foundation
+                                    {isScleroderma
+                                        ? "partnered with the Scleroderma Research Foundation"
+                                        : "Hidradenitis Suppurativa"}
                                 </span>
                             </div>
                         ) : (

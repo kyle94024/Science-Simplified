@@ -1032,6 +1032,7 @@ export const sites = {
         contactUsColor: "#7B2CBF",
         authorTextColor: "#7B2CBF",
         footerBGColor: "#f2e6ff",    // light purple tint for footer
+        footerTextColor: "#5A189A",  // deep purple — readable on the light footer (and the wordmark)
       },
       
       // Images (Home)

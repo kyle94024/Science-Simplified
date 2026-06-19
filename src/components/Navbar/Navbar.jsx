@@ -94,6 +94,11 @@ export default function Navbar() {
     // Scleroderma Research Foundation" — its own entity collaborating with SRF.
     // It also hides the Clinical Trials feature.
     const isScleroderma = tenant.shortName === "Scleroderma";
+    // HS is now an independent Science Simplified site (no longer affiliated with
+    // the HS Foundation): Science Simplified wordmark + a plain "Science
+    // Simplified" top bar (no partner, no outbound link).
+    const isHS = tenant.shortName === "HS";
+    const useWordmark = isScleroderma || isHS;
 
     const navItems = [
         { href: "/", label: "Home" },
@@ -124,14 +129,26 @@ export default function Navbar() {
                 </div>
             </div>
         )}
+        {isHS && (
+            <div className="partner-bar partner-bar--solo">
+                <div className="partner-bar__inner boxed padding">
+                    <span className="partner-bar__text">
+                        <strong>Science Simplified</strong>
+                        <span className="partner-bar__sep">making Hidradenitis Suppurativa research understandable</span>
+                    </span>
+                </div>
+            </div>
+        )}
         <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : tenant.shortName === "Scleroderma" ? "scleroderma-mode" : tenant.shortName === "Myositis" ? "myositis-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
             <div className="navbar-inner boxed padding">
-                {/* Left logo — Scleroderma uses a Science Simplified wordmark + partner subtitle */}
-                {isScleroderma ? (
+                {/* Left logo — Scleroderma & HS use a Science Simplified wordmark */}
+                {useWordmark ? (
                     <Link href="/" className="navbrand navbrand--text">
                         <span className="navbrand-title">Science Simplified</span>
                         <span className="navbrand-subtitle">
-                            partnered with the Scleroderma Research Foundation
+                            {isScleroderma
+                                ? "partnered with the Scleroderma Research Foundation"
+                                : "Hidradenitis Suppurativa"}
                         </span>
                     </Link>
                 ) : (
