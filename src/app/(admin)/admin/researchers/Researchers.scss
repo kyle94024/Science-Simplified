@@ -160,6 +160,12 @@
     font-weight: 600;
   }
 
+  &__picker-hint {
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin: 0 0 0.6rem;
+  }
+
   &__submit {
     display: inline-flex;
     align-items: center;

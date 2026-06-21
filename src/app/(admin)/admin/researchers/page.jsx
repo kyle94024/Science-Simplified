@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { withAuth } from "@/components/withAuth/withAuth";
-import { UserPlus, Mail, X, Loader2, Search, BadgeCheck, AlertCircle, FileText, Microscope } from "lucide-react";
+import { UserPlus, Mail, X, Loader2, Search, BadgeCheck, FileText, Microscope } from "lucide-react";
 import "./Researchers.scss";
 
 function ResearchersPage() {
@@ -139,7 +139,12 @@ function ResearchersPage() {
     }
   }
 
+  // Only actively-recruiting trials are worth assigning for verification.
+  const ACTIVELY_RECRUITING = ["RECRUITING", "ENROLLING_BY_INVITATION"];
+
   const filteredTrials = allTrials.filter((t) => {
+    if (t.verified_by) return false; // already verified — nothing to assign
+    if (!ACTIVELY_RECRUITING.includes(t.overall_status)) return false; // recruiting only
     if (!trialSearch) return true;
     const q = trialSearch.toLowerCase();
     return (
@@ -149,6 +154,7 @@ function ResearchersPage() {
   });
 
   const filteredArticles = allArticles.filter((a) => {
+    if (a.certifiedby) return false; // already certified — nothing to assign
     if (!articleSearch) return true;
     const q = articleSearch.toLowerCase();
     return (
@@ -223,6 +229,9 @@ function ResearchersPage() {
               {activeTab === "trials" && (
                 <div className="researchers-page__trial-picker">
                   <label>Assign clinical trials</label>
+                  <p className="researchers-page__picker-hint">
+                    Only actively-recruiting trials that aren&apos;t verified yet are shown.
+                  </p>
                   <div className="researchers-page__trial-search">
                     <Search size={14} />
                     <input
@@ -251,11 +260,6 @@ function ResearchersPage() {
                           />
                           <span className="researchers-page__trial-nct">{t.nct_id}</span>
                           <span className="researchers-page__trial-title">{t.short_title}</span>
-                          {t.verified_by && (
-                            <span className="researchers-page__pill researchers-page__pill--verified">
-                              <BadgeCheck size={10} /> Verified
-                            </span>
-                          )}
                         </label>
                       ))
                     )}
@@ -271,6 +275,9 @@ function ResearchersPage() {
               {activeTab === "articles" && (
                 <div className="researchers-page__trial-picker">
                   <label>Assign articles for verification</label>
+                  <p className="researchers-page__picker-hint">
+                    Only articles that aren&apos;t certified yet are shown.
+                  </p>
                   <div className="researchers-page__trial-search">
                     <Search size={14} />
                     <input
@@ -299,15 +306,6 @@ function ResearchersPage() {
                           />
                           <span className="researchers-page__trial-nct">#{a.id}</span>
                           <span className="researchers-page__trial-title">{a.title}</span>
-                          {a.certifiedby ? (
-                            <span className="researchers-page__pill researchers-page__pill--verified">
-                              <BadgeCheck size={10} /> Certified
-                            </span>
-                          ) : (
-                            <span className="researchers-page__pill researchers-page__pill--pending">
-                              <AlertCircle size={10} /> Uncertified
-                            </span>
-                          )}
                         </label>
                       ))
                     )}

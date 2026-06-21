@@ -135,6 +135,22 @@ export default function SyncPage() {
         )}
       </div>
 
+      {/* Plain-language explainer */}
+      <div className="mb-6 text-sm text-gray-600 space-y-1">
+        <p>
+          <span className="font-medium">Start Sync</span> pulls the latest trials from
+          ClinicalTrials.gov and refreshes their plain-language summaries.
+        </p>
+        <p>
+          <span className="font-medium">Backfill Embeddings</span> powers the &ldquo;smart
+          search&rdquo; (find trials by what they&apos;re about, not just keywords). It gives
+          each trial a numeric &ldquo;meaning fingerprint&rdquo; so the search can match by
+          topic. New trials get one automatically during a sync — this button is a one-time
+          catch-up for any older trials that don&apos;t have one yet. Safe to run anytime; it
+          only fills the gaps.
+        </p>
+      </div>
+
       {/* Status */}
       {status && (
         <div className="mb-4 text-sm text-gray-600">

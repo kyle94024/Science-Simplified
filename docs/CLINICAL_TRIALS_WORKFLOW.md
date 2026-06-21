@@ -41,8 +41,8 @@ alias of `verified_at`.
 
 ## End-to-end flow
 
-1. **Admin assigns** a trial to a researcher (`/admin/researchers`). Trial → `editing`; a magic link is emailed.
-2. **Researcher** clicks the link → `/researcher/dashboard` → opens the trial (`/researcher/trials/[nctId]`, `TrialEditor mode="researcher"`).
+1. **Admin assigns** a trial to a reviewer via **Admin Tools → Assign for Review** (`/admin/researchers`). The picker shows only **actively-recruiting, not-yet-verified** trials (and not-yet-certified articles). Trial → `editing`; a magic link is emailed.
+2. **Reviewer** clicks the link → **Editor Tools → Expert Dashboard** (`/researcher/dashboard`) → opens the trial (`/researcher/trials/[nctId]`, `TrialEditor mode="researcher"`).
 3. **Researcher edits & saves** (PATCH, allowed for assigned researchers via `requireAdminOrAssignedResearcher`). Stays `editing`.
 4. **Researcher clicks "Submit for Review"** → `review_submitted`.
 5. **Admin** sees it surfaced in `/admin/clinical-trials` — sorted to top, blue "Submitted for review" badge, "Submitted for Review" stat + filter pill.

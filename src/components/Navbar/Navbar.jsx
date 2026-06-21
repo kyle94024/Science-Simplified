@@ -85,10 +85,13 @@ export default function Navbar() {
     // Notification logic — only show on Editor Tools menu trigger
     const isEditor = role === "editor";
     const isResearcher = role === "researcher";
-    const showEditorTools = isEditor || isAdmin;
-    const showResearcherLink = isResearcher || isAdmin;
-    // Editor Tools dropdown badge = articles count (editors care about pending articles)
-    const editorToolsCount = showEditorTools ? counts.assignedArticles : 0;
+    // Editors AND researchers/experts are reviewers — all of their review tools
+    // live under "Editor Tools".
+    const showEditorTools = isEditor || isResearcher || isAdmin;
+    const showExpertDashboard = isResearcher || isAdmin;
+    // Top-level Editor Tools badge = everything awaiting this user's review
+    // (assigned articles + assigned trials).
+    const editorToolsCount = showEditorTools ? counts.total : 0;
 
     // Scleroderma is presented as "Science Simplified, in partnership with the
     // Scleroderma Research Foundation" — its own entity collaborating with SRF.
@@ -198,6 +201,14 @@ export default function Navbar() {
                                         </Link>
                                     </li>
                                 )}
+                                {showExpertDashboard && (
+                                    <li>
+                                        <Link href="/researcher/dashboard" className="nav-dropdown-link">
+                                            <span>Expert Dashboard</span>
+                                            <Badge count={counts.total} />
+                                        </Link>
+                                    </li>
+                                )}
                                 {user && (
                                     <li>
                                         <Link href="/add-article">
@@ -219,24 +230,6 @@ export default function Navbar() {
                                         </li>
                                     </>
                                 )}
-                            </ul>
-                        </li>
-                    )}
-
-                    {/* Researcher dashboard link — for researchers (admins too) */}
-                    {isResearcher && (
-                        <li className="dropdown">
-                            <span className="nav-with-badge">
-                                Expert Tools ▾
-                                <Badge count={counts.total} />
-                            </span>
-                            <ul className="dropdown-menu">
-                                <li>
-                                    <Link href="/researcher/dashboard" className="nav-dropdown-link">
-                                        <span>My Assignments</span>
-                                        <Badge count={counts.total} />
-                                    </Link>
-                                </li>
                             </ul>
                         </li>
                     )}
@@ -266,16 +259,8 @@ export default function Navbar() {
                                     <Link href="/admin/clinical-trials">Edit Trials</Link>
                                 </li>
                                 <li>
-                                    <Link href="/admin/researchers">Researchers</Link>
+                                    <Link href="/admin/researchers">Assign for Review</Link>
                                 </li>
-                                {showResearcherLink && (
-                                    <li>
-                                        <Link href="/researcher/dashboard" className="nav-dropdown-link">
-                                            <span>Expert Dashboard</span>
-                                            <Badge count={counts.assignedTrials} />
-                                        </Link>
-                                    </li>
-                                )}
                             </ul>
                         </li>
 
