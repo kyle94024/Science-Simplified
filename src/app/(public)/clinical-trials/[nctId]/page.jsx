@@ -6,8 +6,10 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, FileText, Globe, Languages, AlertTriangle, ExternalLink } from "lucide-react";
+import { BadgeCheck, FileText, Globe, Languages, AlertTriangle, ExternalLink, Pencil } from "lucide-react";
 import "./TrialDetailPage.scss";
+import useAuthStore from "@/store/useAuthStore";
+import { tenant } from "@/lib/config";
 import TrialDetailQuestions from "@/components/TrialDetailQuestions/TrialDetailQuestions";
 import {
   SUPPORTED_LANGUAGES,
@@ -53,6 +55,7 @@ function formatVerifiedDate(iso) {
 
 export default function TrialDetailPage() {
   const { nctId } = useParams();
+  const { isAdmin } = useAuthStore();
   const [trial, setTrial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAllLocations, setShowAllLocations] = useState(false);
@@ -118,6 +121,16 @@ export default function TrialDetailPage() {
 
       <main className="trial-detail padding">
         <div className="boxed trial-detail__card">
+          {/* ---------- ADMIN EDIT (admins only) ---------- */}
+          {isAdmin && (
+            <Link
+              href={`/admin/clinical-trials/${nctId}?tenant=${tenant.shortName}`}
+              className="trial-detail__admin-edit"
+            >
+              <Pencil size={14} /> Edit this trial
+            </Link>
+          )}
+
           {/* ---------- VERIFICATION BANNER ---------- */}
           {isVerified && (
             <div className="trial-detail__verified-banner">

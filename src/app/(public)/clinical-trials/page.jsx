@@ -34,7 +34,8 @@ const ClinicalTrialsPage = () => {
   const trialsDisabled = !!tenant.hideClinicalTrials;
 
   const { searchQuery, semanticResults = [], semanticLoading } = useSearchStore();
-  const [tab, setTab] = useState("recruiting"); // recruiting | completed
+  // Public page lists recruiting trials only — the "Completed Studies" tab was removed.
+  const tab = "recruiting";
   const [recruitingTrials, setRecruitingTrials] = useState([]);
   const [completedTrials, setCompletedTrials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,28 +154,6 @@ const ClinicalTrialsPage = () => {
                 ⚠️ Trials without a verification badge have not yet been verified by a researcher on the original study team.
               </p>
             )}
-          </div>
-
-          {/* ---------- TABS ---------- */}
-          <div className="clinical-trials-page__tabs">
-            <button
-              className={`clinical-trials-page__tab${tab === "recruiting" ? " clinical-trials-page__tab--active" : ""}`}
-              onClick={() => setTab("recruiting")}
-            >
-              Recruiting
-              {recruitingTrials.length > 0 && (
-                <span className="clinical-trials-page__tab-count">{recruitingTrials.length}</span>
-              )}
-            </button>
-            <button
-              className={`clinical-trials-page__tab${tab === "completed" ? " clinical-trials-page__tab--active" : ""}`}
-              onClick={() => setTab("completed")}
-            >
-              Completed Studies
-              {completedTrials.length > 0 && (
-                <span className="clinical-trials-page__tab-count">{completedTrials.length}</span>
-              )}
-            </button>
           </div>
 
           {/* ---------- SEARCH ---------- */}
