@@ -90,6 +90,7 @@ export const sites = {
       disease: "Epidermolysis Bullosa",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
       domain: "https://sseb.vercel.app",
+      hideClinicalTrials: true,
 
       theme: { // Theme
         primary: "#ed1e87",
@@ -1022,6 +1023,7 @@ export const sites = {
       disease: "HS",
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
       domain: "https://hssimplified.org",
+      hideClinicalTrials: true,
 
       theme: {
         primary: "#7B2CBF",          // foundation purple
@@ -1183,6 +1185,7 @@ export const sites = {
       disease: "Scleroderma",
       apiUrl: process.env.NEXT_PUBLIC_SCLERODERMA_API_URL,
       domain: "https://www.sclerodermasimplified.org",
+      hideClinicalTrials: true,
 
       theme: {
         primary: "#004990",             // SRF Blue

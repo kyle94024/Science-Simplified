@@ -112,7 +112,7 @@ treat them as hints.
 
 | Tenant(s) | What | File |
 |---|---|---|
-| **Scleroderma, HS** | Feature disabled: Clinical Trials nav item hidden (desktop + mobile) and `/clinical-trials` redirects home with fetches skipped | `src/components/Navbar/Navbar.jsx` (navItems filter); `src/app/(public)/clinical-trials/page.jsx` (`trialsDisabled`) |
+| **EB, HS, Scleroderma** (any tenant with `hideClinicalTrials: true`) | Feature disabled: Clinical Trials nav item hidden (desktop + mobile) and `/clinical-trials` redirects home with fetches skipped. To disable for another tenant, set `hideClinicalTrials: true` in its `sites.js` block — no code change. | `src/lib/sites.js` (`hideClinicalTrials` flag); `src/components/Navbar/Navbar.jsx` (navItems filter); `src/app/(public)/clinical-trials/page.jsx` (`trialsDisabled`) |
 | HS | RSS feed excludes article IDs that came from HSF redirect mapping | `src/app/rss/route.js` (~L8, L32) |
 
 ### AI summarization prompt (`src/utils/apiHelpers.js`)

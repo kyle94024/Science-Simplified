@@ -109,7 +109,7 @@ export default function Navbar() {
         { href: "/clinical-trials", label: "Clinical Trials" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact Us" },
-    ].filter((item) => !((isScleroderma || isHS) && item.href === "/clinical-trials"));
+    ].filter((item) => !(tenant.hideClinicalTrials && item.href === "/clinical-trials"));
 
     return (
         <>
