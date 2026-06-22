@@ -127,12 +127,12 @@
     }
 }
 
-// Red notification badge (circle with count)
+// Notification badge (circle with count) — soft amber "pending", not alarm red
 .nav-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #ef4444;
+    background: #f59e0b;
     color: #fff;
     font-size: 1.1rem;
     font-weight: 700;

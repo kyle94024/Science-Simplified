@@ -205,7 +205,8 @@ export default function Navbar() {
                                     <li>
                                         <Link href="/researcher/dashboard" className="nav-dropdown-link">
                                             <span>Expert Dashboard</span>
-                                            <Badge count={counts.total} />
+                                            {/* Trials only — articles are counted on "Assigned Articles" above, no double-count */}
+                                            <Badge count={counts.assignedTrials} />
                                         </Link>
                                     </li>
                                 )}
