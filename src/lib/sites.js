@@ -1273,6 +1273,9 @@ export const sites = {
       pathName: "Myositis",
       fullName: "Myositis Simplified",
       disease: "Myositis",
+      // Lowercase form for mid-sentence use (myositis is a common noun). The
+      // capitalized `disease` is still used for titles/headings.
+      diseaseLower: "myositis",
       apiUrl: process.env.NEXT_PUBLIC_MYOSITIS_API_URL,
       domain: "https://www.myositissimplified.org",
 
@@ -1303,15 +1306,15 @@ export const sites = {
 
       //Text
       text_homeTitleDescription: "Collection of simplified myositis articles certified by experts.",
-      text_exploreAllTitle: "We give knowledge to Myositis patients, families, and caregivers",
+      text_exploreAllTitle: "We give knowledge to myositis patients, families, and caregivers",
       text_exploreAllDescription: "Collection of simplified myositis articles certified by experts.",
-      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Myositis to patients, families, and caregivers. We aim to empower those affected by Myositis with the knowledge and resources they need to navigate their journey.",
+      text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about myositis to patients, families, and caregivers. We aim to empower those affected by myositis with the knowledge and resources they need to navigate their journey.",
 
       // About
       about_teamMember1Image: "kyleheadshot.jpg",
       about_teamMember1Name: "Kyle Wan",
       about_teamMember1Title: "Founder & Lead",
-      about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the Myositis community.",
+      about_teamMember1Bio: "Committed to building a user-friendly platform to help researchers share clear, accurate summaries with the myositis community.",
 
       about_teamMember2Image: "puneet.jpg",
       about_teamMember2Name: "Puneet Mann",
@@ -1329,12 +1332,12 @@ export const sites = {
       about_supporter1Height: 200,
       about_supporter1Link: "https://www.myositis.org/",
 
-      about_mission1: "Myositis Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by Myositis.",
-      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in Myositis research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the Myositis community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
-      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the Myositis community.",
-      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in Myositis with the community.",
+      about_mission1: "Myositis Simplified is dedicated to making scientific research more accessible and understandable for individuals and families affected by myositis.",
+      about_mission2: "We believe everyone deserves access to clear, reliable information about the latest advances in myositis research. By sharing simplified and accurate summaries of scientific findings, we aim to empower the myositis community to make informed decisions, stay updated on medical progress, and feel connected to the breakthroughs shaping their care.",
+      about_teamDescription: "We are a passionate, volunteer-led team of scientists, clinicians, developers, and advocates working together to bridge the gap between research and the myositis community.",
+      about_contributorsDescription: "We're a growing network of scientists who volunteer to edit article summaries and share the amazing research being done in myositis with the community.",
       about_getInvolvedDescription: "Myositis Simplified is 100% volunteer-led, and we're always looking for passionate people to join us! Whether you're into web development, research, database management, design, or community outreach—there's a place for you on our team.",
-      about_supportersDescription: "We're proud to work alongside The Myositis Association and other organizations dedicated to the Myositis community",
+      about_supportersDescription: "We're proud to work alongside The Myositis Association and other organizations dedicated to the myositis community",
 
       about_our_mission: "our-mission.jpg",
 

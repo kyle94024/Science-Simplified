@@ -36,7 +36,7 @@ export async function GET() {
         const domain = tenant.domain || "https://scisimplified.org";
         const feedTitle = escapeXml(tenant.fullName || tenant.name);
         const feedDescription = escapeXml(
-            `Simplified ${tenant.disease} research articles certified by experts.`
+            `Simplified ${tenant.diseaseLower || tenant.disease} research articles certified by experts.`
         );
         const buildDate = new Date().toUTCString();
 

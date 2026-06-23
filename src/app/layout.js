@@ -17,7 +17,7 @@ const outfitFont = Outfit({
 export const metadata = {
     title: `${tenant.name}`,
     description:
-        `${tenant.name} - Get simplified information about ${tenant.disease}`,
+        `${tenant.name} - Get simplified information about ${tenant.diseaseLower || tenant.disease}`,
 };
 
 export default function RootLayout({ children }) {
