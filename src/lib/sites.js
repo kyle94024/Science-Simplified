@@ -1302,9 +1302,9 @@ export const sites = {
       loginBGBottom: "home/bottombannermyositis.png",
 
       //Text
-      text_homeTitleDescription: "Collection of simplified Myositis articles certified by experts.",
+      text_homeTitleDescription: "Collection of simplified myositis articles certified by experts.",
       text_exploreAllTitle: "We give knowledge to Myositis patients, families, and caregivers",
-      text_exploreAllDescription: "Collection of simplified Myositis articles certified by experts.",
+      text_exploreAllDescription: "Collection of simplified myositis articles certified by experts.",
       text_footerDescription: "Provide accessible, up-to-date, and comprehensive information about Myositis to patients, families, and caregivers. We aim to empower those affected by Myositis with the knowledge and resources they need to navigate their journey.",
 
       // About

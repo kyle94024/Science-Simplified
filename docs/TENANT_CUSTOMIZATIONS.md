@@ -48,7 +48,7 @@ env var. Customization happens at three layers:
 | `CF` | Cystic Fibrosis | sscf-coral.vercel.app | `background-alt` banners |
 | `RUNX1` | RUNX1-FPD | www.runx1simplified.org | `runx1-mode` theming; italic "RUNX1-FPD" hero; dark hero bg; login skin; AI nomenclature addendum; partner embed/credit |
 | `Scleroderma` | Scleroderma | www.sclerodermasimplified.org | **partner bar + "Science Simplified" wordmark; Clinical Trials hidden; About "Partners" + partnership section; orange CTA; dark hero** |
-| `Myositis` | Myositis | www.myositissimplified.org | `myositis-mode` theming; full-width home bg |
+| `Myositis` | Myositis | www.myositissimplified.org | `myositis-mode` theming; full-width home bg; **"Clinical Trials" navbar item is an external dropdown** (myositis.org drug trials / non-drug studies) instead of the internal feature; "myositis" lowercased in home/explore copy |
 | `TS` (Turners) | Turner Syndrome | ssts.vercel.app | supporter logos (TSF) |
 | `ALS` | ALS | ssals-ten.vercel.app | hides "Get in Touch" banner text (`invisible`) |
 | `Vitiligo` | Vitiligo | ssvitiligo.vercel.app | config only |
@@ -74,6 +74,7 @@ treat them as hints.
 | HS, RUNX1, Scleroderma, Myositis | Navbar gets a tenant "mode" class (`hs-mode` / `runx1-mode` / `scleroderma-mode` / `myositis-mode`) driving themed nav colors | `src/components/Navbar/Navbar.jsx` (~L127); styles in `Navbar.scss` (~L362–600) |
 | **Scleroderma** | Slim **partner bar** above the navbar linking to srfcure.org; **"Science Simplified" text wordmark** replaces the image logo; **Clinical Trials nav item hidden** (desktop + mobile) | `src/components/Navbar/Navbar.jsx` (~L96–151); styles in `Navbar.scss` (partner-bar / navbrand--text) |
 | **HS** | **"Science Simplified" wordmark** (subtitle "Hidradenitis Suppurativa") replaces the image logo in navbar + footer; a **solo top bar** (`partner-bar--solo`, purple, no link) reads "Science Simplified". Now independent of the HS Foundation. | `src/components/Navbar/Navbar.jsx`, `src/components/Footer/Footer.jsx`; styles in `Navbar.scss` (`partner-bar--solo`, `hs-mode .navbrand-title`); `footerTextColor` added to HS theme in `sites.js` |
+| **Myositis** | "Clinical Trials" nav item is a **dropdown of external links** (Clinical Drug Trials + Non Drug Studies on myositis.org) instead of the internal `/clinical-trials` page — desktop dropdown + flattened in mobile. | `src/components/Navbar/Navbar.jsx` (`isMyositis`, navItems `dropdown`) |
 | **Scleroderma** | Footer uses the **"Science Simplified" wordmark** instead of the image logo | `src/components/Footer/Footer.jsx` (~L9); `Footer.scss` (`&__wordmark`) |
 
 ### Home page (`src/app/page.jsx`)

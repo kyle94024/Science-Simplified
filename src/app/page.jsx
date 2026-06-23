@@ -106,7 +106,7 @@ function HomeContent() {
                                     )}
                                 </h1>
                                 <h2 className="heading-tertiary w-400 color-green">
-                                    Information Made Simple
+                                    Science made simple
                                 </h2>
                             </div>
                             <p className="body-large animate-stagger-2">

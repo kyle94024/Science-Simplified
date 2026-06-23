@@ -102,11 +102,28 @@ export default function Navbar() {
     // Simplified" top bar (no partner, no outbound link).
     const isHS = tenant.shortName === "HS";
     const useWordmark = isScleroderma || isHS;
+    // Myositis points "Clinical Trials" at the partner org's external study
+    // listings (dropdown) instead of the internal feature.
+    const isMyositis = tenant.shortName === "Myositis";
 
     const navItems = [
         { href: "/", label: "Home" },
         { href: "/articles", label: "Articles" },
-        { href: "/clinical-trials", label: "Clinical Trials" },
+        isMyositis
+            ? {
+                  label: "Clinical Trials",
+                  dropdown: [
+                      {
+                          href: "https://www.myositis.org/research/clinical-trials/clinical-drug-trials/",
+                          label: "Clinical Drug Trials",
+                      },
+                      {
+                          href: "https://www.myositis.org/research/clinical-trials/non-drug-studies/",
+                          label: "Non Drug Studies",
+                      },
+                  ],
+              }
+            : { href: "/clinical-trials", label: "Clinical Trials" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact Us" },
     ].filter((item) => !(tenant.hideClinicalTrials && item.href === "/clinical-trials"));
@@ -168,21 +185,40 @@ export default function Navbar() {
 
                 {/* Main nav */}
                 <ul className="nav-links">
-                    {navItems.map((item) => (
-                        <li key={item.href}>
-                            <Link
-                                href={item.href}
-                                className={
-                                    pathname === item.href ||
-                                    (item.href !== "/" && pathname.startsWith(item.href))
-                                        ? "active"
-                                        : ""
-                                }
-                            >
-                                {item.label}
-                            </Link>
-                        </li>
-                    ))}
+                    {navItems.map((item) =>
+                        item.dropdown ? (
+                            <li key={item.label} className="dropdown">
+                                <span>{item.label} ▾</span>
+                                <ul className="dropdown-menu">
+                                    {item.dropdown.map((sub) => (
+                                        <li key={sub.href}>
+                                            <a
+                                                href={sub.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {sub.label}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ) : (
+                            <li key={item.href}>
+                                <Link
+                                    href={item.href}
+                                    className={
+                                        pathname === item.href ||
+                                        (item.href !== "/" && pathname.startsWith(item.href))
+                                            ? "active"
+                                            : ""
+                                    }
+                                >
+                                    {item.label}
+                                </Link>
+                            </li>
+                        )
+                    )}
 
 
                     {/* Editor dropdown */}
@@ -314,11 +350,25 @@ export default function Navbar() {
             {/* Mobile dropdown fallback */}
             {navbarOpen && (
                 <div className="mobile-menu">
-                    {navItems.map((item) => (
-                        <Link key={item.href} href={item.href} onClick={toggleNavbar}>
-                            {item.label}
-                        </Link>
-                    ))}
+                    {navItems.map((item) =>
+                        item.dropdown ? (
+                            item.dropdown.map((sub) => (
+                                <a
+                                    key={sub.href}
+                                    href={sub.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={toggleNavbar}
+                                >
+                                    {sub.label}
+                                </a>
+                            ))
+                        ) : (
+                            <Link key={item.href} href={item.href} onClick={toggleNavbar}>
+                                {item.label}
+                            </Link>
+                        )
+                    )}
                     {user ? (
                         <button
                             onClick={logout}
