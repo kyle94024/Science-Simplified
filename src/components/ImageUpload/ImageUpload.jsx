@@ -93,24 +93,28 @@ const ImageUpload = ({
     return (
         <div className="flex flex-col gap-4">
 
-            {/* File input — enabled only when no image exists */}
+            {/* File input — always usable so an existing image can be replaced */}
             <input
                 type="file"
                 onChange={handleChange}
                 className="image-upload__input w-full md:w-max file:py-[2rem] file:px-[3.5rem] file:rounded-[10px] file:border-0 file:text-2.1rem file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
                 accept="image/*"
-                disabled={uploading || !!uploadedUrl}
+                disabled={uploading}
             />
 
-            {/* Upload button */}
-            {!uploadedUrl && (
+            {/* Upload / replace button — appears once a new file is chosen */}
+            {file && (
                 <Button
                     className="btn btn-primary"
                     type="button"
                     onClick={handleUpload}
-                    disabled={!file || uploading}
+                    disabled={uploading}
                 >
-                    {uploading ? "Uploading..." : "Upload Image to Cloud"}
+                    {uploading
+                        ? "Uploading..."
+                        : uploadedUrl
+                        ? "Replace Image"
+                        : "Upload Image to Cloud"}
                 </Button>
             )}
 
