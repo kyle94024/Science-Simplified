@@ -166,6 +166,29 @@
     margin: 0 0 0.6rem;
   }
 
+  &__existing {
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 1.3rem;
+    }
+
+    .researchers-page__picker-hint {
+      margin: 0.4rem 0 0;
+    }
+  }
+
+  &__existing-select {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    background: #fff;
+    cursor: pointer;
+  }
+
   &__submit {
     display: inline-flex;
     align-items: center;

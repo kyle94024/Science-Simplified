@@ -9,6 +9,7 @@ import "./Researchers.scss";
 
 function ResearchersPage() {
   const [researchers, setResearchers] = useState([]);
+  const [editors, setEditors] = useState([]);
   const [allTrials, setAllTrials] = useState([]);
   const [allArticles, setAllArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,7 @@ function ResearchersPage() {
 
   useEffect(() => {
     loadResearchers();
+    loadEditors();
     loadTrials();
     loadArticles();
   }, []);
@@ -41,6 +43,17 @@ function ResearchersPage() {
       console.error("Failed to load researchers:", err);
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Existing editors + admins who can also be assigned for review.
+  async function loadEditors() {
+    try {
+      const res = await fetch("/api/editors");
+      const data = await res.json();
+      setEditors(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to load editors:", err);
     }
   }
 
@@ -162,6 +175,38 @@ function ResearchersPage() {
     );
   });
 
+  // Everyone already in the system who can be assigned for review:
+  // editors + admins (from /api/editors) and existing experts (researchers).
+  const existingPeople = (() => {
+    const byEmail = new Map();
+    for (const e of editors) {
+      if (!e.email) continue;
+      byEmail.set(e.email.toLowerCase(), {
+        email: e.email,
+        name: e.name || e.email,
+        role: e.is_admin ? "admin" : "editor",
+      });
+    }
+    for (const r of researchers) {
+      if (!r.email || byEmail.has(r.email.toLowerCase())) continue;
+      byEmail.set(r.email.toLowerCase(), {
+        email: r.email,
+        name: r.name || `${r.first_name || ""} ${r.last_name || ""}`.trim() || r.email,
+        role: "expert",
+      });
+    }
+    return [...byEmail.values()].sort((a, b) => a.name.localeCompare(b.name));
+  })();
+
+  function pickExistingPerson(selectedEmail) {
+    const p = existingPeople.find((x) => x.email === selectedEmail);
+    if (!p) return;
+    setEmail(p.email);
+    const parts = (p.name || "").trim().split(/\s+/);
+    setFirstName(parts[0] || "");
+    setLastName(parts.slice(1).join(" "));
+  }
+
   return (
     <>
       <Navbar />
@@ -179,6 +224,26 @@ function ResearchersPage() {
               <UserPlus size={20} /> Invite an expert
             </h2>
             <form onSubmit={handleInvite} className="researchers-page__form">
+              {existingPeople.length > 0 && (
+                <div className="researchers-page__existing">
+                  <label>Assign to someone already in the system</label>
+                  <select
+                    className="researchers-page__existing-select"
+                    value=""
+                    onChange={(e) => pickExistingPerson(e.target.value)}
+                  >
+                    <option value="">Select an existing editor or expert…</option>
+                    {existingPeople.map((p) => (
+                      <option key={p.email} value={p.email}>
+                        {p.name} ({p.email}) — {p.role}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="researchers-page__picker-hint">
+                    …or enter a new email below to invite someone.
+                  </p>
+                </div>
+              )}
               <div className="researchers-page__row">
                 <input
                   type="email"

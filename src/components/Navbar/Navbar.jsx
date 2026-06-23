@@ -254,18 +254,11 @@ export default function Navbar() {
                                     </li>
                                 )}
                                 {isAdmin && (
-                                    <>
-                                        <li>
-                                            <Link href="/pending-articles">
-                                                Pending Articles
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/assign-articles">
-                                                Assign Articles
-                                            </Link>
-                                        </li>
-                                    </>
+                                    <li>
+                                        <Link href="/pending-articles">
+                                            Pending Articles
+                                        </Link>
+                                    </li>
                                 )}
                             </ul>
                         </li>
@@ -279,6 +272,11 @@ export default function Navbar() {
                                 <li>
                                     <Link href="/featured">
                                         Featured Articles
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/assign-articles">
+                                        Assign Articles
                                     </Link>
                                 </li>
                                 <li>
