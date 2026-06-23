@@ -97,7 +97,7 @@ const ImageUpload = ({
             <input
                 type="file"
                 onChange={handleChange}
-                className="image-upload__input w-full md:w-max file:py-[2rem] file:px-[3.5rem] file:rounded-[10px] file:border-0 file:text-2.1rem file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                className="image-upload__input w-full md:w-max file:py-[2rem] file:px-[3.5rem] file:rounded-[10px] file:border-0 file:text-2.1rem file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
                 accept="image/*"
                 disabled={uploading || !!uploadedUrl}
             />
