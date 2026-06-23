@@ -7,6 +7,7 @@ const ImageUpload = ({
     uploadUrl = "/api/images/upload-image",
     deleteUrl = "/api/images/delete-image",
     imageType = "default",
+    autoUpload = false, // upload immediately on file select (no button)
 }) => {
     const [file, setFile] = useState(null);
     const [uploadedUrl, setUploadedUrl] = useState(initialImageUrl || null);
@@ -20,19 +21,23 @@ const ImageUpload = ({
     }, [initialImageUrl]);
 
     const handleChange = (event) => {
-        setFile(event.target.files[0]);
+        const selected = event.target.files[0];
+        setFile(selected);
         setError(null);
+        // In auto mode, uploading happens immediately on select — no button.
+        if (autoUpload && selected) handleUpload(selected);
     };
 
-    const handleUpload = async () => {
-        if (!file) {
+    const handleUpload = async (fileToUpload) => {
+        const f = fileToUpload || file;
+        if (!f) {
             setError("Please select a file to upload.");
             return;
         }
 
         setUploading(true);
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", f);
         formData.append("imageType", imageType);
 
         try {
@@ -102,12 +107,13 @@ const ImageUpload = ({
                 disabled={uploading}
             />
 
-            {/* Upload / replace button — appears once a new file is chosen */}
-            {file && (
+            {/* Upload / replace button — appears once a new file is chosen.
+                Hidden in auto-upload mode (upload happens on select). */}
+            {!autoUpload && file && (
                 <Button
                     className="btn btn-primary"
                     type="button"
-                    onClick={handleUpload}
+                    onClick={() => handleUpload()}
                     disabled={uploading}
                 >
                     {uploading
@@ -116,6 +122,9 @@ const ImageUpload = ({
                         ? "Replace Image"
                         : "Upload Image to Cloud"}
                 </Button>
+            )}
+            {autoUpload && uploading && (
+                <p className="image-upload__status">Uploading…</p>
             )}
 
             {/* Delete button — ALWAYS appears when uploadedUrl exists */}

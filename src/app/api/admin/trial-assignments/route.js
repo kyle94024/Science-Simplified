@@ -3,7 +3,6 @@ import { sql } from "@/lib/neon";
 import { query } from "@/lib/db";
 import { requireAdmin } from "@/lib/adminGuard";
 import { storeMagicLink } from "@/lib/magicLinks";
-import { sendResearcherInviteEmail } from "@/lib/email";
 import { tenant } from "@/lib/config";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -116,7 +115,6 @@ export async function POST(req) {
       lastName,
       nctIds = [],
       articleIds = [],
-      sendEmail = true,
     } = await req.json();
 
     if (!email) {
@@ -211,20 +209,8 @@ export async function POST(req) {
       "";
     const magicUrl = `${baseUrl.replace(/\/$/, "")}/api/magic-link/verify?token=${token}`;
 
-    if (sendEmail) {
-      try {
-        await sendResearcherInviteEmail({
-          tenant,
-          email,
-          url: magicUrl,
-          inviterName: authResult.name,
-          trialCount: nctIds.length,
-          articleCount: articleIds.length,
-        });
-      } catch (e) {
-        console.error("Email send failed (continuing):", e.message);
-      }
-    }
+    // We intentionally never email experts on assignment — the magic link is
+    // returned for the admin to share manually if/when they choose.
 
     return NextResponse.json({
       success: true,

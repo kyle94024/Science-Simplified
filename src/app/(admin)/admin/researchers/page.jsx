@@ -21,7 +21,6 @@ function ResearchersPage() {
   const [selectedArticleIds, setSelectedArticleIds] = useState([]);
   const [trialSearch, setTrialSearch] = useState("");
   const [articleSearch, setArticleSearch] = useState("");
-  const [sendEmail, setSendEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [lastMagicUrl, setLastMagicUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("trials"); // "trials" or "articles"
@@ -58,7 +57,9 @@ function ResearchersPage() {
 
   async function loadArticles() {
     try {
-      const res = await fetch(`/api/articles`);
+      // Pending articles are the ones awaiting review/certification — these are
+      // what you assign to an expert. (Published/certified articles are done.)
+      const res = await fetch(`/api/articles/pending`);
       const data = await res.json();
       setAllArticles(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -85,13 +86,12 @@ function ResearchersPage() {
           lastName,
           nctIds: selectedNctIds,
           articleIds: selectedArticleIds,
-          sendEmail,
         }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error || "Invite failed");
       alert(
-        `Expert invited! ${data.assignedTrials} trial${data.assignedTrials === 1 ? "" : "s"} and ${data.assignedArticles} article${data.assignedArticles === 1 ? "" : "s"} assigned.${sendEmail ? " Email sent." : ""}`
+        `Expert assigned! ${data.assignedTrials} trial${data.assignedTrials === 1 ? "" : "s"} and ${data.assignedArticles} article${data.assignedArticles === 1 ? "" : "s"} assigned. Share the magic link below if they need access.`
       );
       setLastMagicUrl(data.magicUrl);
       setEmail("");
@@ -154,7 +154,6 @@ function ResearchersPage() {
   });
 
   const filteredArticles = allArticles.filter((a) => {
-    if (a.certifiedby) return false; // already certified — nothing to assign
     if (!articleSearch) return true;
     const q = articleSearch.toLowerCase();
     return (
@@ -276,7 +275,7 @@ function ResearchersPage() {
                 <div className="researchers-page__trial-picker">
                   <label>Assign articles for verification</label>
                   <p className="researchers-page__picker-hint">
-                    Only articles that aren&apos;t certified yet are shown.
+                    Articles awaiting review (pending) are shown.
                   </p>
                   <div className="researchers-page__trial-search">
                     <Search size={14} />
@@ -317,17 +316,6 @@ function ResearchersPage() {
                   )}
                 </div>
               )}
-
-              <div className="researchers-page__row">
-                <label className="researchers-page__checkbox">
-                  <input
-                    type="checkbox"
-                    checked={sendEmail}
-                    onChange={(e) => setSendEmail(e.target.checked)}
-                  />
-                  Send invite email
-                </label>
-              </div>
 
               <button type="submit" className="researchers-page__submit" disabled={submitting}>
                 {submitting ? (

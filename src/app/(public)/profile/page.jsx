@@ -38,11 +38,25 @@ const ProfilePage = () => {
 
     const predefinedDegrees = ["M.D.", "Ph.D.", "M.D. Ph.D.", "M.S."];
 
-    const handleImageUpload = (url) => {
-        setProfileData({
-            ...profileData,
-            photo: url,
-        });
+    const handleImageUpload = async (url) => {
+        const updated = { ...profileData, photo: url };
+        setProfileData(updated);
+        // Profile photos save immediately — no "Save Changes" needed.
+        try {
+            const response = await fetch("/api/profile/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: user.userId, ...updated }),
+            });
+            if (response.ok) {
+                setInitialProfileData(updated);
+                toast.success(url ? "Profile photo updated!" : "Profile photo removed.");
+            } else {
+                toast.error("Failed to save photo.");
+            }
+        } catch {
+            toast.error("Error saving photo.");
+        }
     };
 
     const fetchProfile = async () => {
@@ -225,6 +239,7 @@ const ProfilePage = () => {
                                 uploadUrl="/api/profile/upload-image"
                                 deleteUrl="/api/profile/delete-image"
                                 imageType="profile"
+                                autoUpload
                             />
                         )}
                     </div>
