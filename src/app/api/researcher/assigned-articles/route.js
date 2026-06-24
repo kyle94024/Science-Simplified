@@ -31,7 +31,7 @@ export async function GET(req) {
     );
   }
 
-  if (!payload.isAdmin && payload.role !== "researcher") {
+  if (!payload.isAdmin && payload.role !== "researcher" && payload.role !== "editor") {
     return NextResponse.json(
       { success: false, error: "Forbidden" },
       { status: 403 }

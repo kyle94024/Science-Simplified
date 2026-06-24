@@ -72,8 +72,8 @@ export async function GET() {
       assignedArticles = articleResult.rows[0]?.count || 0;
     }
 
-    // Trials assigned to the user (as researcher) and not yet verified
-    if (role === "researcher" || isAdmin) {
+    // Trials assigned to the user (researcher or editor) and not yet verified
+    if (role === "researcher" || role === "editor" || isAdmin) {
       try {
         const trialRows = await sql`
           SELECT COUNT(*)::int AS count

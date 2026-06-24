@@ -39,17 +39,20 @@ const ProfilePage = () => {
     const predefinedDegrees = ["M.D.", "Ph.D.", "M.D. Ph.D.", "M.S."];
 
     const handleImageUpload = async (url) => {
-        const updated = { ...profileData, photo: url };
-        setProfileData(updated);
-        // Profile photos save immediately — no "Save Changes" needed.
+        // Show the new photo right away, but keep any unsaved text-box edits.
+        setProfileData((prev) => ({ ...prev, photo: url }));
+        // Persist ONLY the photo — save from the last-saved baseline so unsaved
+        // edits in the lower text boxes are NOT written to the DB.
         try {
+            const photoOnly = { ...initialProfileData, photo: url };
             const response = await fetch("/api/profile/update", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId: user.userId, ...updated }),
+                body: JSON.stringify({ userId: user.userId, ...photoOnly }),
             });
             if (response.ok) {
-                setInitialProfileData(updated);
+                // Baseline now includes the saved photo (but not the unsaved edits).
+                setInitialProfileData(photoOnly);
                 toast.success(url ? "Profile photo updated!" : "Profile photo removed.");
             } else {
                 toast.error("Failed to save photo.");

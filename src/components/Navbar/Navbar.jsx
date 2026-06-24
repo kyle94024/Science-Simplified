@@ -88,7 +88,7 @@ export default function Navbar() {
     // Editors AND researchers/experts are reviewers — all of their review tools
     // live under "Editor Tools".
     const showEditorTools = isEditor || isResearcher || isAdmin;
-    const showExpertDashboard = isResearcher || isAdmin;
+    const showExpertDashboard = isResearcher || isEditor || isAdmin;
     // Top-level Editor Tools badge = everything awaiting this user's review
     // (assigned articles + assigned trials).
     const editorToolsCount = showEditorTools ? counts.total : 0;

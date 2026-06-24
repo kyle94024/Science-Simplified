@@ -15,8 +15,12 @@ export const withResearcherAuth = (WrappedComponent) => {
         try {
           const response = await fetch("/api/auth/session");
           const user = await response.json();
-          // Researchers OR admins pass through
-          if (user.isLoggedIn && (user.role === "researcher" || user.isAdmin)) {
+          // Researchers, editors, OR admins pass through (editors can be
+          // assigned trials too, and see them on the Expert Dashboard).
+          if (
+            user.isLoggedIn &&
+            (user.role === "researcher" || user.role === "editor" || user.isAdmin)
+          ) {
             setAuthenticated(true);
           } else {
             router.push("/login");
