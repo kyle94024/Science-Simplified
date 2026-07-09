@@ -26,6 +26,22 @@ export function requireAdmin(req) {
 }
 
 /**
+ * Admins ONLY — unlike requireAdmin, editors are NOT admitted. Use for
+ * account administration (editing other people's profiles/passwords) and
+ * other genuinely admin-only surfaces.
+ */
+export function requireStrictAdmin(req) {
+  const { payload, error } = decodeToken(req);
+  if (error) return error;
+
+  if (!payload.isAdmin) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
+  return payload;
+}
+
+/**
  * Returns the JWT payload if the user is an admin, editor, or researcher.
  * Researcher role is included for trial-related endpoints; route-level checks
  * should additionally verify the specific assignment if needed.
