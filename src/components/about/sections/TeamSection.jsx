@@ -21,11 +21,6 @@ export default function TeamSection({ content }) {
   if (tenant.shortName === "Scleroderma") {
     members = hideSclerodermaNonTeam(members);
   }
-  if (tenant.shortName === "HS") {
-    // HS is now independent of the HS Foundation — drop HSF-affiliated members
-    // (e.g. the HSF CEO), but keep the founder and independent advisors.
-    members = members.filter((m) => !/foundation/i.test(m.title || ""));
-  }
   // Secondary heading under the section title. Defaults to "Core Team";
   // an explicit content.subtitle (including "") from the CMS overrides it.
   const subtitle = content.subtitle ?? "Core Team";

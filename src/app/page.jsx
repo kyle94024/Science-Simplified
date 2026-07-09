@@ -16,6 +16,7 @@ import SubscriptionBanner from "@/components/SubscriptionBanner/SubscriptionBann
 import SearchArticles from "@/components/SearchArticles/SearchArticles";
 import RecentArticlesSection from "@/components/RecentArticlesSection/RecentArticlesSection";
 import FeaturedArticlesSection from "@/components/FeaturedArticlesSection/FeaturedArticlesSection";
+import ExternalArticlesNotice from "@/components/ExternalArticlesNotice/ExternalArticlesNotice";
 import Footer from "@/components/Footer/Footer";
 
 // HSF redirect mapping (for HS Foundation external links)
@@ -26,8 +27,13 @@ function HomeContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const { role } = useAuthStore();
-    console.log("User: ", role);
+    const { role, isAdmin } = useAuthStore();
+
+    // Articles published on a partner site (HS → HSF research summaries):
+    // patients get a pointer to the partner page instead of listings/search;
+    // admins keep the internal article surfaces (plus the outbound button).
+    const articlesExternal = !!tenant.articlesExternalUrl;
+    const showArticleSurfaces = !articlesExternal || isAdmin;
 
     const handleSearchSubmit = (query) => {
         // Navigate to the article search page with the query
@@ -116,8 +122,16 @@ function HomeContent() {
                                 </span> */}
                             </p>
                             <div className="animate-stagger-3">
-                                <SearchArticles
-                                   mode="home" />
+                                {showArticleSurfaces ? (
+                                    <>
+                                        <SearchArticles mode="home" />
+                                        {articlesExternal && (
+                                            <ExternalArticlesNotice variant="compact" />
+                                        )}
+                                    </>
+                                ) : (
+                                    <ExternalArticlesNotice variant="hero" />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -133,8 +147,13 @@ function HomeContent() {
                 </div>
             </section> */}
 
-            {/* Recent articles section */}
-            <RecentArticlesSection />
+            {/* Recent articles section — replaced by a pointer to the partner
+                site for patients when articles are published externally */}
+            {showArticleSurfaces ? (
+                <RecentArticlesSection />
+            ) : (
+                <ExternalArticlesNotice variant="full" />
+            )}
 
             <section className="home__cta-1 padding">
                 <div className="boxed">

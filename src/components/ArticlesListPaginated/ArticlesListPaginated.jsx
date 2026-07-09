@@ -129,7 +129,7 @@ export default function ArticlesListPaginated({
         {selectedArticles.map((article) => {
           const baseName =
             article.name || article.publisher_name || "Anonymous";
-          // HS: foundation-certified articles credit the paper's first author.
+          // Passthrough today (HSF partnership reinstated) — see articleAuthor.js.
           const credit = resolveArticleCredit(article, baseName);
           const authorName = credit.name;
 

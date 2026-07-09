@@ -46,12 +46,7 @@ export default async function AboutPage() {
   }
 
   const { sections } = await getAboutPageConfig();
-  // HS is now independent of the HS Foundation — hide the HSF experts
-  // (Scientific Contributors) and community supporters sections for HS.
-  const hiddenTypes = tenant.shortName === "HS" ? ["contributors", "supporters"] : [];
-  const visibleSections = sections.filter(
-    (s) => s.visible !== false && !hiddenTypes.includes(s.type)
-  );
+  const visibleSections = sections.filter((s) => s.visible !== false);
 
   return (
     <div className="about-page">

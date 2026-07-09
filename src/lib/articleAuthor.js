@@ -1,32 +1,18 @@
-import { tenant } from "@/lib/config";
-import { defaultAvatar } from "@/lib/defaultAvatar";
-
 /**
- * HS is now independent of the HS Foundation. Articles that were certified
- * under a "…Foundation" profile should visually credit the original paper's
- * FIRST author instead of the foundation. This is a render-time presentation
- * tweak only — the database (certifiedby / profile) is NOT changed.
+ * Article credit resolution.
  *
- * Returns { name, replaced, avatarUrl }:
- *   - replaced=true means we swapped in the paper's first author; callers
- *     should drop the foundation's degree/affiliation/photo too.
- *   - avatarUrl is a deterministic pastel default avatar for the replaced
- *     credit (the first author has no profile photo), else null.
+ * History: while HS Simplified was briefly de-affiliated from the HS
+ * Foundation (June 2026), foundation-certified articles were re-credited at
+ * render time to the paper's first author. The partnership was reinstated
+ * (July 2026), so this is now a passthrough — the certifier displays exactly
+ * as stored (e.g. "HS Foundation", with its photo/degree/affiliation).
+ *
+ * The hook is kept because ArticlesListPaginated + ArticlesSection still route
+ * through it, and a future tenant may need a render-time credit swap again.
+ *
+ * Returns { name, replaced, avatarUrl } — replaced=false means render the
+ * stored certifier unchanged.
  */
-const FOUNDATION_RE = /foundation/i;
-
 export function resolveArticleCredit(article, baseName) {
-  const name = (baseName ?? "").toString();
-  if (tenant.shortName === "HS" && FOUNDATION_RE.test(name)) {
-    const authors = Array.isArray(article?.authors) ? article.authors : [];
-    const first = authors.find((a) => a && a.toString().trim());
-    if (first) {
-      const firstName = first.toString().trim();
-      return { name: firstName, replaced: true, avatarUrl: defaultAvatar(firstName) };
-    }
-    // No paper author available — still don't surface the foundation; use the
-    // site name ("HS Simplified") instead.
-    return { name: "HS Simplified", replaced: true, avatarUrl: defaultAvatar("HS Simplified") };
-  }
-  return { name, replaced: false, avatarUrl: null };
+  return { name: (baseName ?? "").toString(), replaced: false, avatarUrl: null };
 }

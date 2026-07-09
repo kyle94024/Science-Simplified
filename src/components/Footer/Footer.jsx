@@ -7,8 +7,7 @@ import { tenant } from "@/lib/config";
 
 const brandlogo = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 const isScleroderma = tenant.shortName === "Scleroderma";
-const isHS = tenant.shortName === "HS";
-const useWordmark = isScleroderma || isHS;
+const useWordmark = isScleroderma;
 
 const Footer = () => {
     return (
@@ -20,9 +19,7 @@ const Footer = () => {
                             <div className="footer__wordmark">
                                 <span className="footer__wordmark-title">Science Simplified</span>
                                 <span className="footer__wordmark-subtitle">
-                                    {isScleroderma
-                                        ? "partnered with the Scleroderma Research Foundation"
-                                        : "Hidradenitis Suppurativa"}
+                                    partnered with the Scleroderma Research Foundation
                                 </span>
                             </div>
                         ) : (
@@ -63,12 +60,26 @@ const Footer = () => {
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
-                                    <Link
-                                        href="/articles"
-                                        className="footer__link"
-                                    >
-                                        Articles
-                                    </Link>
+                                    {/* When articles are published on a partner
+                                        site (HS → HSF research summaries),
+                                        patients follow the external link. */}
+                                    {tenant.articlesExternalUrl ? (
+                                        <a
+                                            href={tenant.articlesExternalUrl}
+                                            className="footer__link"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Articles
+                                        </a>
+                                    ) : (
+                                        <Link
+                                            href="/articles"
+                                            className="footer__link"
+                                        >
+                                            Articles
+                                        </Link>
+                                    )}
                                 </li>
                                 <li className="footer__links-item">
                                     <Link

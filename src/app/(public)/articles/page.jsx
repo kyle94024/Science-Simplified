@@ -7,7 +7,9 @@ import ArticlesListPaginated from "@/components/ArticlesListPaginated/ArticlesLi
 import Footer from "@/components/Footer/Footer";
 import { Unplug } from "lucide-react";
 import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton/ArticleCardSkeleton";
+import ExternalArticlesNotice from "@/components/ExternalArticlesNotice/ExternalArticlesNotice";
 import useSearchStore from "@/store/useSearchStore";
+import useAuthStore from "@/store/useAuthStore";
 import { tenant } from "@/lib/config";
 import {
     Select,
@@ -19,12 +21,17 @@ import {
 
 const ArticleSearchPage = () => {
     const { searchQuery } = useSearchStore();
+    const { isAdmin } = useAuthStore();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [sortBy, setSortBy] = useState("recent");
 
     const isHS = tenant.shortName === "HS";
+    // Articles published on a partner site (HS → HSF research summaries):
+    // patients get a pointer card instead of the listing; admins keep the
+    // internal listing (plus the outbound button). DB/RSS are untouched.
+    const patientExternalView = !!tenant.articlesExternalUrl && !isAdmin;
 
     useEffect(() => {
     const fetchArticles = async () => {
@@ -43,8 +50,14 @@ const ArticleSearchPage = () => {
         }
     };
 
+    // Patients are pointed to the partner site — skip loading the listing.
+    if (patientExternalView) {
+        setLoading(false);
+        return;
+    }
+
     fetchArticles();
-}, [searchQuery, sortBy]); 
+}, [searchQuery, sortBy, patientExternalView]);
 
    const parseDateSafe = (dateStr) => {
   if (!dateStr) return 0;
@@ -116,7 +129,7 @@ const sortArticles = (articlesToSort) => {
             {isHS && (
                 <div className="hs-header text-center text-white py-12">
                     <h1 className="text-3xl md:text-4xl font-bold tracking-wide">
-                        Research Summaries
+                        Simplified Research Summaries
                     </h1>
                     <p className="text-lg opacity-90 mt-2">
                         Expert-certified and simplified insights into HS
@@ -125,9 +138,19 @@ const sortArticles = (articlesToSort) => {
                 </div>
             )}
 
+            {/* ---------- PATIENT VIEW: summaries live on the partner site ---------- */}
+            {patientExternalView ? (
+                <ExternalArticlesNotice variant="full" />
+            ) : (
+            <>
             {/* ---------- SEARCH SECTION ---------- */}
             <div className="article-search-page__content padding">
                 <div className="boxed">
+                    {tenant.articlesExternalUrl && (
+                        <div className="text-center mt-8">
+                            <ExternalArticlesNotice variant="compact" />
+                        </div>
+                    )}
                     <div
                         className={`search-bar-container ${
                             isHS ? "hs-search-bar" : ""
@@ -183,6 +206,8 @@ const sortArticles = (articlesToSort) => {
                     )}
                 </div>
             </div>
+            </>
+            )}
 
             <Footer />
         </div>

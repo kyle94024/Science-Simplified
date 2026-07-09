@@ -1024,6 +1024,12 @@ export const sites = {
       apiUrl: process.env.NEXT_PUBLIC_EB_API_URL,
       domain: "https://hssimplified.org",
       hideClinicalTrials: true,
+      // Articles are written/verified here but PUBLISHED on the HS Foundation
+      // site (their CMS imports from our RSS feed at /rss). Patients are
+      // pointed there; admins still see the internal listings. Articles are
+      // never removed from the DB or the feed.
+      articlesExternalUrl: "https://www.hs-foundation.org/research-summaries",
+      articlesExternalPartner: "HS Foundation",
 
       theme: {
         primary: "#7B2CBF",          // foundation purple

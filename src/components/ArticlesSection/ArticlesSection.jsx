@@ -45,7 +45,7 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
                                 authorName = article.publisher_name;
                             }
 
-                            // HS: foundation-certified articles credit the paper's first author.
+                            // Passthrough today (HSF partnership reinstated) — see articleAuthor.js.
                             const credit = resolveArticleCredit(article, authorName);
 
                             return (

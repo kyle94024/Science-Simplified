@@ -97,18 +97,25 @@ export default function Navbar() {
     // Scleroderma Research Foundation" — its own entity collaborating with SRF.
     // It also hides the Clinical Trials feature.
     const isScleroderma = tenant.shortName === "Scleroderma";
-    // HS is now an independent Science Simplified site (no longer affiliated with
-    // the HS Foundation): Science Simplified wordmark + a plain "Science
-    // Simplified" top bar (no partner, no outbound link).
+    // HS is back in partnership with the HS Foundation (July 2026): original
+    // image logo returns; the top bar reads "in partnership with the HS
+    // Foundation" with an outbound link.
     const isHS = tenant.shortName === "HS";
-    const useWordmark = isScleroderma || isHS;
+    const useWordmark = isScleroderma;
     // Myositis points "Clinical Trials" at the partner org's external study
     // listings (dropdown) instead of the internal feature.
     const isMyositis = tenant.shortName === "Myositis";
 
+    // When a tenant's articles are published on a partner site (HS → the HS
+    // Foundation's research-summaries page), patients follow the external
+    // link; admins keep the internal listing to manage/verify articles.
+    const articlesExternal = !!tenant.articlesExternalUrl && !isAdmin;
+
     const navItems = [
         { href: "/", label: "Home" },
-        { href: "/articles", label: "Articles" },
+        articlesExternal
+            ? { href: tenant.articlesExternalUrl, label: "Articles", external: true }
+            : { href: "/articles", label: "Articles" },
         isMyositis
             ? {
                   label: "Clinical Trials",
@@ -150,25 +157,32 @@ export default function Navbar() {
             </div>
         )}
         {isHS && (
-            <div className="partner-bar partner-bar--solo">
+            <div className="partner-bar partner-bar--hs">
                 <div className="partner-bar__inner boxed padding">
                     <span className="partner-bar__text">
                         <strong>Science Simplified</strong>
-                        <span className="partner-bar__sep">making Hidradenitis Suppurativa research understandable</span>
+                        <span className="partner-bar__sep">in partnership with the</span>
+                        <span className="partner-bar__org">HS Foundation</span>
                     </span>
+                    <a
+                        className="partner-bar__link"
+                        href="https://www.hs-foundation.org/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Visit hs-foundation.org →
+                    </a>
                 </div>
             </div>
         )}
         <nav className={`navbar ${tenant.shortName === "HS" ? "hs-mode" : tenant.shortName === "RUNX1" ? "runx1-mode" : tenant.shortName === "Scleroderma" ? "scleroderma-mode" : tenant.shortName === "Myositis" ? "myositis-mode" : ""}${scrolled ? " navbar--scrolled" : ""}`}>
             <div className="navbar-inner boxed padding">
-                {/* Left logo — Scleroderma & HS use a Science Simplified wordmark */}
+                {/* Left logo — Scleroderma uses a Science Simplified wordmark */}
                 {useWordmark ? (
                     <Link href="/" className="navbrand navbrand--text">
                         <span className="navbrand-title">Science Simplified</span>
                         <span className="navbrand-subtitle">
-                            {isScleroderma
-                                ? "partnered with the Scleroderma Research Foundation"
-                                : "Hidradenitis Suppurativa"}
+                            partnered with the Scleroderma Research Foundation
                         </span>
                     </Link>
                 ) : (
@@ -202,6 +216,16 @@ export default function Navbar() {
                                         </li>
                                     ))}
                                 </ul>
+                            </li>
+                        ) : item.external ? (
+                            <li key={item.href}>
+                                <a
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {item.label}
+                                </a>
                             </li>
                         ) : (
                             <li key={item.href}>
@@ -361,6 +385,16 @@ export default function Navbar() {
                                     {sub.label}
                                 </a>
                             ))
+                        ) : item.external ? (
+                            <a
+                                key={item.href}
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={toggleNavbar}
+                            >
+                                {item.label}
+                            </a>
                         ) : (
                             <Link key={item.href} href={item.href} onClick={toggleNavbar}>
                                 {item.label}

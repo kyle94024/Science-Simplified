@@ -62,15 +62,16 @@
         }
     }
 
-    // Solo branding bar (HS) — no partner, no link. Uses HS purple.
-    &--solo {
+    // HS partnership bar — HS purple with a light-purple accent for the org
+    // name and link hover (the defaults above are SRF blue/yellow).
+    &--hs {
         background: #7B2CBF;
 
-        .partner-bar__inner {
-            justify-content: center;
+        .partner-bar__org {
+            color: #E9D5FF;
         }
-        .partner-bar__sep {
-            opacity: 0.85;
+        .partner-bar__link:hover {
+            color: #E9D5FF;
         }
     }
 }

@@ -4,7 +4,7 @@ A running log of every place the platform behaves differently for a specific
 tenant. **This is a living document — when you add a tenant-specific change,
 add a row here in the same commit.**
 
-_Last updated: 2026-05-17_
+_Last updated: 2026-07-05_
 
 ---
 
@@ -43,7 +43,7 @@ env var. Customization happens at three layers:
 | shortName | Disease | Domain | Notable customizations |
 |---|---|---|---|
 | `NF` | Neurofibromatosis | nfsimplified.com | full-width home bg; AI nomenclature addendum; HSF-style ids n/a |
-| `HS` | Hidradenitis Suppurativa | hssimplified.org | **independent of the HS Foundation:** "Science Simplified" wordmark + solo top bar; Clinical Trials hidden; About drops HSF-affiliated team (keeps founder + advisors) and hides HSF experts + supporters; foundation-certified articles credit the paper's first author; `hs-mode` theming; HSF deep-link redirects; RSS exclusions |
+| `HS` | Hidradenitis Suppurativa | hssimplified.org | **partnered with the HS Foundation (reinstated 2026-07):** original logo + purple partnership top bar linking to hs-foundation.org; **articles published on HSF's site** — patients see a pointer to hs-foundation.org/research-summaries instead of listings (`articlesExternalUrl`), admins keep internal listings; article pages `noindex`; Clinical Trials hidden; `hs-mode` theming; HSF deep-link redirects; RSS excludes legacy already-on-HSF articles |
 | `EB` | Epidermolysis Bullosa | sseb.vercel.app | config only |
 | `CF` | Cystic Fibrosis | sscf-coral.vercel.app | `background-alt` banners |
 | `RUNX1` | RUNX1-FPD | www.runx1simplified.org | `runx1-mode` theming; italic "RUNX1-FPD" hero; dark hero bg; login skin; AI nomenclature addendum; partner embed/credit |
@@ -73,7 +73,8 @@ treat them as hints.
 |---|---|---|
 | HS, RUNX1, Scleroderma, Myositis | Navbar gets a tenant "mode" class (`hs-mode` / `runx1-mode` / `scleroderma-mode` / `myositis-mode`) driving themed nav colors | `src/components/Navbar/Navbar.jsx` (~L127); styles in `Navbar.scss` (~L362–600) |
 | **Scleroderma** | Slim **partner bar** above the navbar linking to srfcure.org; **"Science Simplified" text wordmark** replaces the image logo; **Clinical Trials nav item hidden** (desktop + mobile) | `src/components/Navbar/Navbar.jsx` (~L96–151); styles in `Navbar.scss` (partner-bar / navbrand--text) |
-| **HS** | **"Science Simplified" wordmark** (subtitle "Hidradenitis Suppurativa") replaces the image logo in navbar + footer; a **solo top bar** (`partner-bar--solo`, purple, no link) reads "Science Simplified". Now independent of the HS Foundation. | `src/components/Navbar/Navbar.jsx`, `src/components/Footer/Footer.jsx`; styles in `Navbar.scss` (`partner-bar--solo`, `hs-mode .navbrand-title`); `footerTextColor` added to HS theme in `sites.js` |
+| **HS** | Purple **partnership top bar** (`partner-bar--hs`) reads "Science Simplified in partnership with the HS Foundation" + link to hs-foundation.org; original **image logo** in navbar + footer (wordmark removed). | `src/components/Navbar/Navbar.jsx`, `src/components/Footer/Footer.jsx`; styles in `Navbar.scss` (`partner-bar--hs`) |
+| **Any tenant with `articlesExternalUrl`** (currently HS) | **Articles published on a partner site.** Navbar "Articles" item links out (new tab) for non-admins — internal `/articles` for admins; footer "Articles" link external for everyone; home hero search + Recent Articles and the `/articles` listing are replaced for patients by an `ExternalArticlesNotice` card/button; admins keep all surfaces plus a compact outbound button. DB + RSS untouched. | `src/lib/sites.js` (`articlesExternalUrl`, `articlesExternalPartner`); `Navbar.jsx` (`articlesExternal`); `Footer.jsx`; `src/app/page.jsx`; `src/app/(public)/articles/page.jsx`; `src/components/ExternalArticlesNotice/` |
 | **Myositis** | "Clinical Trials" nav item is a **dropdown of external links** (Clinical Drug Trials + Non Drug Studies on myositis.org) instead of the internal `/clinical-trials` page — desktop dropdown + flattened in mobile. | `src/components/Navbar/Navbar.jsx` (`isMyositis`, navItems `dropdown`) |
 | **Scleroderma** | Footer uses the **"Science Simplified" wordmark** instead of the image logo | `src/components/Footer/Footer.jsx` (~L9); `Footer.scss` (`&__wordmark`) |
 
@@ -86,6 +87,7 @@ treat them as hints.
 | RUNX1, Scleroderma | Dark hero background variant (`dark-bg` class) | ~L75 |
 | Scleroderma | Bright accent color on dark hero (`theme.darkBgAccent`, SRF yellow) | ~L62 |
 | HS | Handles `?hsf-id=` deep-link query param → redirects to mapped article | ~L39–44 (`src/lib/hsfRedirects.js`) |
+| Any tenant with `articlesExternalUrl` (currently HS) | Patients: hero search replaced by a "Read our research summaries →" button and the Recent Articles section replaced by the `ExternalArticlesNotice` card. Admins: search + Recent Articles + a compact outbound button. | `showArticleSurfaces` (~L36) |
 
 ### Banners
 
@@ -101,7 +103,8 @@ treat them as hints.
 |---|---|---|
 | HS | Article search page + list get `hs-mode` styling | `src/app/(public)/articles/page.jsx` (~L27, L111); `src/components/ArticlesListPaginated/ArticlesListPaginated.jsx` (~L27) |
 | HS | Article byline label reads **"Summary Prepared or Reviewed By:"** (others: "Summary Prepared By:") | `src/app/(public)/articles/[id]/page.jsx` (~L272) — note: this byline block is currently `hidden` |
-| **HS** | On article **cards**, a certifier whose name contains "Foundation" is visually replaced with the **paper's first author** (`authors[0]`), dropping the foundation's degree/affiliation/photo. The first author (no photo) gets a deterministic pastel **default avatar**. Render-time only; DB unchanged. Match is `/foundation/i` — adjust `FOUNDATION_RE` if HSF articles are credited under a person's name. | `src/lib/articleAuthor.js` (`resolveArticleCredit`); `src/lib/defaultAvatar.js`; 20 SVGs in `public/assets/default-avatars/` (regenerate via `scripts/generate-default-avatars.js`); applied in `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
+| (none currently) | `resolveArticleCredit` in `articleAuthor.js` is a **passthrough** — the stored certifier displays as-is. (The June-2026 HS first-author swap was reverted when the HSF partnership was reinstated; the hook + pastel default avatars in `public/assets/default-avatars/` remain available.) | `src/lib/articleAuthor.js`; `src/lib/defaultAvatar.js`; call sites `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
+| **Any tenant with `articlesExternalUrl`** (currently HS) | Article **detail pages get `robots: noindex,follow`** so the partner site's copies rank; pages stay accessible (RSS guid links, `?hsf-id=` redirects, admin review). | `src/app/(public)/articles/[id]/layout.js` |
 
 ### Auth pages
 
@@ -129,7 +132,7 @@ treat them as hints.
 |---|---|---|
 | **Scleroderma** | **Team** section shows only the Science Simplified team (Kyle). `TeamSection.jsx` filters out SRF reps (title references SRF) and placeholder rows **at render time** — the live site uses a saved CMS config that still lists Hannah Young + a placeholder, and we deliberately don't mutate that DB. (`sites.js` also hides the placeholder slots in the defaults fallback.) | `src/components/about/sections/TeamSection.jsx`; `src/lib/sites.js` |
 | **Scleroderma** | The SRF relationship is shown via the top **partner bar** (always) and, where the About page uses sites.js defaults, the **"Partnership" narrative section**. No individual SRF people are listed. | `src/components/Navbar/Navbar.jsx`; `src/lib/about-config.js` (~L60); `PartnershipSection.jsx` |
-| **HS** | **Team** section drops HSF-affiliated members (title matches `/foundation/i`, e.g. the HSF CEO) but keeps the founder (Kyle) and independent advisors (e.g. Leandra Barnes). The **Scientific Contributors** (HSF experts) and **Community Supporters** sections are dropped entirely for HS in the about-page renderer. Render-time; DB unchanged. | `src/components/about/sections/TeamSection.jsx`; `src/app/(public)/about/page.jsx` (`hiddenTypes`) |
+| **HS** | Full About restored with the HSF partnership (2026-07): Team shows everyone incl. the HSF CEO; **Scientific Contributors** and **Community Supporters** (HSF logo + link, via `about_supporter1*`) render again. The former render-time filters were removed. | `src/components/about/sections/TeamSection.jsx`; `src/app/(public)/about/page.jsx` |
 | (none currently) | A generic **"Partners" people section** exists (type `partners`, `about_partnerN*` fields) for tenants that want to list partner-org people. Unused at present. | `src/components/about/sections/PartnersSection.jsx`; builder in `src/lib/about-config.js` (~L120) |
 
 > Note: the Scleroderma About page renders a **saved CMS config** (`source: db`),
@@ -190,6 +193,14 @@ possible, **prefer adding a config field over a new `shortName` conditional.**
   get-involved/supporters descriptions, team members, supporters).
 - **`about_partnership*`** — title/body/CTA for the About partnership section
   (currently only Scleroderma). `about_supporterNHidden` hides a supporter row.
+- **`hideClinicalTrials`** — boolean; removes the Clinical Trials nav item and
+  redirects `/clinical-trials` home (EB, HS, Scleroderma).
+- **`articlesExternalUrl` + `articlesExternalPartner`** — articles are
+  published on a partner site (currently HS → hs-foundation.org/research-summaries,
+  partner "HS Foundation"). Patients see pointers instead of listings/search
+  (home, `/articles`, navbar, footer); admins keep the internal surfaces;
+  article detail pages get `noindex`. DB + `/rss` unaffected — HSF's CMS
+  imports from the feed.
 - **`domain`** — used for magic links, RSS, password reset, embed `tenant_url`.
 
 ---
