@@ -151,7 +151,7 @@ const ClinicalTrialsPage = () => {
             </p>
             {tab === "recruiting" && unverifiedTrials.length > 0 && (
               <p className="clinical-trials-page__disclaimer">
-                ⚠️ Trials without a verification badge have not yet been verified by a researcher on the original study team.
+                ⚠️ Trials without a verification badge have not yet been reviewed and verified by an editor.
               </p>
             )}
           </div>
@@ -247,7 +247,7 @@ const ClinicalTrialsPage = () => {
                   <span className="clinical-trials-page__section-count">({verifiedTrials.length})</span>
                 </h2>
                 <p className="clinical-trials-page__section-subtitle">
-                  Reviewed and verified by a researcher on the original study team.
+                  Reviewed and verified by a subject-matter editor.
                 </p>
                 <TrialsListPaginated trials={verifiedTrials} trialsPerPage={6} />
               </div>
@@ -258,7 +258,7 @@ const ClinicalTrialsPage = () => {
                     <span className="clinical-trials-page__section-count">({unverifiedTrials.length})</span>
                   </h2>
                   <p className="clinical-trials-page__section-subtitle">
-                    Not yet verified by a study-team researcher.
+                    Not yet reviewed and verified by an editor.
                   </p>
                   <TrialsListPaginated trials={unverifiedTrials} trialsPerPage={6} />
                 </div>

@@ -87,7 +87,6 @@ export default function TrialDetailPage() {
   const maxAge = protocol?.eligibilityModule?.maximumAge;
 
   const isVerified = !!trial.verified_by;
-  const verifier = trial.verified_by || {};
   const isCompleted = trial.archive_reason === "completed";
   const hasFindings = !!trial.findings;
 
@@ -132,18 +131,19 @@ export default function TrialDetailPage() {
           )}
 
           {/* ---------- VERIFICATION BANNER ---------- */}
+          {/* Patient-facing: generic "Editor Verified" trust badge only — the
+              verifier's identity is tracked internally (verified_by) and shown
+              on the admin side, but never exposed publicly. */}
           {isVerified && (
             <div className="trial-detail__verified-banner">
-              <BadgeCheck size={24} />
+              <BadgeCheck size={26} />
               <div>
-                <strong>Verified by {verifier.name}</strong>
-                {verifier.degree ? `, ${verifier.degree}` : ""}
-                {verifier.university ? ` (${verifier.university})` : ""}
-                {trial.verified_at && (
-                  <span className="trial-detail__verified-date">
-                    {" "}— reviewed {formatVerifiedDate(trial.verified_at)}
-                  </span>
-                )}
+                <strong>Editor Verified</strong>
+                <span className="trial-detail__verified-date">
+                  {trial.verified_at
+                    ? ` — reviewed by a subject-matter editor on ${formatVerifiedDate(trial.verified_at)}`
+                    : " — reviewed by a subject-matter editor"}
+                </span>
               </div>
             </div>
           )}
@@ -296,14 +296,13 @@ export default function TrialDetailPage() {
           <div className="trial-detail__disclaimer">
             {isVerified ? (
               <p>
-                <BadgeCheck size={14} /> This summary was reviewed and verified by{" "}
-                <strong>{verifier.name}</strong>
-                {verifier.degree ? `, ${verifier.degree}` : ""}
-                {trial.verified_at ? `, on ${formatVerifiedDate(trial.verified_at)}` : ""}.
+                <BadgeCheck size={14} /> This summary was reviewed and verified by a
+                subject-matter editor
+                {trial.verified_at ? ` on ${formatVerifiedDate(trial.verified_at)}` : ""}.
               </p>
             ) : (
               <p>
-                ⚠️ This summary has not yet been verified by a researcher on the original study team.
+                ⚠️ This summary has not yet been reviewed and verified by an editor.
               </p>
             )}
           </div>

@@ -41,7 +41,7 @@ alias of `verified_at`.
 
 ## End-to-end flow
 
-1. **Admin assigns** a trial to a reviewer via **Admin Tools → Assign for Review** (`/admin/researchers`). The picker shows only **actively-recruiting, not-yet-verified** trials (and not-yet-certified articles). Trial → `editing`; a magic link is emailed.
+1. **Admin assigns** a trial to a reviewer via **Admin Tools → Assign for Review** (`/admin/researchers`). The picker shows only **actively-recruiting, not-yet-verified** trials (and not-yet-certified articles). Trial → `editing`; a magic link is generated for the admin to **share manually** (experts are never auto-emailed).
 2. **Reviewer** clicks the link → **Editor Tools → Expert Dashboard** (`/researcher/dashboard`) → opens the trial (`/researcher/trials/[nctId]`, `TrialEditor mode="researcher"`).
 3. **Researcher edits & saves** (PATCH, allowed for assigned researchers via `requireAdminOrAssignedResearcher`). Stays `editing`.
 4. **Researcher clicks "Submit for Review"** → `review_submitted`.
@@ -49,22 +49,29 @@ alias of `verified_at`.
 6. **Admin verifies** (picks a reviewer profile) → `published`, `verified_by` snapshot stored.
 7. **Public** trial page + cards show **"Editor Verified"** (reviewer name is NOT exposed publicly; it's retained internally for auditing).
 
-## Public-facing reviewer attribution
+## Reviewer attribution — internal only
 
-Public pages show **"Verified by {Name}, {Degree}"** (and affiliation when set) —
-the reviewer's name and credentials are a deliberate trust signal.
+Public pages (trial cards, detail banner, disclaimer, list-section subtitles) show a
+**generic "Editor Verified"** trust badge — lucide `BadgeCheck` seal + the words
+"Editor Verified", optionally with the review date. The reviewer's name, degree, and
+affiliation are **never exposed publicly**. They live in the `verified_by` snapshot and
+surface only on the **admin side**: the `/admin/clinical-trials` list shows
+"Reviewed by {Name}, {Degree}", and the `TrialEditor` verify panel shows the full
+name / degree / affiliation + verification date.
 
 When an admin verifies a trial they pick a researcher profile to pre-fill the
-details, then **can edit the displayed name / degree / affiliation** before
+details, then **can edit the stored name / degree / affiliation** before
 confirming. They can also edit those fields later via "Edit name / degree" on an
 already-verified trial — this merges into the existing `verified_by` snapshot and
 preserves the original verification date. (`POST …/verify` accepts
 `{ profileId?, name?, degree?, university?, title? }`; sending only the override
-fields edits an existing verification.)
+fields edits an existing verification.) These details stay internal / audit-only.
 
-> Note: this reverses PR #31's "Editor Verified" (name-hidden) treatment, per
-> product decision to keep named attribution. If a tenant ever wants the name
-> hidden, gate the label on a tenant flag rather than hard-coding it.
+> History: PR #31 introduced a name-hidden "Editor Verified" badge → a later decision
+> briefly switched to named public "Verified by {Name}, {Degree}" attribution → the
+> **current** decision reverts to the generic **"Editor Verified"** badge publicly while
+> retaining the verifier identity internally + on the admin side. If a tenant ever wants
+> named public attribution, gate the label on a tenant flag rather than hard-coding it.
 
 ## Schema
 
