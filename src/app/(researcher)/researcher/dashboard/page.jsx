@@ -12,7 +12,7 @@ function ResearcherDashboard() {
   const [trials, setTrials] = useState([]);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("trials");
+  const [activeTab, setActiveTab] = useState("articles");
 
   useEffect(() => {
     (async () => {
@@ -42,26 +42,26 @@ function ResearcherDashboard() {
         <div className="researcher-dashboard__container">
           <header>
             <h1>Expert Dashboard</h1>
-            <p>Clinical trials and articles assigned to you for review, editing, and verification.</p>
+            <p>Articles and clinical trials assigned to you for review, editing, and verification.</p>
           </header>
 
           {/* Stats */}
           <div className="researcher-dashboard__stats">
             <div className="researcher-dashboard__stat">
-              <div className="researcher-dashboard__stat-num">{trials.length}</div>
-              <div className="researcher-dashboard__stat-label">Trials assigned</div>
-              {pendingTrials > 0 && (
-                <div className="researcher-dashboard__stat-pending">
-                  <AlertCircle size={12} /> {pendingTrials} need review
-                </div>
-              )}
-            </div>
-            <div className="researcher-dashboard__stat">
               <div className="researcher-dashboard__stat-num">{articles.length}</div>
               <div className="researcher-dashboard__stat-label">Articles assigned</div>
               {pendingArticles > 0 && (
                 <div className="researcher-dashboard__stat-pending">
-                  <AlertCircle size={12} /> {pendingArticles} need review
+                  <AlertCircle size={12} /> {pendingArticles} need your review
+                </div>
+              )}
+            </div>
+            <div className="researcher-dashboard__stat">
+              <div className="researcher-dashboard__stat-num">{trials.length}</div>
+              <div className="researcher-dashboard__stat-label">Trials assigned</div>
+              {pendingTrials > 0 && (
+                <div className="researcher-dashboard__stat-pending">
+                  <AlertCircle size={12} /> {pendingTrials} need your review
                 </div>
               )}
             </div>
@@ -71,22 +71,22 @@ function ResearcherDashboard() {
           <div className="researcher-dashboard__tabs">
             <button
               type="button"
-              className={`researcher-dashboard__tab ${activeTab === "trials" ? "researcher-dashboard__tab--active" : ""}`}
-              onClick={() => setActiveTab("trials")}
-            >
-              <Microscope size={16} /> Clinical Trials
-              {pendingTrials > 0 && (
-                <span className="researcher-dashboard__tab-badge">{pendingTrials}</span>
-              )}
-            </button>
-            <button
-              type="button"
               className={`researcher-dashboard__tab ${activeTab === "articles" ? "researcher-dashboard__tab--active" : ""}`}
               onClick={() => setActiveTab("articles")}
             >
               <FileText size={16} /> Articles
               {pendingArticles > 0 && (
                 <span className="researcher-dashboard__tab-badge">{pendingArticles}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              className={`researcher-dashboard__tab ${activeTab === "trials" ? "researcher-dashboard__tab--active" : ""}`}
+              onClick={() => setActiveTab("trials")}
+            >
+              <Microscope size={16} /> Clinical Trials
+              {pendingTrials > 0 && (
+                <span className="researcher-dashboard__tab-badge">{pendingTrials}</span>
               )}
             </button>
           </div>
@@ -139,7 +139,7 @@ function ResearcherDashboard() {
                             )}
                             {!isVerified && !isCompleted && !isSubmitted && (
                               <span className="researcher-dashboard__badge researcher-dashboard__badge--pending">
-                                Needs review
+                                Needs your review
                               </span>
                             )}
                           </div>
@@ -184,11 +184,11 @@ function ResearcherDashboard() {
                           </span>
                         ) : a.is_published ? (
                           <span className="researcher-dashboard__badge researcher-dashboard__badge--pending">
-                            Awaiting cert
+                            Awaiting certification
                           </span>
                         ) : (
                           <span className="researcher-dashboard__badge researcher-dashboard__badge--pending">
-                            Pending review
+                            Needs your review
                           </span>
                         )}
                       </div>
