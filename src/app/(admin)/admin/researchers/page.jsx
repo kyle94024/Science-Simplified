@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { withAuth } from "@/components/withAuth/withAuth";
-import { UserPlus, Mail, X, Loader2, Search, BadgeCheck, FileText, Microscope } from "lucide-react";
+import { UserPlus, X, Loader2, Search, BadgeCheck, FileText, Microscope } from "lucide-react";
 import "./Researchers.scss";
 
 function ResearchersPage() {
@@ -221,53 +221,82 @@ function ResearchersPage() {
           {/* INVITE FORM */}
           <section className="researchers-page__section">
             <h2>
-              <UserPlus size={20} /> Invite an expert
+              <UserPlus size={20} /> Assign for review
             </h2>
             <form onSubmit={handleInvite} className="researchers-page__form">
-              {existingPeople.length > 0 && (
-                <div className="researchers-page__existing">
-                  <label>Assign to someone already in the system</label>
-                  <select
-                    className="researchers-page__existing-select"
-                    value=""
-                    onChange={(e) => pickExistingPerson(e.target.value)}
-                  >
-                    <option value="">Select an existing editor or expert…</option>
-                    {existingPeople.map((p) => (
-                      <option key={p.email} value={p.email}>
-                        {p.name} ({p.email}) — {p.role}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="researchers-page__picker-hint">
-                    …or enter a new email below to invite someone.
-                  </p>
-                </div>
-              )}
-              <div className="researchers-page__row">
-                <input
-                  type="email"
-                  placeholder="expert@institution.edu"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="First name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
+              <div className="researchers-page__grid">
+                {/* LEFT — WHO reviews */}
+                <div className="researchers-page__col">
+                  <h3 className="researchers-page__col-title">1. Who reviews</h3>
 
-              {/* TABS: Trials / Articles */}
-              <div className="researchers-page__tabs">
+                  {existingPeople.length > 0 && (
+                    <div className="researchers-page__people">
+                      <label>Pick someone already in the system</label>
+                      <div className="researchers-page__people-list">
+                        {existingPeople.map((p) => {
+                          const selected =
+                            email.trim().toLowerCase() === p.email.toLowerCase();
+                          return (
+                            <button
+                              type="button"
+                              key={p.email}
+                              className={`researchers-page__person ${
+                                selected ? "researchers-page__person--selected" : ""
+                              }`}
+                              onClick={() => pickExistingPerson(p.email)}
+                            >
+                              <span className="researchers-page__person-main">
+                                <span className="researchers-page__person-name">{p.name}</span>
+                                <span className="researchers-page__person-email">{p.email}</span>
+                              </span>
+                              <span
+                                className={`researchers-page__role researchers-page__role--${p.role}`}
+                              >
+                                {p.role}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="researchers-page__new-person">
+                    <label>
+                      {existingPeople.length > 0
+                        ? "…or invite someone new"
+                        : "Invite someone"}
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="expert@institution.edu"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <div className="researchers-page__name-row">
+                      <input
+                        type="text"
+                        placeholder="First name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Last name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT — WHAT to assign */}
+                <div className="researchers-page__col">
+                  <h3 className="researchers-page__col-title">2. What to assign</h3>
+
+                  {/* TABS: Trials / Articles */}
+                  <div className="researchers-page__tabs">
                 <button
                   type="button"
                   className={`researchers-page__tab ${activeTab === "trials" ? "researchers-page__tab--active" : ""}`}
@@ -381,15 +410,17 @@ function ResearchersPage() {
                   )}
                 </div>
               )}
+                </div>
+              </div>
 
               <button type="submit" className="researchers-page__submit" disabled={submitting}>
                 {submitting ? (
                   <>
-                    <Loader2 size={16} className="animate-spin" /> Inviting…
+                    <Loader2 size={16} className="animate-spin" /> Assigning…
                   </>
                 ) : (
                   <>
-                    <Mail size={16} /> Invite expert
+                    <UserPlus size={16} /> Assign for review
                   </>
                 )}
               </button>
