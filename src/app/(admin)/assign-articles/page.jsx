@@ -12,7 +12,8 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
-import { Loader2, Edit, Users, FileText, CheckCircle, Shield } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Edit, Users, FileText, CheckCircle, Shield, Share2, Pencil } from "lucide-react";
 import PageHeader from "@/components/admin/PageHeader";
 import SearchInput from "@/components/admin/SearchInput";
 import EmptyState from "@/components/admin/EmptyState";
@@ -214,6 +215,16 @@ const AssignArticles = () => {
                 title="Assign Articles"
                 subtitle="Assign pending articles to editors for review"
                 backHref="/"
+                actions={
+                    <Link
+                        href="/admin/assignments-map"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-[1.3rem] font-semibold text-gray-700 hover:border-[#4cb19f] hover:text-[#4cb19f] transition-colors"
+                        title="Floating-bubble view of current assignments"
+                    >
+                        <Share2 size={15} />
+                        Assignment Map
+                    </Link>
+                }
             />
 
             {/* Selection Summary */}
@@ -423,13 +434,22 @@ function EditorItem({ editor, isSelected, onSelect }) {
     return (
         <div
             onClick={() => onSelect(editor.id)}
-            className={`p-4 rounded-lg border cursor-pointer transition-all ${
+            className={`group relative p-4 rounded-lg border cursor-pointer transition-all ${
                 isSelected
                     ? "border-[#4cb19f] bg-[rgba(76,177,159,0.05)]"
                     : "border-gray-200 hover:border-gray-300"
             }`}
         >
-            <div className="flex items-center gap-3">
+            {/* Hover → edit this person's account (admin account editor) */}
+            <Link
+                href={`/admin/accounts?focus=${editor.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-600 text-white border-2 border-white shadow-md opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all hover:bg-green-700"
+                title={`Edit ${editor.name || editor.email}'s account`}
+            >
+                <Pencil size={13} />
+            </Link>
+            <div className="flex items-center gap-3 pr-8">
                 <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => onSelect(editor.id)}

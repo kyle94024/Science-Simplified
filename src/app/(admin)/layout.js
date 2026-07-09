@@ -9,6 +9,7 @@ import {
     Users,
     Star,
     UserPlus,
+    UserCog,
     Link2,
     Beaker,
     RefreshCw,
@@ -35,6 +36,7 @@ const navigationGroups = [
         label: "Management",
         items: [
             { href: "/create-editor", label: "Create Editor", icon: UserPlus },
+            { href: "/admin/accounts", label: "Manage Accounts", icon: UserCog },
             { href: "/magic-links", label: "Magic Links", icon: Link2 },
         ],
     },

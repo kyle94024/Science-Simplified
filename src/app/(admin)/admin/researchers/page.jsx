@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { withAuth } from "@/components/withAuth/withAuth";
-import { UserPlus, X, Loader2, Search, BadgeCheck, FileText, Microscope } from "lucide-react";
+import { UserPlus, X, Loader2, Search, BadgeCheck, FileText, Microscope, Pencil } from "lucide-react";
 import "./Researchers.scss";
 
 function ResearchersPage() {
@@ -182,6 +182,7 @@ function ResearchersPage() {
     for (const e of editors) {
       if (!e.email) continue;
       byEmail.set(e.email.toLowerCase(), {
+        id: e.id,
         email: e.email,
         name: e.name || e.email,
         role: e.is_admin ? "admin" : "editor",
@@ -190,6 +191,7 @@ function ResearchersPage() {
     for (const r of researchers) {
       if (!r.email || byEmail.has(r.email.toLowerCase())) continue;
       byEmail.set(r.email.toLowerCase(), {
+        id: r.id,
         email: r.email,
         name: r.name || `${r.first_name || ""} ${r.last_name || ""}`.trim() || r.email,
         role: "expert",
@@ -237,24 +239,34 @@ function ResearchersPage() {
                           const selected =
                             email.trim().toLowerCase() === p.email.toLowerCase();
                           return (
-                            <button
-                              type="button"
-                              key={p.email}
-                              className={`researchers-page__person ${
-                                selected ? "researchers-page__person--selected" : ""
-                              }`}
-                              onClick={() => pickExistingPerson(p.email)}
-                            >
-                              <span className="researchers-page__person-main">
-                                <span className="researchers-page__person-name">{p.name}</span>
-                                <span className="researchers-page__person-email">{p.email}</span>
-                              </span>
-                              <span
-                                className={`researchers-page__role researchers-page__role--${p.role}`}
+                            <div key={p.email} className="researchers-page__person-wrap">
+                              <button
+                                type="button"
+                                className={`researchers-page__person ${
+                                  selected ? "researchers-page__person--selected" : ""
+                                }`}
+                                onClick={() => pickExistingPerson(p.email)}
                               >
-                                {p.role}
-                              </span>
-                            </button>
+                                <span className="researchers-page__person-main">
+                                  <span className="researchers-page__person-name">{p.name}</span>
+                                  <span className="researchers-page__person-email">{p.email}</span>
+                                </span>
+                                <span
+                                  className={`researchers-page__role researchers-page__role--${p.role}`}
+                                >
+                                  {p.role}
+                                </span>
+                              </button>
+                              {p.id != null && (
+                                <a
+                                  href={`/admin/accounts?focus=${p.id}`}
+                                  className="researchers-page__person-edit"
+                                  title={`Edit ${p.name}'s account`}
+                                >
+                                  <Pencil size={13} />
+                                </a>
+                              )}
+                            </div>
                           );
                         })}
                       </div>

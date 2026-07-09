@@ -309,6 +309,11 @@ export default function Navbar() {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href="/admin/accounts">
+                                        Manage Accounts
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="/magic-links">Magic Links</Link>
                                 </li>
                                 <li>

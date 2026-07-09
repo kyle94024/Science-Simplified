@@ -212,6 +212,15 @@
     background: #f9fafb;
   }
 
+  &__person-wrap {
+    position: relative;
+
+    &:hover .researchers-page__person-edit {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
   &__person {
     display: flex;
     align-items: center;
@@ -234,6 +243,30 @@
       border-color: var(--color-primary, #4cb19f);
       box-shadow: 0 0 0 1px var(--color-primary, #4cb19f);
       background: #f0fdfa;
+    }
+  }
+
+  /* Green hover edit button → admin account editor */
+  &__person-edit {
+    position: absolute;
+    top: 50%;
+    right: 0.8rem;
+    transform: translateY(-50%) scale(0.75);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.45);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      background: #15803d;
     }
   }
 

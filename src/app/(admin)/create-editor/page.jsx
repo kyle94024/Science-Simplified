@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, Loader2, UserPlus, CheckCircle, Users } from "lucide-react";
+import Link from "next/link";
+import { Eye, EyeOff, Loader2, UserPlus, CheckCircle, Users, Pencil } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
@@ -303,14 +304,22 @@ export default withAuth(function CreateEditorPage() {
                                 {editors.map((editor) => (
                                     <div
                                         key={editor.id}
-                                        className="flex items-center gap-4 p-4 rounded-lg bg-gray-50"
+                                        className="group relative flex items-center gap-4 p-4 rounded-lg bg-gray-50"
                                     >
+                                        {/* Hover → edit this account (admin account editor) */}
+                                        <Link
+                                            href={`/admin/accounts?focus=${editor.id}`}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-600 text-white border-2 border-white shadow-md opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all hover:bg-green-700"
+                                            title={`Edit ${editor.name || editor.email}'s account`}
+                                        >
+                                            <Pencil size={13} />
+                                        </Link>
                                         <div className="w-10 h-10 bg-[#4cb19f] rounded-full flex items-center justify-center flex-shrink-0">
                                             <span className="text-white font-medium">
                                                 {editor.name?.charAt(0).toUpperCase() || "E"}
                                             </span>
                                         </div>
-                                        <div className="flex-1 min-w-0">
+                                        <div className="flex-1 min-w-0 pr-8">
                                             <p className="text-[1.4rem] font-medium text-gray-900 truncate">
                                                 {editor.name}
                                             </p>
