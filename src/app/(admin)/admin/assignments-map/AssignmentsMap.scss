@@ -28,12 +28,47 @@
         border-radius: 0.6rem;
     }
 
+    /* Sticky toolbar keeps search + legend visible while scrolling the
+       (tall) canvas. */
+    &__toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem 1.6rem;
+        padding: 1rem 0;
+        margin-bottom: 0.4rem;
+        background: linear-gradient(#f9fafb 78%, rgba(249, 250, 251, 0));
+    }
+
+    &__search {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        min-width: 260px;
+
+        .search-input-wrapper {
+            max-width: 420px;
+            flex: 1;
+        }
+    }
+
+    &__search-count {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--color-primary, #4cb19f);
+        white-space: nowrap;
+    }
+
     &__legend {
         display: flex;
         flex-wrap: wrap;
-        gap: 1.6rem;
-        margin-bottom: 1.2rem;
-        font-size: 1.25rem;
+        gap: 1.4rem;
+        font-size: 1.2rem;
         color: #6b7280;
 
         span {
@@ -73,11 +108,10 @@
     &__canvas {
         position: relative;
         overflow: hidden;
-        height: calc(100vh - 260px);
-        min-height: 540px;
+        /* height is set inline (grows with the number of people) */
         background:
-            radial-gradient(circle at 20% 20%, rgba(76, 177, 159, 0.06), transparent 45%),
-            radial-gradient(circle at 80% 70%, rgba(76, 177, 159, 0.05), transparent 40%),
+            radial-gradient(circle at 20% 8%, rgba(76, 177, 159, 0.06), transparent 42%),
+            radial-gradient(circle at 82% 40%, rgba(76, 177, 159, 0.05), transparent 38%),
             #fbfcfd;
         border: 1px solid #e5e7eb;
         border-radius: 1.2rem;
@@ -103,13 +137,13 @@
         pointer-events: none;
 
         line {
-            stroke: color-mix(in srgb, var(--color-primary, #4cb19f) 30%, transparent);
-            stroke-width: 2;
+            stroke: color-mix(in srgb, var(--color-primary, #4cb19f) 28%, transparent);
+            stroke-width: 1.5;
             stroke-linecap: round;
         }
     }
 
-    /* ---------- person bubble ---------- */
+    /* ---------- person bubble (small) ---------- */
     &__person {
         position: absolute;
         top: 0;
@@ -125,49 +159,67 @@
             var(--color-primary-dark, #2c7a6c)
         );
         box-shadow:
-            0 6px 18px color-mix(in srgb, var(--color-primary, #4cb19f) 35%, transparent),
-            inset 0 2px 4px rgba(255, 255, 255, 0.35);
+            0 4px 12px color-mix(in srgb, var(--color-primary, #4cb19f) 32%, transparent),
+            inset 0 2px 3px rgba(255, 255, 255, 0.35);
         cursor: grab;
+        transition: opacity 0.2s ease;
 
         &:active {
             cursor: grabbing;
         }
 
+        /* Raise above neighbors on hover so the name/edit aren't clipped */
+        &:hover {
+            z-index: 10;
+        }
+
         img {
-            width: calc(100% - 8px);
-            height: calc(100% - 8px);
+            width: calc(100% - 6px);
+            height: calc(100% - 6px);
             border-radius: 50%;
             object-fit: cover;
             pointer-events: none;
         }
+
+        &--dim {
+            opacity: 0.22;
+        }
     }
 
     &__initials {
-        font-size: 2.4rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #fff;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.02em;
     }
 
+    /* Name shows on hover only — 90 always-on labels was the clutter. */
     &__person-name {
         position: absolute;
-        top: calc(100% + 6px);
+        top: calc(100% + 5px);
         left: 50%;
         transform: translateX(-50%);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.1rem;
+        gap: 0.05rem;
+        padding: 0.3rem 0.7rem;
         font-size: 1.2rem;
         font-weight: 700;
+        line-height: 1.2;
         color: #111827;
         white-space: nowrap;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.6rem;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        opacity: 0;
         pointer-events: none;
-        text-shadow: 0 1px 0 #fff;
+        transition: opacity 0.13s ease;
 
         em {
             font-style: normal;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -175,17 +227,21 @@
         }
     }
 
+    &__person:hover &__person-name {
+        opacity: 1;
+    }
+
     /* Green hover edit button (account editor) */
     &__edit {
         position: absolute;
-        top: 50%;
-        right: -10px;
-        transform: translateY(-50%) scale(0.6);
+        top: -4px;
+        right: -4px;
+        transform: scale(0.6);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         background: #16a34a;
         color: #fff;
@@ -201,7 +257,7 @@
 
     &__person:hover &__edit {
         opacity: 1;
-        transform: translateY(-50%) scale(1);
+        transform: scale(1);
     }
 
     /* ---------- article bubble ---------- */
@@ -214,14 +270,15 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.3rem;
-        padding: 0.9rem;
+        gap: 0.25rem;
+        padding: 0.7rem;
         border-radius: 50%;
         background: #fff;
         border: 2px solid #f59e0b; /* pending by default */
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
         cursor: pointer;
         text-align: center;
+        transition: opacity 0.2s ease, box-shadow 0.15s ease;
 
         &--published {
             border-color: #22c55e;
@@ -237,10 +294,16 @@
             border-color: #ef4444;
             animation: assignments-map-pulse 1.2s ease-in-out infinite;
             cursor: default;
+            z-index: 6;
+        }
+
+        &--dim {
+            opacity: 0.2;
         }
 
         &:hover:not(&--confirming) {
-            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.14);
+            z-index: 6;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
         }
     }
 
@@ -255,17 +318,17 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         max-width: 100%;
-        font-size: 1.02rem;
+        font-size: 0.98rem;
         font-weight: 600;
-        line-height: 1.25;
+        line-height: 1.22;
         color: #374151;
         pointer-events: none;
     }
 
     &__certified {
         position: absolute;
-        bottom: 4px;
-        right: 12px;
+        bottom: 3px;
+        right: 10px;
         color: #16a34a;
         background: #fff;
         border-radius: 50%;
@@ -274,13 +337,13 @@
     /* ✕ — step one of the two-step removal */
     &__remove {
         position: absolute;
-        top: -4px;
-        right: -4px;
+        top: -3px;
+        right: -3px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
         background: #fff;
         color: #9ca3af;
@@ -307,22 +370,22 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
 
         span {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #b91c1c;
         }
 
         div {
             display: flex;
-            gap: 0.4rem;
+            gap: 0.35rem;
         }
 
         button {
-            padding: 0.25rem 0.7rem;
-            font-size: 1.05rem;
+            padding: 0.2rem 0.6rem;
+            font-size: 1rem;
             font-weight: 700;
             border-radius: 999px;
             border: none;
