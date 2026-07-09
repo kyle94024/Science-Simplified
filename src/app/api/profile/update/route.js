@@ -13,6 +13,7 @@ export async function POST(req) {
             title,
             university,
             linkedin,
+            lablink,
             labLink,
         } = await req.json();
 
@@ -22,6 +23,12 @@ export async function POST(req) {
                 { status: 400 }
             );
         }
+
+        // The profile object round-trips the column as `lablink` (what GET
+        // returns), but older callers used `labLink`. Accept either so a save
+        // never nulls an existing lab link. (There's no lab-link form field, so
+        // this value is only ever the preserved round-tripped one.)
+        const lablinkValue = lablink ?? labLink ?? null;
 
         // Update the profile
         await query(
@@ -36,7 +43,7 @@ export async function POST(req) {
                 title,
                 university,
                 linkedin,
-                labLink,
+                lablinkValue,
                 userId,
             ]
         );
