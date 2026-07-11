@@ -124,7 +124,7 @@ treat them as hints.
 | Tenant(s) | What | Approx line |
 |---|---|---|
 | NF | Nomenclature addendum: NF2 → "NF2-related schwannomatosis", schwannomatosis umbrella term | ~L50 |
-| RUNX1 | Nomenclature addendum: disease = "RUNX1-FPD"; disambiguate disease vs. gene/protein; normalize old names (FPD/AML, FPDMM…) | ~L62 |
+| RUNX1 | **Short** nomenclature addendum (like NF's — kept brief on purpose): disease = "RUNX1-FPD" but varied naturally, disambiguate disease vs. gene/protein, normalize old names (FPD/AML, FPDMM…). Reverted 2026-07 from a long, over-prescriptive block that was skewing tone. | ~L62 |
 
 ### About page
 

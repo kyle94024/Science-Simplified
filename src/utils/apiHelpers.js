@@ -56,33 +56,10 @@ When discussing types of neurofibromatosis, use the current diagnostic terminolo
 • If the source article uses older terminology (just "NF2"), you may update it to the current nomenclature while preserving the original meaning
 ` : "";
 
-        // RUNX1-specific addendum — the disease and the gene/protein share the name "RUNX1",
-        // so it's critical to disambiguate. Per the RUNX1 Research Program (RRP), the disease
-        // is "RUNX1 familial platelet disorder (RUNX1-FPD)".
+        // RUNX1-specific addendum — kept short and light-touch (like the NF one)
+        // so it nudges nomenclature without over-steering the summary's tone.
         const runx1Addendum = tenant.shortName === "RUNX1" ? `
-IMPORTANT - RUNX1 NOMENCLATURE:
-"RUNX1" can refer to the disease, the gene, or the protein. Use the right term in the right context.
-
-DISEASE (the inherited platelet condition):
-• Always use "RUNX1 familial platelet disorder (RUNX1-FPD)" on first mention.
-• Thereafter, use the abbreviation "RUNX1-FPD".
-• If the source article uses any of these older or variant names, REPLACE them with "RUNX1-FPD":
-  – "FPD/AML"
-  – "FPD-AML"
-  – "FPDMM"
-  – "familial platelet disorder with associated myeloid malignancy"
-  – "familial platelet disorder with predisposition to acute myeloid leukemia"
-  – any other variant that refers to the same inherited condition
-
-GENE and PROTEIN (do NOT rename these):
-• "RUNX1 gene" or "the RUNX1 gene" — the gene itself.
-• "RUNX1 protein" — the transcription factor encoded by the gene.
-• "RUNX1" alone is acceptable in clearly molecular contexts (e.g., "RUNX1 binds to DNA at...", "RUNX1 expression was elevated").
-• Mutations are still written as "RUNX1 mutations" or "RUNX1 variants" — NOT "RUNX1-FPD mutations".
-
-Rule of thumb:
-• Patient / clinical sentence (symptoms, diagnosis, bleeding risk, leukemia risk, treatment) → "RUNX1-FPD".
-• Molecular / mechanistic sentence (gene expression, protein structure, signaling pathway, mutation type) → "RUNX1" (gene or protein).
+RUNX1 NOMENCLATURE: "RUNX1" names the disease, the gene, and the protein. For the inherited platelet condition, use "RUNX1 familial platelet disorder (RUNX1-FPD)" on first mention and "RUNX1-FPD" afterward — but vary naturally; don't repeat it in every sentence. Keep "RUNX1 gene" / "RUNX1 protein" / "RUNX1 mutation" for molecular contexts, and treat older names (FPD/AML, FPDMM, etc.) as RUNX1-FPD.
 ` : "";
 
         const instruction = `
