@@ -1125,7 +1125,10 @@ export const sites = {
       },
       // Images (Home)
       // homeBG: "RUNX1_homeBG.png", //home/homeBG
-      homeBG: "runx1heroimage.jpg", //home/homeBG
+      // Dark, on-brand red/black/white molecule banner (1920x700). The old
+      // "runx1heroimage.jpg" was a light rainbow molecule — its white left
+      // side made the white hero text unreadable (white-on-white).
+      homeBG: "RUNX1_homeBG_fullwidth.png", //home/homeBG
       homeBG_full: true,
       homeExploreAllBG: "RUNX1_ExploreAllBG.png", //home/homeExploreAllBG
       // Images (General)
