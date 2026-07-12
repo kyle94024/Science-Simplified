@@ -78,7 +78,7 @@ function HomeContent() {
             <section
                 className={`home__header ${
                     useFullWidthBg
-                        ? `fullwidth-bg${tenant.shortName === "RUNX1" || tenant.shortName === "Scleroderma" ? " dark-bg" : ""}`
+                        ? `fullwidth-bg${tenant.shortName === "Scleroderma" ? " dark-bg" : ""}`
                         : tenant.shortName === "HS" ||
                           tenant.shortName === "CF" ||
                           tenant.shortName === "Vitiligo" ||
