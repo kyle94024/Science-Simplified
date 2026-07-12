@@ -9,6 +9,31 @@
         align-items: flex-start;
     }
 
+    &__header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    &__view-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        white-space: nowrap;
+        transition: gap 0.15s ease, opacity 0.15s ease;
+
+        &:hover {
+            opacity: 0.82;
+            gap: 0.85rem;
+        }
+    }
+
     &__list {
         width: 100%;
         display: grid;

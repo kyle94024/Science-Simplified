@@ -1,14 +1,22 @@
 import "./ArticlesSection.scss";
+import Link from "next/link";
 import ArticleCard from "../ArticleCard/ArticleCard";
 import { ArticleCardSkeleton } from "../ArticleCardSkeleton/ArticleCardSkeleton";
-import { Unplug } from "lucide-react";
+import { Unplug, ArrowRight } from "lucide-react";
 import { resolveArticleCredit } from "@/lib/articleAuthor";
 
-const ArticlesSection = ({ articles, loading, error, sectionTitle }) => {
+const ArticlesSection = ({ articles, loading, error, sectionTitle, viewAllHref }) => {
     return (
         <section className="articles-section padding">
             <div className="boxed">
-                <h2 className="heading-tertiary">{sectionTitle}</h2>
+                <div className="articles-section__header">
+                    <h2 className="heading-tertiary">{sectionTitle}</h2>
+                    {viewAllHref && (
+                        <Link href={viewAllHref} className="articles-section__view-all">
+                            Read more <ArrowRight size={16} />
+                        </Link>
+                    )}
+                </div>
                 {loading ? (
                     <div className="articles-section__list">
                         {/* Render 3 skeletons while loading */}

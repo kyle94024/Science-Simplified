@@ -63,6 +63,7 @@ const RecentArticlesSection = () => {
       loading={loading}
       error={error}
       sectionTitle={"Recently Added Articles"}
+      viewAllHref="/articles"
     />
   );
 };
