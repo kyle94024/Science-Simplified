@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import useAuthStore from "@/store/useAuthStore";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { withResearcherAuth } from "@/components/withResearcherAuth/withResearcherAuth";
@@ -9,6 +10,7 @@ import { BadgeCheck, ChevronRight, Archive, FileText, Microscope, AlertCircle } 
 import "./ResearcherDashboard.scss";
 
 function ResearcherDashboard() {
+  const { isAdmin } = useAuthStore();
   const [trials, setTrials] = useState([]);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -161,7 +163,13 @@ function ResearcherDashboard() {
               {articles.map((a) => (
                 <li key={a.article_id} className="researcher-dashboard__item">
                   <Link
-                    href={a.is_published ? `/articles/${a.article_id}` : `/edit-article/${a.article_id}`}
+                    href={
+                      a.is_published
+                        ? `/articles/${a.article_id}`
+                        : isAdmin
+                        ? `/pending-articles/${a.article_id}`
+                        : `/assigned-articles/${a.article_id}`
+                    }
                     className="researcher-dashboard__link"
                   >
                     <div className="researcher-dashboard__item-main">

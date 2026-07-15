@@ -373,7 +373,7 @@ function AssignmentsMapPage() {
         // Ignore a tap on an article that's mid-removal-confirmation.
         const c = confirmingRef.current;
         if (c && c.articleId === a.id && c.personId === node.personId) return;
-        router.push(a.isPublished ? `/articles/${a.id}` : `/edit-article/${a.id}`);
+        router.push(a.isPublished ? `/articles/${a.id}` : `/pending-articles/${a.id}`);
     };
 
     // --- two-step removal ---
