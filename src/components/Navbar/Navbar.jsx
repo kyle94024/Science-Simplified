@@ -253,7 +253,7 @@ export default function Navbar() {
                                 <Badge count={editorToolsCount} />
                             </span>
                             <ul className="dropdown-menu">
-                                {isEditor && (
+                                {(isEditor || isAdmin) && (
                                     <li>
                                         <Link href="/assigned-articles" className="nav-dropdown-link">
                                             <span>Assigned Articles</span>
