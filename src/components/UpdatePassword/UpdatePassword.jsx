@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,9 +27,24 @@ const UpdatePassword = ({ isEditing }) => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [open, setOpen] = useState(false);
 
     const { user } = useAuthStore();
-    const router = useRouter();
+
+    const resetFields = () => {
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setError("");
+        setShowPasswords({ current: false, new: false, confirm: false });
+    };
+
+    // Reset the form whenever the dialog closes, so it never reopens with old
+    // (or half-typed) values still in the boxes.
+    const handleOpenChange = (next) => {
+        setOpen(next);
+        if (!next) resetFields();
+    };
 
     const togglePasswordVisibility = (field) => {
         setShowPasswords((prev) => ({
@@ -40,6 +54,14 @@ const UpdatePassword = ({ isEditing }) => {
     };
 
     const handleSubmit = async () => {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setError("Please fill in all fields.");
+            return;
+        }
+        if (newPassword.length < 8) {
+            setError("New password must be at least 8 characters.");
+            return;
+        }
         if (newPassword !== confirmPassword) {
             setError("New passwords do not match.");
             return;
@@ -64,8 +86,11 @@ const UpdatePassword = ({ isEditing }) => {
                 return;
             }
 
+            // Success: clear the fields and close the dialog so it's obvious the
+            // change went through (in addition to the toast).
             toast.success("Password updated successfully!");
-            router.refresh();
+            resetFields();
+            setOpen(false);
         } catch (err) {
             setError("An error occurred. Please try again.");
             toast.error("An error occurred. Please try again.");
@@ -76,7 +101,7 @@ const UpdatePassword = ({ isEditing }) => {
 
     return (
         <div className="update-password">
-            <Dialog>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
                 <DialogTrigger asChild>
                     <Button
                         disabled={!isEditing}
