@@ -1030,6 +1030,8 @@ export const sites = {
       // never removed from the DB or the feed.
       articlesExternalUrl: "https://www.hs-foundation.org/research-summaries",
       articlesExternalPartner: "HS Foundation",
+      articlesExternalDisclaimer:
+        "Articles are currently being transitioned over to HS Foundation's Research Summaries page. This is temporary and articles will be available again soon.",
 
       theme: {
         primary: "#7B2CBF",          // foundation purple

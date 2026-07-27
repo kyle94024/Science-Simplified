@@ -39,6 +39,19 @@
         max-width: 560px;
     }
 
+    /* Temporary transition notice (tenant.articlesExternalDisclaimer) */
+    &__disclaimer {
+        max-width: 560px;
+        margin-top: -0.4rem;
+        padding: 0.9rem 1.3rem;
+        font-size: 1.35rem;
+        line-height: 1.55;
+        color: #92400e;
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+        border-radius: 0.7rem;
+    }
+
     /* ---- The fancy outbound button (card + hero variants) ---- */
     &__button {
         position: relative;
@@ -164,6 +177,27 @@
         &:hover {
             background: color-mix(in srgb, var(--color-primary, #4cb19f) 15%, #fff);
             transform: translateY(-1px);
+        }
+
+        /* Staff view: tuck the outbound link into the top-right corner of the
+           surrounding section instead of stacking it above the content. */
+        &--corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 5;
+            margin-bottom: 0;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+
+            &:hover {
+                background: color-mix(in srgb, var(--color-primary, #4cb19f) 10%, #fff);
+            }
+
+            @media (max-width: 720px) {
+                position: static;
+                margin-bottom: 1.2rem;
+            }
         }
     }
 }

@@ -11,6 +11,11 @@
         padding-bottom: 8rem;
     }
 
+    /* Anchors the staff "corner" partner link to the top-right of the content */
+    &__boxed {
+        position: relative;
+    }
+
     &__loading {
         display: grid;
         grid-template-columns: repeat(3, 1fr);

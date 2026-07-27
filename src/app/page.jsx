@@ -31,9 +31,11 @@ function HomeContent() {
 
     // Articles published on a partner site (HS → HSF research summaries):
     // patients get a pointer to the partner page instead of listings/search;
-    // admins keep the internal article surfaces (plus the outbound button).
+    // staff (admins AND editors) keep the internal article surfaces, with the
+    // outbound link tucked into the corner.
     const articlesExternal = !!tenant.articlesExternalUrl;
-    const showArticleSurfaces = !articlesExternal || isAdmin;
+    const isStaff = isAdmin || role === "editor";
+    const showArticleSurfaces = !articlesExternal || isStaff;
 
     const handleSearchSubmit = (query) => {
         // Navigate to the article search page with the query
@@ -102,6 +104,10 @@ function HomeContent() {
 
                 <section className="home__hero padding">
                     <div className="boxed">
+                        {/* Staff: outbound partner link pinned to the corner */}
+                        {showArticleSurfaces && articlesExternal && (
+                            <ExternalArticlesNotice variant="corner" />
+                        )}
                         <div className="home__hero__content">
                             <div className="flex flex-col gap-1 animate-stagger-1">
                                 <h1 className="heading-primary">
@@ -123,12 +129,7 @@ function HomeContent() {
                             </p>
                             <div className="animate-stagger-3">
                                 {showArticleSurfaces ? (
-                                    <>
-                                        <SearchArticles mode="home" />
-                                        {articlesExternal && (
-                                            <ExternalArticlesNotice variant="compact" />
-                                        )}
-                                    </>
+                                    <SearchArticles mode="home" />
                                 ) : (
                                     <ExternalArticlesNotice variant="hero" />
                                 )}

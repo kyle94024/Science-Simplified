@@ -45,6 +45,7 @@
         }
 
         & > .boxed {
+            position: relative; // anchors the staff "corner" partner link
             display: flex;
             flex-direction: column;
             align-items: flex-start;

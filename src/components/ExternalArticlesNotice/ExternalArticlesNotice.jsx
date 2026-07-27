@@ -13,8 +13,10 @@ import "./ExternalArticlesNotice.scss";
  *                     patients (home + /articles).
  * variant="hero"    — standalone fancy CTA button for the home hero
  *                     (patient view, in place of the search bar).
- * variant="compact" — small inline link-button; shown above the listings for
- *                     admins so the outbound path is always one click away.
+ * variant="compact" — small inline link-button.
+ * variant="corner"  — the compact pill pinned to the top-right corner of its
+ *                     container; used for admins/editors, who still see the
+ *                     internal listings and just need the outbound path handy.
  *
  * Renders nothing if the tenant has no external articles URL.
  */
@@ -23,16 +25,20 @@ export default function ExternalArticlesNotice({ variant = "full" }) {
     if (!url) return null;
 
     const partner = tenant.articlesExternalPartner || "our partner organization";
+    const disclaimer = tenant.articlesExternalDisclaimer;
     // Label shows just the host ("hs-foundation.org") — the link keeps the full path.
     const displayHost = url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
 
-    if (variant === "compact") {
+    if (variant === "compact" || variant === "corner") {
         return (
             <a
-                className="external-articles-notice__compact"
+                className={`external-articles-notice__compact${
+                    variant === "corner" ? " external-articles-notice__compact--corner" : ""
+                }`}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
+                title={`Open the ${partner} research summaries`}
             >
                 <ExternalLink size={14} />
                 <span>
@@ -72,6 +78,11 @@ export default function ExternalArticlesNotice({ variant = "full" }) {
                         summaries of the latest research, and the {partner}{" "}
                         publishes them for the community.
                     </p>
+                    {disclaimer && (
+                        <p className="external-articles-notice__disclaimer">
+                            {disclaimer}
+                        </p>
+                    )}
                     <a
                         className="external-articles-notice__button"
                         href={url}

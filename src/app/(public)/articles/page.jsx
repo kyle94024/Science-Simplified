@@ -21,7 +21,7 @@ import {
 
 const ArticleSearchPage = () => {
     const { searchQuery } = useSearchStore();
-    const { isAdmin } = useAuthStore();
+    const { isAdmin, role } = useAuthStore();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -29,9 +29,11 @@ const ArticleSearchPage = () => {
 
     const isHS = tenant.shortName === "HS";
     // Articles published on a partner site (HS → HSF research summaries):
-    // patients get a pointer card instead of the listing; admins keep the
-    // internal listing (plus the outbound button). DB/RSS are untouched.
-    const patientExternalView = !!tenant.articlesExternalUrl && !isAdmin;
+    // patients get a pointer card instead of the listing; staff (admins AND
+    // editors) keep the internal listing, with the outbound link in the
+    // corner. DB/RSS are untouched.
+    const isStaff = isAdmin || role === "editor";
+    const patientExternalView = !!tenant.articlesExternalUrl && !isStaff;
 
     useEffect(() => {
     const fetchArticles = async () => {
@@ -145,11 +147,10 @@ const sortArticles = (articlesToSort) => {
             <>
             {/* ---------- SEARCH SECTION ---------- */}
             <div className="article-search-page__content padding">
-                <div className="boxed">
+                <div className="boxed article-search-page__boxed">
+                    {/* Staff: outbound partner link pinned to the corner */}
                     {tenant.articlesExternalUrl && (
-                        <div className="text-center mt-8">
-                            <ExternalArticlesNotice variant="compact" />
-                        </div>
+                        <ExternalArticlesNotice variant="corner" />
                     )}
                     <div
                         className={`search-bar-container ${

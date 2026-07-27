@@ -3,7 +3,11 @@ import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 
 export default function SupportersSection({ content }) {
-  const supporters = content.supporters || [];
+  // Hide placeholder supporter rows across all tenants (same rule as the Team
+  // section) — no site should show a "placeholder" logo/name.
+  const supporters = (content.supporters || []).filter(
+    (s) => !/placeholder/i.test(`${s.name || ""} ${s.logoUrl || ""}`)
+  );
 
   return (
     <section className="about-supporters">

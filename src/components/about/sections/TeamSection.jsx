@@ -1,26 +1,42 @@
 import Image from "next/image";
 import { tenant } from "@/lib/config";
 
-// The Scleroderma site's saved CMS config still lists SRF representatives and a
-// placeholder in the Team section. We don't mutate their DB — instead we hide
-// those rows at render time so the Team section shows only the Science
-// Simplified team (Kyle). Drops anyone whose title references SRF, plus any
-// "placeholder" rows.
-function hideSclerodermaNonTeam(members) {
-  return members.filter((m) => {
-    const name = (m.name || "").toLowerCase();
-    const title = (m.title || "").toLowerCase();
-    if (name.includes("placeholder") || title.includes("placeholder")) return false;
-    if (title.includes("scleroderma research foundation") || /\bsrf\b/.test(title)) return false;
-    return true;
-  });
+// Placeholder rows ("Expert Advisor Placeholder", "Placeholder Bio", the
+// expert-placeholder.png image) ship in several tenants' defaults and in the
+// Scleroderma CMS config. Hide them everywhere at render time — no tenant
+// should show a placeholder person. Data is left untouched, so filling one in
+// makes it appear again automatically.
+function isPlaceholder(m) {
+  const blob = `${m.name || ""} ${m.title || ""} ${m.bio || ""} ${m.imageUrl || ""}`;
+  return /placeholder/i.test(blob);
+}
+
+// The Scleroderma site's saved CMS config still lists SRF representatives in the
+// Team section. We don't mutate their DB — hide anyone whose title references
+// SRF so the Team section shows only the Science Simplified team.
+function isSclerodermaNonTeam(m) {
+  const title = (m.title || "").toLowerCase();
+  return title.includes("scleroderma research foundation") || /\bsrf\b/.test(title);
+}
+
+// The founder's headshot is the same file in every tenant's assets. Scleroderma's
+// saved CMS config points his Team photo at the casual "Our Story" image, so
+// force the headshot here. ("Our Story" keeps its own image — this only affects
+// the Team section.)
+const FOUNDER_NAME = "kyle wan";
+const founderTeamPhoto = `/assets/${tenant.pathName}/about/kyleheadshot.jpg`;
+
+function withFounderHeadshot(m) {
+  if ((m.name || "").trim().toLowerCase() !== FOUNDER_NAME) return m;
+  return { ...m, imageUrl: founderTeamPhoto };
 }
 
 export default function TeamSection({ content }) {
-  let members = content.members || [];
+  let members = (content.members || []).filter((m) => !isPlaceholder(m));
   if (tenant.shortName === "Scleroderma") {
-    members = hideSclerodermaNonTeam(members);
+    members = members.filter((m) => !isSclerodermaNonTeam(m));
   }
+  members = members.map(withFounderHeadshot);
   // Secondary heading under the section title. Defaults to "Core Team";
   // an explicit content.subtitle (including "") from the CMS overrides it.
   const subtitle = content.subtitle ?? "Core Team";

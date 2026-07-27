@@ -7,7 +7,18 @@ import { getAboutPageConfig } from "@/lib/about-config";
 import { tenant } from "@/lib/config";
 import { query } from "@/lib/db";
 
+// The contributors carousel is built from a live DB query. Without this the
+// page is statically prerendered at build time (the query uses `pg`, not
+// `fetch`, so Next can't tell it's dynamic) and newly-certifying experts don't
+// appear until the next deploy. Re-render at most every 5 minutes.
+export const revalidate = 300;
+
 const expertPlaceholder = `/assets/${tenant.pathName}/about/expert-placeholder.png`;
+
+// The founder is featured in "Our Team" (and "Our Story") — he shouldn't also
+// be listed among the scientific contributors, even though he certifies
+// articles. Applies to every tenant.
+const EXCLUDED_CONTRIBUTOR_NAMES = ["kyle wan"];
 
 async function fetchEditors() {
   const result = await query(`
@@ -40,7 +51,11 @@ export default async function AboutPage() {
         degree: editor.degree || "N/A",
         university: editor.university || "N/A",
       }))
-      .filter((expert) => expert.name !== "N/A" && expert.name);
+      .filter((expert) => expert.name !== "N/A" && expert.name)
+      .filter(
+        (expert) =>
+          !EXCLUDED_CONTRIBUTOR_NAMES.includes(expert.name.trim().toLowerCase())
+      );
   } catch (error) {
     console.error("Error fetching editors:", error);
   }

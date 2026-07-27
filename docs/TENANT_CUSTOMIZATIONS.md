@@ -133,6 +133,10 @@ treat them as hints.
 | **Scleroderma** | **Team** section shows only the Science Simplified team (Kyle). `TeamSection.jsx` filters out SRF reps (title references SRF) and placeholder rows **at render time** — the live site uses a saved CMS config that still lists Hannah Young + a placeholder, and we deliberately don't mutate that DB. (`sites.js` also hides the placeholder slots in the defaults fallback.) | `src/components/about/sections/TeamSection.jsx`; `src/lib/sites.js` |
 | **Scleroderma** | The SRF relationship is shown via the top **partner bar** (always) and, where the About page uses sites.js defaults, the **"Partnership" narrative section**. No individual SRF people are listed. | `src/components/Navbar/Navbar.jsx`; `src/lib/about-config.js` (~L60); `PartnershipSection.jsx` |
 | **HS** | Full About restored with the HSF partnership (2026-07): Team shows everyone incl. the HSF CEO; **Scientific Contributors** and **Community Supporters** (HSF logo + link, via `about_supporter1*`) render again. The former render-time filters were removed. | `src/components/about/sections/TeamSection.jsx`; `src/app/(public)/about/page.jsx` |
+| **ALL tenants** | **Founder excluded from Scientific Contributors.** Kyle Wan certifies articles, so the contributors query returns him; he's filtered out (`EXCLUDED_CONTRIBUTOR_NAMES`) since he's already featured in Our Team / Our Story. | `src/app/(public)/about/page.jsx` |
+| **ALL tenants** | **Placeholder people/supporters hidden at render time** ("Expert Advisor Placeholder", "Placeholder Bio", `expert-placeholder.png`). Config data is left in place, so filling a placeholder in makes it appear again. | `TeamSection.jsx` (`isPlaceholder`), `SupportersSection.jsx` |
+| **ALL tenants** | **Founder's Our Team photo forced to `kyleheadshot.jpg`.** Scleroderma's saved CMS config pointed his Team photo at the casual `withgrandma.jpg`; Our Story keeps its own image. | `TeamSection.jsx` (`withFounderHeadshot`) |
+| **ALL tenants** | About page sets `export const revalidate = 300`. It queries the DB via `pg` (not `fetch`), so without this Next **statically prerenders it at build time** and newly-certifying experts (e.g. Lorinda Chung on Scleroderma) never appear until the next deploy. | `src/app/(public)/about/page.jsx` |
 | (none currently) | A generic **"Partners" people section** exists (type `partners`, `about_partnerN*` fields) for tenants that want to list partner-org people. Unused at present. | `src/components/about/sections/PartnersSection.jsx`; builder in `src/lib/about-config.js` (~L120) |
 
 > Note: the Scleroderma About page renders a **saved CMS config** (`source: db`),
@@ -198,9 +202,12 @@ possible, **prefer adding a config field over a new `shortName` conditional.**
 - **`articlesExternalUrl` + `articlesExternalPartner`** — articles are
   published on a partner site (currently HS → hs-foundation.org/research-summaries,
   partner "HS Foundation"). Patients see pointers instead of listings/search
-  (home, `/articles`, navbar, footer); admins keep the internal surfaces;
-  article detail pages get `noindex`. DB + `/rss` unaffected — HSF's CMS
-  imports from the feed.
+  (home, `/articles`, navbar, footer); **staff (admins AND editors)** keep the
+  internal surfaces with the outbound link pinned to the top-right corner
+  (`ExternalArticlesNotice variant="corner"`); article detail pages get
+  `noindex`. DB + `/rss` unaffected — HSF's CMS imports from the feed.
+- **`articlesExternalDisclaimer`** — optional patient-facing notice shown on the
+  external-articles card (HS: the temporary transition message).
 - **`domain`** — used for magic links, RSS, password reset, embed `tenant_url`.
 
 ---
