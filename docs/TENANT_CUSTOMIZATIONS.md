@@ -74,7 +74,7 @@ treat them as hints.
 | HS, RUNX1, Scleroderma, Myositis | Navbar gets a tenant "mode" class (`hs-mode` / `runx1-mode` / `scleroderma-mode` / `myositis-mode`) driving themed nav colors | `src/components/Navbar/Navbar.jsx` (~L127); styles in `Navbar.scss` (~L362–600) |
 | **Scleroderma** | Slim **partner bar** above the navbar linking to srfcure.org; **"Science Simplified" text wordmark** replaces the image logo; **Clinical Trials nav item hidden** (desktop + mobile) | `src/components/Navbar/Navbar.jsx` (~L96–151); styles in `Navbar.scss` (partner-bar / navbrand--text) |
 | **HS** | Purple **partnership top bar** (`partner-bar--hs`) reads "Science Simplified in partnership with the HS Foundation" + link to hs-foundation.org; original **image logo** in navbar + footer (wordmark removed). | `src/components/Navbar/Navbar.jsx`, `src/components/Footer/Footer.jsx`; styles in `Navbar.scss` (`partner-bar--hs`) |
-| **Any tenant with `articlesExternalUrl`** (currently HS) | **Articles published on a partner site.** Navbar "Articles" item links out (new tab) for non-admins — internal `/articles` for admins; footer "Articles" link external for everyone; home hero search + Recent Articles and the `/articles` listing are replaced for patients by an `ExternalArticlesNotice` card/button; admins keep all surfaces plus a compact outbound button. DB + RSS untouched. | `src/lib/sites.js` (`articlesExternalUrl`, `articlesExternalPartner`); `Navbar.jsx` (`articlesExternal`); `Footer.jsx`; `src/app/page.jsx`; `src/app/(public)/articles/page.jsx`; `src/components/ExternalArticlesNotice/` |
+| **Any tenant with `articlesExternalUrl` + takeover ON** | **Articles published on a partner site.** Navbar "Articles" links out (new tab) for patients — internal for staff; footer "Articles" external; home hero search + Recent Articles and the `/articles` listing are replaced for patients by an `ExternalArticlesNotice` card/button; staff keep all surfaces plus the corner link. DB + RSS untouched. **The takeover is currently OFF for HS** (`articlesExternalTakeover: false`) — everything above is dormant and only the corner link shows. | `src/lib/articlesExternal.js` (shared flag); `src/lib/sites.js`; `Navbar.jsx`; `Footer.jsx`; `src/app/page.jsx`; `src/app/(public)/articles/page.jsx`; `src/components/ExternalArticlesNotice/` |
 | **Myositis** | "Clinical Trials" nav item is a **dropdown of external links** (Clinical Drug Trials + Non Drug Studies on myositis.org) instead of the internal `/clinical-trials` page — desktop dropdown + flattened in mobile. | `src/components/Navbar/Navbar.jsx` (`isMyositis`, navItems `dropdown`) |
 | **Scleroderma** | Footer uses the **"Science Simplified" wordmark** instead of the image logo | `src/components/Footer/Footer.jsx` (~L9); `Footer.scss` (`&__wordmark`) |
 
@@ -208,6 +208,14 @@ possible, **prefer adding a config field over a new `shortName` conditional.**
   `noindex`. DB + `/rss` unaffected — HSF's CMS imports from the feed.
 - **`articlesExternalDisclaimer`** — optional patient-facing notice shown on the
   external-articles card (HS: the temporary transition message).
+- **`articlesExternalTakeover`** — master switch for the hand-off, read via
+  `src/lib/articlesExternal.js`. Defaults to **on** whenever a partner URL
+  exists. **Currently `false` for HS** — articles are shown on HS Simplified
+  again for now, so patients see the normal listings/search and the nav/footer
+  "Articles" links stay internal; the partner link remains as a corner pill and
+  article pages are indexable again. Flip to `true` (or delete the line) to
+  restore the full takeover — URL, partner name and disclaimer copy are all
+  still in place.
 - **`domain`** — used for magic links, RSS, password reset, embed `tenant_url`.
 
 ---

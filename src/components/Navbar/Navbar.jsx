@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { tenant } from "@/lib/config";
+import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -106,15 +107,17 @@ export default function Navbar() {
     // listings (dropdown) instead of the internal feature.
     const isMyositis = tenant.shortName === "Myositis";
 
-    // When a tenant's articles are published on a partner site (HS → the HS
-    // Foundation's research-summaries page), patients follow the external
-    // link; admins keep the internal listing to manage/verify articles.
-    const articlesExternal = !!tenant.articlesExternalUrl && !isAdmin;
+    // While the partner takeover is on (HS → the HS Foundation's
+    // research-summaries page), patients follow the external link; staff keep
+    // the internal listing to manage/verify articles. With the takeover off,
+    // everyone gets the internal listing.
+    const articlesExternal =
+        articlesExternalTakeover && !isAdmin && role !== "editor";
 
     const navItems = [
         { href: "/", label: "Home" },
         articlesExternal
-            ? { href: tenant.articlesExternalUrl, label: "Articles", external: true }
+            ? { href: articlesExternalUrl, label: "Articles", external: true }
             : { href: "/articles", label: "Articles" },
         isMyositis
             ? {

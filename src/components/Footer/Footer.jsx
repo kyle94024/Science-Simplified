@@ -4,6 +4,7 @@ import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react"; // Using 
 import "./Footer.scss";
 import Image from "next/image";
 import { tenant } from "@/lib/config";
+import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 
 const brandlogo = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 const isScleroderma = tenant.shortName === "Scleroderma";
@@ -60,12 +61,12 @@ const Footer = () => {
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
-                                    {/* When articles are published on a partner
-                                        site (HS → HSF research summaries),
-                                        patients follow the external link. */}
-                                    {tenant.articlesExternalUrl ? (
+                                    {/* While the partner takeover is on (HS →
+                                        HSF research summaries), this points at
+                                        the partner; otherwise it stays local. */}
+                                    {articlesExternalTakeover ? (
                                         <a
-                                            href={tenant.articlesExternalUrl}
+                                            href={articlesExternalUrl}
                                             className="footer__link"
                                             target="_blank"
                                             rel="noopener noreferrer"

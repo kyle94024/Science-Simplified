@@ -1,4 +1,4 @@
-import { tenant } from "@/lib/config";
+import { articlesExternalTakeover } from "@/lib/articlesExternal";
 
 /**
  * When a tenant's articles are published on a partner site (HS → the HS
@@ -8,10 +8,11 @@ import { tenant } from "@/lib/config";
  * pages. The pages themselves stay fully accessible — RSS <guid> links,
  * legacy ?hsf-id= redirects, and admin review all still work.
  *
- * Tenants without articlesExternalUrl are unaffected (indexable as before).
+ * Only while the takeover is ON. With it off, articles are served here again
+ * and should be indexed normally. Tenants with no partner site are unaffected.
  */
 export async function generateMetadata() {
-    if (tenant.articlesExternalUrl) {
+    if (articlesExternalTakeover) {
         return { robots: { index: false, follow: true } };
     }
     return {};

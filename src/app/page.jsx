@@ -17,6 +17,7 @@ import SearchArticles from "@/components/SearchArticles/SearchArticles";
 import RecentArticlesSection from "@/components/RecentArticlesSection/RecentArticlesSection";
 import FeaturedArticlesSection from "@/components/FeaturedArticlesSection/FeaturedArticlesSection";
 import ExternalArticlesNotice from "@/components/ExternalArticlesNotice/ExternalArticlesNotice";
+import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 import Footer from "@/components/Footer/Footer";
 
 // HSF redirect mapping (for HS Foundation external links)
@@ -29,13 +30,12 @@ function HomeContent() {
 
     const { role, isAdmin } = useAuthStore();
 
-    // Articles published on a partner site (HS → HSF research summaries):
-    // patients get a pointer to the partner page instead of listings/search;
-    // staff (admins AND editors) keep the internal article surfaces, with the
-    // outbound link tucked into the corner.
-    const articlesExternal = !!tenant.articlesExternalUrl;
+    // Articles published on a partner site (HS → HSF research summaries). While
+    // the takeover is ON, patients get a pointer to the partner page instead of
+    // listings/search and only staff keep the internal surfaces. While it's OFF,
+    // everyone sees articles here and the partner link stays as a corner pill.
     const isStaff = isAdmin || role === "editor";
-    const showArticleSurfaces = !articlesExternal || isStaff;
+    const showArticleSurfaces = !articlesExternalTakeover || isStaff;
 
     const handleSearchSubmit = (query) => {
         // Navigate to the article search page with the query
@@ -104,8 +104,8 @@ function HomeContent() {
 
                 <section className="home__hero padding">
                     <div className="boxed">
-                        {/* Staff: outbound partner link pinned to the corner */}
-                        {showArticleSurfaces && articlesExternal && (
+                        {/* Outbound partner link pinned to the corner */}
+                        {showArticleSurfaces && articlesExternalUrl && (
                             <ExternalArticlesNotice variant="corner" />
                         )}
                         <div className="home__hero__content">

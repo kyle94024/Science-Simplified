@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import { Unplug } from "lucide-react";
 import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton/ArticleCardSkeleton";
 import ExternalArticlesNotice from "@/components/ExternalArticlesNotice/ExternalArticlesNotice";
+import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 import useSearchStore from "@/store/useSearchStore";
 import useAuthStore from "@/store/useAuthStore";
 import { tenant } from "@/lib/config";
@@ -28,12 +29,11 @@ const ArticleSearchPage = () => {
     const [sortBy, setSortBy] = useState("recent");
 
     const isHS = tenant.shortName === "HS";
-    // Articles published on a partner site (HS → HSF research summaries):
-    // patients get a pointer card instead of the listing; staff (admins AND
-    // editors) keep the internal listing, with the outbound link in the
-    // corner. DB/RSS are untouched.
+    // While the partner takeover is ON, patients get a pointer card instead of
+    // the listing and only staff see it; while it's OFF, everyone sees the
+    // listing with the partner link in the corner. DB/RSS are untouched.
     const isStaff = isAdmin || role === "editor";
-    const patientExternalView = !!tenant.articlesExternalUrl && !isStaff;
+    const patientExternalView = articlesExternalTakeover && !isStaff;
 
     useEffect(() => {
     const fetchArticles = async () => {
@@ -148,8 +148,8 @@ const sortArticles = (articlesToSort) => {
             {/* ---------- SEARCH SECTION ---------- */}
             <div className="article-search-page__content padding">
                 <div className="boxed article-search-page__boxed">
-                    {/* Staff: outbound partner link pinned to the corner */}
-                    {tenant.articlesExternalUrl && (
+                    {/* Outbound partner link pinned to the corner */}
+                    {articlesExternalUrl && (
                         <ExternalArticlesNotice variant="corner" />
                     )}
                     <div

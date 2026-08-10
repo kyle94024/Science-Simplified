@@ -1032,6 +1032,11 @@ export const sites = {
       articlesExternalPartner: "HS Foundation",
       articlesExternalDisclaimer:
         "Articles are currently being transitioned over to HS Foundation's Research Summaries page. This is temporary and articles will be available again soon.",
+      // TEMPORARILY OFF: articles are shown on HS Simplified again for now.
+      // The partner URL/name/disclaimer above stay in place (and the outbound
+      // link still shows as a corner pill), so flipping this back to `true`
+      // restores the full hand-off to the HS Foundation with no other edits.
+      articlesExternalTakeover: false,
 
       theme: {
         primary: "#7B2CBF",          // foundation purple
