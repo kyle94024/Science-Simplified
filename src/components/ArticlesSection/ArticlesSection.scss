@@ -41,6 +41,33 @@
         gap: 2rem;
     }
 
+    /* Bottom "More Articles" button → page 2 of /articles */
+    &__more {
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-top: 1rem;
+        padding: 1.2rem 3rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+        background: var(--color-primary);
+        border-radius: 999px;
+        transition: gap 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+
+        &:hover {
+            opacity: 0.9;
+            gap: 1.1rem;
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 3px solid color-mix(in srgb, var(--color-primary) 45%, #fff);
+            outline-offset: 2px;
+        }
+    }
+
     &__error {
         width: 100%;
 

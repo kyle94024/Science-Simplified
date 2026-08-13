@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import ArticlesSection from "../ArticlesSection/ArticlesSection";
 import useSearchStore from "@/store/useSearchStore";
 
+// Keep in sync with the /articles page, which paginates 6 per page — this is
+// both how many we preview here and the page-size that decides whether a
+// "More Articles" (page 2) link is worth showing.
+const ARTICLES_PER_PAGE = 6;
+
 const RecentArticlesSection = () => {
   const { searchQuery } = useSearchStore();
 
@@ -20,7 +25,7 @@ const RecentArticlesSection = () => {
 
         const data = await response.json();
         setAllArticles(data);
-        setArticles(data.slice(0, 6)); // initial 6
+        setArticles(data.slice(0, ARTICLES_PER_PAGE)); // initial page
         setError(false);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -36,7 +41,7 @@ const RecentArticlesSection = () => {
   // React to search input
   useEffect(() => {
     if (!searchQuery) {
-      setArticles(allArticles.slice(0, 6));
+      setArticles(allArticles.slice(0, ARTICLES_PER_PAGE));
       return;
     }
 
@@ -54,7 +59,7 @@ const RecentArticlesSection = () => {
         .includes(searchQuery.toLowerCase())
     );
 
-    setArticles(filtered.slice(0, 6));
+    setArticles(filtered.slice(0, ARTICLES_PER_PAGE));
   }, [searchQuery, allArticles]);
 
   return (
@@ -64,6 +69,10 @@ const RecentArticlesSection = () => {
       error={error}
       sectionTitle={"Recently Added Articles"}
       viewAllHref="/articles"
+      // The home page shows the first 6 articles, and /articles paginates 6 per
+      // page — so a page 2 exists only when the site has more than 6 articles.
+      moreHref="/articles?page=2"
+      showMore={allArticles.length > ARTICLES_PER_PAGE}
     />
   );
 };

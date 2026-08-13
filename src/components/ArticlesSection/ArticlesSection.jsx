@@ -5,7 +5,15 @@ import { ArticleCardSkeleton } from "../ArticleCardSkeleton/ArticleCardSkeleton"
 import { Unplug, ArrowRight } from "lucide-react";
 import { resolveArticleCredit } from "@/lib/articleAuthor";
 
-const ArticlesSection = ({ articles, loading, error, sectionTitle, viewAllHref }) => {
+const ArticlesSection = ({
+    articles,
+    loading,
+    error,
+    sectionTitle,
+    viewAllHref,
+    moreHref,
+    showMore = false,
+}) => {
     return (
         <section className="articles-section padding">
             <div className="boxed">
@@ -72,6 +80,14 @@ const ArticlesSection = ({ articles, loading, error, sectionTitle, viewAllHref }
                             );
                         })}
                     </div>
+                )}
+
+                {/* "More Articles" — only rendered when a further page exists
+                    (the caller decides; see RecentArticlesSection). */}
+                {showMore && moreHref && !loading && !error && (
+                    <Link href={moreHref} className="articles-section__more">
+                        More Articles <ArrowRight size={18} />
+                    </Link>
                 )}
             </div>
         </section>

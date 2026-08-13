@@ -34,9 +34,24 @@ export default function ArticlesListPaginated({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Deep-link support: /articles?page=2 — used by the "More Articles" button on
+  // the home page. Read once on mount; the list is client-rendered (the parent
+  // fetches), so there's no hydration mismatch to worry about.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const requested = parseInt(
+      new URLSearchParams(window.location.search).get("page"),
+      10
+    );
+    if (Number.isInteger(requested) && requested > 1) setCurrentPage(requested);
+  }, []);
+
   const totalPages = Math.max(1, Math.ceil(articles.length / articlesPerPage));
 
   useEffect(() => {
+    // Don't clamp before the articles arrive — while loading, articles.length is
+    // 0 so totalPages is 1, which would knock a deep-linked ?page=2 back to 1.
+    if (articles.length === 0) return;
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
