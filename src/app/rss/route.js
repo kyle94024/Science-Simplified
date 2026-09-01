@@ -7,6 +7,17 @@ import { hsfIdToArticleId } from "@/lib/hsfRedirects";
 // Article IDs to exclude for HS tenant (already on external HS Foundation platform)
 const hsExcludedIds = new Set(Object.values(hsfIdToArticleId).map(Number));
 
+// CDATA can't contain the sequence "]]>" — split it so a stray occurrence in
+// article HTML can't terminate the block early and produce invalid XML.
+function escapeCdata(str) {
+    return String(str ?? "").replace(/\]\]>/g, "]]]]><![CDATA[>");
+}
+
+// Escaping for a URL sitting in an href inside CDATA (HTML rules, not XML).
+function escapeHtmlAttr(str) {
+    return String(str ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
 function escapeXml(str) {
     if (str == null) return "";
     return String(str)
@@ -43,6 +54,15 @@ export async function GET() {
         const items = articles
             .map((a) => {
                 const link = `${domain}/articles/${a.id}`;
+
+                // Link to the original paper (the "Read Original Paper" button on
+                // the article page). Only emitted when the DB actually has one and
+                // it's a real http(s) URL — 2 of 99 HS articles have none.
+                const paperLink =
+                    typeof a.article_link === "string" &&
+                    /^https?:\/\//i.test(a.article_link.trim())
+                        ? a.article_link.trim()
+                        : null;
                 const pubDate = a.publication_date;
                 const dateStr = pubDate
                     ? new Date(pubDate).toUTCString()
@@ -54,7 +74,21 @@ export async function GET() {
       <guid isPermaLink="true">${escapeXml(link)}</guid>
       <description>${escapeXml(a.summary)}</description>${
                     a.innertext
-                        ? `\n      <content:encoded><![CDATA[${a.innertext}]]></content:encoded>`
+                        ? `\n      <content:encoded><![CDATA[${escapeCdata(
+                              a.innertext
+                          )}${
+                              paperLink
+                                  ? `<p><a href="${escapeHtmlAttr(
+                                        paperLink
+                                    )}" target="_blank" rel="noopener noreferrer">Read the original paper</a></p>`
+                                  : ""
+                          }]]></content:encoded>`
+                        : ""
+                }${
+                    paperLink
+                        ? `\n      <atom:link rel="related" type="text/html" href="${escapeXml(
+                              paperLink
+                          )}"/>`
                         : ""
                 }${
                     a.authors

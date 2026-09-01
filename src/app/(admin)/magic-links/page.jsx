@@ -14,6 +14,19 @@ import StatusBadge from "@/components/admin/StatusBadge";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import StatsCard from "@/components/admin/StatsCard";
 
+// Links lapse 30 days after creation (see api/magic-link/create). Rows created
+// before expiry existed have a null expires_at and never lapse — this mirrors
+// the verify route, which only enforces expiry when the column is set.
+const isExpired = (l) => !!l.expires_at && new Date(l.expires_at) < new Date();
+
+// Used takes precedence over expired: once redeemed, that's the useful fact.
+const linkStatus = (l) =>
+    l.used
+        ? { label: "Used", variant: "neutral" }
+        : isExpired(l)
+            ? { label: "Expired", variant: "warning" }
+            : { label: "Active", variant: "success" };
+
 export default withAuth(function MagicLinksAdminPage() {
     const tenantName = defaultTenant.shortName;
     const [email, setEmail] = useState("");
@@ -49,9 +62,10 @@ export default withAuth(function MagicLinksAdminPage() {
     // Calculate stats
     const stats = useMemo(() => {
         const total = links.length;
-        const active = links.filter((l) => !l.used).length;
         const used = links.filter((l) => l.used).length;
-        return { total, active, used };
+        const expired = links.filter((l) => !l.used && isExpired(l)).length;
+        const active = links.filter((l) => !l.used && !isExpired(l)).length;
+        return { total, active, used, expired };
     }, [links]);
 
     async function generateLink() {
@@ -105,7 +119,7 @@ export default withAuth(function MagicLinksAdminPage() {
             />
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <StatsCard
                     label="Total Links"
                     value={stats.total}
@@ -120,6 +134,11 @@ export default withAuth(function MagicLinksAdminPage() {
                     label="Used Links"
                     value={stats.used}
                     icon={CheckCircle}
+                />
+                <StatsCard
+                    label="Expired Links"
+                    value={stats.expired}
+                    icon={XCircle}
                 />
             </div>
 
@@ -258,8 +277,8 @@ export default withAuth(function MagicLinksAdminPage() {
                                             </td>
                                             <td>
                                                 <StatusBadge
-                                                    variant={link.used ? "neutral" : "success"}
-                                                    label={link.used ? "Used" : "Active"}
+                                                    variant={linkStatus(link).variant}
+                                                    label={linkStatus(link).label}
                                                 />
                                             </td>
                                             <td className="text-gray-500">

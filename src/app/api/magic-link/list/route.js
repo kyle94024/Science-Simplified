@@ -34,7 +34,7 @@ export async function GET(req) {
         try {
             const result = await tenantQuery(
                 key,
-                "SELECT id, email, token_hash, redirect_url, created_at, used FROM magic_links ORDER BY created_at DESC"
+                "SELECT id, email, token_hash, redirect_url, created_at, expires_at, used FROM magic_links ORDER BY created_at DESC"
             );
 
             // Add tenant field so admin UI knows which is which
