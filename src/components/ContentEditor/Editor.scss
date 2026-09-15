@@ -1,108 +1,286 @@
-.editor-button {
+// The editor frame. Content rendering comes from the shared rich-text mixin,
+// so what editors see is exactly what readers get on the article page.
+@use "../../styles/richText" as rt;
+
+$border: #d8d8d8;
+$accent: #4cb19f;
+$accent-ring: rgba(76, 177, 159, 0.22);
+$shadow: 0 6px 7.7px 0 rgba(0, 0, 0, 0.05);
+$narrow: 850px;
+
+.content-editor {
+    --content-editor-min-height: 32rem;
+
+    position: relative;
     background: #fff;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    display: inline;
-
-    &:hover,
-    &[aria-selected="true"] {
-        color: #06c;
-    }
-}
-
-.editor {
+    border: 1px solid $border;
     border-radius: 10px;
-    border: 1px solid #d8d8d8;
-    background: #fff;
-    height: fit-content;
-    box-shadow: 0px 6px 7.7px 0px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow;
+    color: var(--color-text, #0b1618);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &--simple {
+        --content-editor-min-height: 16rem;
+    }
+
+    // The focus ring lives on the frame; the contenteditable itself has none.
+    &:focus-within {
+        border-color: $accent;
+        box-shadow: 0 0 0 3px $accent-ring, $shadow;
+    }
+
+    // ---- toolbar ----------------------------------------------------------
 
     &__toolbar {
-        border: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 5;
         display: flex;
-        gap: 0.5rem;
-        padding: 0 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.6rem 1rem;
+        background: #fff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 10px 10px 0 0;
+        font-size: 1.4rem;
     }
 
-    .button:hover, 
-    .button[aria-selected="true"] {
-      color: #06c;
+    &__group {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
     }
 
-    &__container {
+    &__divider {
+        flex: none;
+        width: 1px;
+        height: 2rem;
+        margin: 0 0.6rem;
+        background: rgba(0, 0, 0, 0.12);
+    }
+
+    &__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.2rem;
+        height: 3.2rem;
+        padding: 0;
         border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: #444;
+        line-height: 0;
+        cursor: pointer;
+        transition: background-color 0.12s ease, color 0.12s ease;
 
-        box-sizing: border-box;
-        font-family: Helvetica,Arial,sans-serif;
-        font-size: 13px;
+        &:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.06);
+            color: #111;
+        }
+
+        &[aria-pressed="true"] {
+            background: rgba(76, 177, 159, 0.16);
+            color: #2c7a6c;
+        }
+
+        &:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $accent;
+            outline-offset: 1px;
+        }
+    }
+
+    &__spin {
+        animation: content-editor-spin 0.8s linear infinite;
+    }
+
+    &__select {
         position: relative;
+        display: inline-flex;
+        align-items: center;
+        height: 3.2rem;
 
-        height: 400px;
-        overflow-y: scroll;
-        display: flex;
-        align-items: stretch;
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            height: 100%;
+            min-width: 13rem;
+            padding: 0 2.6rem 0 1rem;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: #333;
+            font: inherit;
+            font-size: 1.4rem;
+            cursor: pointer;
 
-        .tiptap {
-            flex-grow: 1;
-            margin: 1rem 2rem;
-            counter-reset: list-0 list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
-            line-height: 1.42;
-            outline: none;
-            overflow-y: auto;
-            tab-size: 4;
-            -moz-tab-size: 4;
-            text-align: left;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-
-            font-size: 13px;
-
-            background-color: #fff;
-            outline: none;
-            border: none;
-
-            & > * {
-              cursor: text;
+            &:hover:not(:disabled) {
+                background: rgba(0, 0, 0, 0.06);
             }
 
-            p,
-pre,
-blockquote,
-h1, h2 , h3, h4, h5, h6 {
-    margin:0;
-    padding:0
-}
+            &:disabled {
+                opacity: 0.35;
+                cursor: default;
+            }
 
-ul,
-ol {
-    padding-left: 1.5rem;
-    margin: 1rem 0;
-}
-
-ul {
-    list-style-type: disc;
-}
-
-ol {
-    list-style-type: decimal;
-}
-
-li {
-    margin: 0.25rem 0;
-}
-
-            h1 { font-size: 2em; }
-            h2 { font-size: 1.5em; }
-            h3 { font-size: 1.17em; }
-            h4 { font-size: 1em; }
-            h5 { font-size: .83em; }
-            h6 { font-size: .67em; }
-
-            img  {
-              margin: 1rem;
+            &:focus-visible {
+                outline: 2px solid $accent;
+                outline-offset: 1px;
             }
         }
+
+        svg {
+            position: absolute;
+            right: 0.9rem;
+            pointer-events: none;
+            color: #666;
+        }
+    }
+
+    // ---- content ----------------------------------------------------------
+
+    &__body {
+        cursor: text;
+    }
+
+    .tiptap {
+        @include rt.rich-text;
+
+        min-height: var(--content-editor-min-height);
+        padding: 2.4rem 3.2rem;
+        font-size: 1.6rem;
+        line-height: 1.6;
+        outline: none;
+        caret-color: var(--color-text, #0b1618);
+
+        // Room to click below the last block.
+        > :last-child {
+            margin-bottom: 0;
+        }
+
+        img.ProseMirror-selectednode {
+            outline: 3px solid $accent;
+            outline-offset: 2px;
+        }
+
+        ::selection {
+            background: rgba(76, 177, 159, 0.28);
+            color: inherit;
+        }
+    }
+
+    // ---- link bubble ------------------------------------------------------
+
+    &__link {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.6rem;
+        background: #fff;
+        border: 1px solid $border;
+        border-radius: 8px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        font-size: 1.3rem;
+        color: #333;
+
+        &-url {
+            max-width: 26rem;
+            padding: 0 0.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #555;
+        }
+
+        &-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            height: 2.8rem;
+            padding: 0 0.7rem;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #333;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.06);
+                color: #111;
+            }
+
+            &:focus-visible {
+                outline: 2px solid $accent;
+                outline-offset: 1px;
+            }
+        }
+
+        &-input {
+            width: 28rem;
+            max-width: 70vw;
+            height: 2.8rem;
+            padding: 0 0.8rem;
+            border: 1px solid $border;
+            border-radius: 6px;
+            background: #fff;
+            font: inherit;
+            color: inherit;
+
+            &:focus {
+                outline: none;
+                border-color: $accent;
+                box-shadow: 0 0 0 2px $accent-ring;
+            }
+
+            &[aria-invalid="true"] {
+                border-color: var(--color-error, #ef4444);
+            }
+        }
+
+        &-error {
+            flex-basis: 100%;
+            margin: 0.2rem 0 0;
+            padding: 0 0.4rem;
+            font-size: 1.2rem;
+            color: var(--color-error, #ef4444);
+        }
+    }
+
+    // ---- narrow screens ---------------------------------------------------
+
+    @media (max-width: $narrow) {
+        &__toolbar {
+            padding: 0.5rem 0.6rem;
+            gap: 0.1rem;
+        }
+
+        &__divider {
+            margin: 0 0.3rem;
+        }
+
+        &__select select {
+            min-width: 0;
+            padding: 0 2.2rem 0 0.6rem;
+            font-size: 1.3rem;
+        }
+
+        .tiptap {
+            padding: 1.6rem 1.6rem;
+        }
+    }
+}
+
+@keyframes content-editor-spin {
+    to {
+        transform: rotate(360deg);
     }
 }

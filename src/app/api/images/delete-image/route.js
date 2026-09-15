@@ -1,4 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
+import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/adminGuard";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -8,6 +10,9 @@ cloudinary.config({
 });
 
 export async function DELETE(req) {
+    const auth = requireAdmin(req);
+    if (auth instanceof NextResponse) return auth;
+
     try {
         // Parse the request to get the public ID of the image to delete
         const { public_id } = await req.json();

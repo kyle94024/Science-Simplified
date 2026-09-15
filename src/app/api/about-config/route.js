@@ -3,6 +3,7 @@ import { sql } from "@/lib/neon";
 import { requireAdmin } from "@/lib/adminGuard";
 import { buildDefaultSections } from "@/lib/about-config";
 import { tenant } from "@/lib/config";
+import { sanitizeAboutSections } from "@/lib/richText";
 
 export async function GET() {
   try {
@@ -47,6 +48,10 @@ export async function PUT(req) {
       );
     }
 
+    // Only the fields rendered as HTML (mission body, founder story, …) go
+    // through the article allowlist; plain-text fields stay byte-identical.
+    const cleanSections = sanitizeAboutSections(sections);
+
     const updatedBy = authResult.name || authResult.email || "admin";
 
     // Upsert: insert if no row exists, update if one does
@@ -57,7 +62,7 @@ export async function PUT(req) {
     if (rows.length > 0) {
       await sql`
         UPDATE about_page_config
-        SET sections = ${JSON.stringify(sections)}::jsonb,
+        SET sections = ${JSON.stringify(cleanSections)}::jsonb,
             updated_at = NOW(),
             updated_by = ${updatedBy}
         WHERE id = ${rows[0].id}
@@ -65,7 +70,7 @@ export async function PUT(req) {
     } else {
       await sql`
         INSERT INTO about_page_config (sections, updated_by)
-        VALUES (${JSON.stringify(sections)}::jsonb, ${updatedBy})
+        VALUES (${JSON.stringify(cleanSections)}::jsonb, ${updatedBy})
       `;
     }
 

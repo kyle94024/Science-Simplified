@@ -1,6 +1,15 @@
 "use client";
 import { Plus, Trash2 } from "lucide-react";
 
+/** The plain-text description is stored as sanitized <p> HTML; undo its escaping for the textarea. */
+const decodeEntities = (text) =>
+  text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&amp;/g, "&");
+
 const ICON_OPTIONS = ["Search", "Cpu", "ShieldCheck", "BookOpen", "Users", "Microscope", "FileText", "Sparkles"];
 
 export default function ProcessEditor({ content, onChange }) {
@@ -35,7 +44,8 @@ export default function ProcessEditor({ content, onChange }) {
       <div>
         <label className="block text-[1.3rem] font-medium text-gray-700 mb-1">Description</label>
         <textarea
-          value={content.description?.replace(/<\/?p>/g, "") || ""}
+          // Stored as sanitized HTML, so "&" comes back as "&amp;"; show the text.
+          value={decodeEntities(content.description?.replace(/<\/?p>/g, "") || "")}
           onChange={(e) => update("description", `<p>${e.target.value}</p>`)}
           rows={2}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[1.4rem]"

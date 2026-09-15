@@ -1,6 +1,7 @@
 import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/adminGuard";
+import { sanitizeRichText } from "@/lib/richText";
 
 // Only allow POST method
 export async function POST(req) {
@@ -11,10 +12,10 @@ export async function POST(req) {
     await req.json();
 
     try {
-        // Execute the update query, including image_url
+        // Execute the update query, including image_url (rich text is sanitized on the way in)
         await query(
             "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6, authors = $7, publication_date = $8, source_publication = $9, image_credit = $10, additional_editors = $11 WHERE id = $12",
-            [title, tags, innertext, summary, article_link, image_url, authors, publication_date, source_publication || null, image_credit || null, additional_editors || [], id]
+            [title, tags, sanitizeRichText(innertext), sanitizeRichText(summary), article_link, image_url, authors, publication_date, source_publication || null, image_credit || null, additional_editors || [], id]
         );
 
         return NextResponse.json({

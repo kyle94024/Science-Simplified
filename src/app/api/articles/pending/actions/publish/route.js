@@ -2,6 +2,7 @@ import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/adminGuard";
 import { generateArticleAudio } from "@/lib/tts";
+import { sanitizeRichText } from "@/lib/richText";
 
 
 // Only allow POST method
@@ -27,6 +28,11 @@ export async function POST(req) {
             );
         }
 
+        // The AI pipeline writes pending rows unsanitized, so the move from
+        // pending_article to article is the chokepoint for published rich text.
+        const innertext = sanitizeRichText(article.innertext);
+        const summary = sanitizeRichText(article.summary);
+
         // Insert the article into the article table, including the certifiedby, image_url, and publication_date fields
         // Insert the article into the article table, now including authors
         const insertResult = await query(
@@ -37,8 +43,8 @@ export async function POST(req) {
             [
                 article.title,
                 article.tags,
-                article.innertext,
-                article.summary,
+                innertext,
+                summary,
                 article.article_link,
                 article.publisher,
                 article.authors ?? [],
@@ -58,7 +64,7 @@ export async function POST(req) {
         await query("DELETE FROM pending_article WHERE id = $1", [id]);
 
         // Fire-and-forget TTS generation (don't block publish response)
-        generateArticleAudio(newArticleId, article.title, article.innertext)
+        generateArticleAudio(newArticleId, article.title, innertext)
             .then(() => console.log(`TTS generated for article ${newArticleId}`))
             .catch((err) => console.error(`TTS failed for article ${newArticleId}:`, err));
 

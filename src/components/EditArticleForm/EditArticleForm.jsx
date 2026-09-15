@@ -1,12 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import React, { useState, useRef } from "react";
 import { Loader2, X, FileUp } from "lucide-react";
-import "react-quill/dist/quill.snow.css";
 import "./EditArticleForm.scss";
 import Image from "next/image";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeRichText } from "@/lib/richText";
 import { cleanName } from "@/lib/utils";
 import { toast } from "react-toastify";
 
@@ -56,56 +54,10 @@ const EditArticleForm = ({
     );
     const [tags, setTags] = useState(articleData?.tags || []);
     const [currentTag, setCurrentTag] = useState("");
-    const [content, setContent] = useState(
-        sanitizeHtml(articleData?.innertext || "", {
-            allowedTags: [
-                "p",
-                "br",
-                "strong",
-                "em",
-                "u",
-                "h1",
-                "h2",
-                "h3",
-                "h4",
-                "h5",
-                "h6",
-                "ul",
-                "ol",
-                "li",
-                "a",
-            ],
-            allowedAttributes: {
-                a: ["href", "target"],
-                "*": ["class"],
-            },
-        })
-    );
-    const [summary, setSummary] = useState(
-        sanitizeHtml(articleData?.summary || "", {
-            allowedTags: [
-                "p",
-                "br",
-                "strong",
-                "em",
-                "u",
-                "h1",
-                "h2",
-                "h3",
-                "h4",
-                "h5",
-                "h6",
-                "ul",
-                "ol",
-                "li",
-                "a",
-            ],
-            allowedAttributes: {
-                a: ["href", "target"],
-                "*": ["class"],
-            },
-        })
-    );
+    // No load-time sanitizing: the editor's own parser (ContentEditor/extensions.js)
+    // is the filter, and it understands everything the stored HTML can contain.
+    const [content, setContent] = useState(articleData?.innertext || "");
+    const [summary, setSummary] = useState(articleData?.summary || "");
     const [imageUrl, setImageUrl] = useState(articleData?.image_url || null);
     // after your imageUrl state
     const [authors, setAuthors] = useState(articleData?.authors || []);
@@ -286,52 +238,9 @@ const EditArticleForm = ({
         return {
             title,
             tags,
-            innertext: sanitizeHtml(content, {
-                allowedTags: [
-                    "p",
-                    "br",
-                    "strong",
-                    "em",
-                    "u",
-                    "h1",
-                    "h2",
-                    "h3",
-                    "h4",
-                    "h5",
-                    "h6",
-                    "ul",
-                    "ol",
-                    "li",
-                    "a",
-                ],
-                allowedAttributes: {
-                    a: ["href", "target"],
-                    "*": ["class"],
-                },
-            }),
-            summary: sanitizeHtml(summary, {
-                allowedTags: [
-                    "p",
-                    "br",
-                    "strong",
-                    "em",
-                    "u",
-                    "h1",
-                    "h2",
-                    "h3",
-                    "h4",
-                    "h5",
-                    "h6",
-                    "ul",
-                    "ol",
-                    "li",
-                    "a",
-                ],
-                allowedAttributes: {
-                    a: ["href", "target"],
-                    "*": ["class"],
-                },
-            }),
+            // Defence in depth — the API routes sanitize again before the DB write.
+            innertext: sanitizeRichText(content),
+            summary: sanitizeRichText(summary),
             article_link: sourceLink,
             image_url: imageUrl,
             authors: authors,

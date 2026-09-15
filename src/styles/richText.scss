@@ -1,0 +1,99 @@
+// Element-level rendering for rich text produced by the article editor.
+//
+// Tailwind's preflight (app/globals.css) resets ul/ol to `list-style: none;
+// padding: 0` and h1–h6 to `font-size: inherit`, and until now nothing scoped
+// to article content put them back. Only content that happened to carry an
+// `apicss-*` class rendered properly; a heading or list made in the editor
+// (no class) rendered as flat, bullet-less text — which is why authors have
+// been typing "- " into list items by hand.
+//
+// These rules are a FALLBACK for unclassed elements. Every element selector is
+// scoped with `:where(<wrapper>)`, which contributes no specificity, so each
+// rule is exactly (0,0,1): later in the cascade than preflight's own (0,0,1)
+// element rules, so it wins those — but weaker than any single class, so an
+// `apicss-*` class always wins. That matters: the AI regularly emits
+// mismatched pairs such as <h1 class="apicss-heading-secondary">, and readers
+// have only ever seen the class's look.
+//
+// The values mirror the `.apicss-*` rules, so a bare <h2> and an
+// <h2 class="apicss-heading-secondary"> look identical. The editor includes
+// the same mixin, so what you see while editing is what readers get.
+//
+// Usage:  .some-content-wrapper { @include rich-text; }
+
+@mixin rich-text {
+    line-height: 1.6;
+    overflow-wrap: break-word;
+
+    // @at-root hoists the block out of the include site's nesting, so the
+    // selector is `:where(.wrapper) h1`, not `.wrapper :where(.wrapper) h1`.
+    @at-root :where(#{&}) {
+        // ---- headings (mirror .apicss-heading-primary/secondary/tertiary) ----
+        h1 { font-size: 2.4rem; font-weight: 700; margin: 2rem 0 1rem; }
+        h2 { font-size: 2rem;   font-weight: 600; margin: 1.6rem 0 0.8rem; }
+        h3, h4, h5, h6 { font-size: 1.6rem; font-weight: 500; margin: 1.2rem 0 0.6rem; }
+        h1, h2, h3, h4, h5, h6 { line-height: 1.3; }
+
+        // ---- paragraphs (mirror .apicss-paragraph) ----
+        // (No p:last-child reset: on the About page a CTA button follows the
+        // last paragraph and relies on that gap. The editor zeroes its own last block.)
+        p { margin: 0 0 1.2rem; }
+
+        // ---- lists (the fix) ----
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+        ul { list-style: disc; }
+        ul ul { list-style: circle; }
+        ul ul ul { list-style: square; }
+        ol { list-style: decimal; }
+        ol ol { list-style: lower-alpha; }
+        ol ol ol { list-style: lower-roman; }
+
+        li { margin: 0.4rem 0; }
+        // The editor wraps item text in <p>; that paragraph must not add its own
+        // gap. The classed form needs its own rule to outrank .apicss-paragraph.
+        li > p, li > p.apicss-paragraph { margin: 0; }
+        // A nested list sits tight under its parent item.
+        li > ul, li > ol { margin: 0.4rem 0 0.4rem 1rem; }
+
+        // ---- inline ----
+        strong, b { font-weight: 700; }
+        em, i { font-style: italic; }
+        u { text-decoration: underline; }
+        s, strike, del { text-decoration: line-through; }
+        a { color: #3a7bc8; text-decoration: underline; }
+        a:hover { color: #2a5a9e; }
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.9em;
+            background: #f3f4f6;
+            padding: 0.1em 0.35em;
+            border-radius: 0.3rem;
+        }
+
+        // ---- blocks (mirror .apicss-blockquote / -hr / -image) ----
+        blockquote {
+            margin: 1.5rem 0;
+            padding: 0.8rem 1.2rem;
+            border-left: 4px solid #ccc;
+            background: #f9f9f9;
+            color: #555;
+            font-style: italic;
+        }
+        blockquote > p:last-child { margin-bottom: 0; }
+        hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+        img { display: block; max-width: 100%; height: auto; margin: 1.5rem auto; }
+        pre {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.9em;
+            background: #f3f4f6;
+            padding: 1rem 1.2rem;
+            border-radius: 0.6rem;
+            overflow-x: auto;
+            margin: 1.2rem 0;
+        }
+        pre code { background: none; padding: 0; }
+    }
+}

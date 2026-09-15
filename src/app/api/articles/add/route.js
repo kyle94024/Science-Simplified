@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { summarizeArticle, simplifyArticle } from "@/utils/apiHelpers"; // Utility functions for OpenAI API calls
+import { sanitizeRichText } from "@/lib/richText";
 
 export async function POST(req) {
     try {
@@ -28,7 +29,8 @@ export async function POST(req) {
         // Start a transaction to ensure consistency
         await query("BEGIN");
 
-        // Insert into the database, including the publisher and image URL
+        // Insert into the database, including the publisher and image URL.
+        // The AI output is sanitized here, right before it lands in the DB.
         const result = await query(
             `INSERT INTO pending_article
                 (title, tags, innertext, summary, article_link, publisher, image_url, authors, publication_date, source_publication, image_credit, additional_editors)
@@ -37,8 +39,8 @@ export async function POST(req) {
             [
                 title,
                 tags,
-                simplified,
-                summary,
+                sanitizeRichText(simplified),
+                sanitizeRichText(summary),
                 article_link,
                 publisher,
                 image_url,

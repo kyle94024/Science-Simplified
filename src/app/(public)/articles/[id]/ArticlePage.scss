@@ -1,3 +1,5 @@
+@use "../../../../styles/richText" as rt;
+
 .article-page {
     min-height: 100vh;
     display: flex;
@@ -135,15 +137,19 @@
             font-size: 1.92rem;
             margin-bottom: 0.8rem;
         }
+
+        // The summary HTML itself: a bare <div> under the title.
+        > div {
+            @include rt.rich-text;
+        }
     }
 
     &__content-text {
-        line-height: 1.6;
         margin-bottom: 3.2rem;
 
-        p {
-            margin-bottom: 1.6rem;
-        }
+        // Headings, lists (incl. nested), paragraphs … for editor-made content
+        // without apicss-* classes. Mirrors the .apicss-* values below.
+        @include rt.rich-text;
     }
 
     &__actions {

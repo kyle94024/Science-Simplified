@@ -1,6 +1,7 @@
 export const revalidate = 0;
 
 import { query } from "@/lib/db";
+import { sanitizeRichText } from "@/lib/richText";
 import { SUPPORTED_LANGUAGES } from "@/lib/translationWarnings";
 import {
     translateHtmlContent,
@@ -71,6 +72,11 @@ export async function GET(request, { params }) {
                     : Promise.resolve(null),
             ]);
 
+        // LLM output goes through the same allowlist as every other rich-text
+        // write; the article page renders these fields with dangerouslySetInnerHTML.
+        const safeSummary = sanitizeRichText(translatedSummary);
+        const safeInnertext = sanitizeRichText(translatedInnertext);
+
         // Cache in DB (upsert)
         await query(
             `INSERT INTO article_translations
@@ -81,14 +87,14 @@ export async function GET(request, { params }) {
                 translated_summary = EXCLUDED.translated_summary,
                 translated_innertext = EXCLUDED.translated_innertext,
                 created_at = NOW()`,
-            [id, lang, translatedTitle, translatedSummary, translatedInnertext]
+            [id, lang, translatedTitle, safeSummary, safeInnertext]
         );
 
         return Response.json({
             language: lang,
             translated_title: translatedTitle,
-            translated_summary: translatedSummary,
-            translated_innertext: translatedInnertext,
+            translated_summary: safeSummary,
+            translated_innertext: safeInnertext,
             cached: false,
         });
     } catch (error) {

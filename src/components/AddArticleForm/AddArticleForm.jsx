@@ -1,9 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import React, { useState, useRef } from "react";
-// const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
 import { X, FileUp } from "lucide-react";
 import "./AddArticleForm.scss";
 import { cleanName } from "@/lib/utils";
@@ -67,8 +64,6 @@ const AddArticleForm = () => {
     const [sourcePublication, setSourcePublication] = useState("");
     const [imageCredit, setImageCredit] = useState("");
 
-
-    const quillRef = useRef(null);
 
     const { user, role } = useAuthStore();
 
@@ -326,28 +321,6 @@ const AddArticleForm = () => {
 
 
     
-
-    // const modules = {
-    //     toolbar: [
-    //         [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    //         ["bold", "italic", "underline", "strike"],
-    //         [{ list: "ordered" }, { list: "bullet" }],
-    //         ["link", "image"],
-    //         ["clean"],
-    //     ],
-    // };
-
-    // const formats = [
-    //     "header",
-    //     "bold",
-    //     "italic",
-    //     "underline",
-    //     "strike",
-    //     "list",
-    //     "bullet",
-    //     "link",
-    //     "image",
-    // ];
 
     return (
         <form className="add-article-form">
@@ -621,15 +594,6 @@ const AddArticleForm = () => {
                         </label>
                     </div>
                 </div>
-                {/* <ReactQuill
-                    ref={quillRef}
-                    value={content}
-                    onChange={setContent}
-                    modules={modules}
-                    formats={formats}
-                    theme="snow"
-                    className="add-article-form__editor"
-                /> */}
                 <Editor
                     content={content}
                     onChange={setContent}

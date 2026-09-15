@@ -65,29 +65,11 @@
         gap: 0.8rem;
     }
 
+    // The editor draws its own frame (ContentEditor/Editor.scss) and gets this
+    // class on its root, so anything but layout here would double the border,
+    // shadow and clipping.
     &__editor {
-        border-radius: 10px;
-        border: 1px solid #d8d8d8;
-        background: #fff;
-        box-shadow: 0px 6px 7.7px 0px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-
-        .ql-toolbar {
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .ql-container {
-            height: 300px;
-
-            border: none;
-
-            .ql-editor {
-                background-color: #fff;
-
-                border: none;
-            }
-        }
+        width: 100%;
     }
 
     &__select-content {

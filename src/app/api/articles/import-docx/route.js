@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mammoth from "mammoth";
+import { sanitizeRichText } from "@/lib/richText";
 
 // Map Word styles to apicss classes (and standard semantic tags) for our editor.
 // Falls back to plain semantic HTML for any unmapped styles.
@@ -33,7 +34,8 @@ const STYLE_MAP = [
   "strike => s",
 
   // Captions
-  "p[style-name='Caption'] => figcaption.apicss-caption:fresh",
+  // A <p>, not <figcaption>: the editor schema has no figure/caption block.
+  "p[style-name='Caption'] => p.apicss-caption:fresh",
 ];
 
 const OPTIONS = {
@@ -74,7 +76,9 @@ export async function POST(req) {
 
     return NextResponse.json({
       success: true,
-      html: htmlResult.value,
+      // Same allowlist the editor and the article routes use, so what the
+      // importer hands the client is exactly what can be saved.
+      html: sanitizeRichText(htmlResult.value),
       text: textResult.value,
       messages: htmlResult.messages.map((m) => ({
         type: m.type,
