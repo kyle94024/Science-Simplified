@@ -561,6 +561,7 @@ const handleExportToWord = async () => {
                 <Editor
                     content={summary}
                     onChange={setSummary}
+                    variant="simple"
                     className="edit-article-form__editor"
                 />
             </div>
