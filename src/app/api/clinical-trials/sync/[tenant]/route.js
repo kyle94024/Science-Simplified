@@ -825,7 +825,8 @@ VALUES (
         try {
           const trials = await sql`
             SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
-                   ai_eligibility, ai_eligibility_manual, conditions, embedding_source_hash
+                   ai_eligibility, ai_eligibility_manual, conditions, keywords, raw_data,
+                   embedding_source_hash
             FROM clinical_trials
             WHERE nct_id = ANY(${processedTrials})
           `;

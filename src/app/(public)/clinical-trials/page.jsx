@@ -10,6 +10,7 @@ import SearchClinical from "@/components/SearchClinical/SearchClinical";
 import TrialsListPaginated from "@/components/TrialsListPaginated/TrialsListPaginated";
 import useSearchStore from "@/store/useSearchStore";
 import { tenant } from "@/lib/config";
+import { matchesQuery } from "@/lib/clinicalTrials/searchVocabulary";
 import "./ClinicalTrialsPage.scss";
 
 const CONTINENT_MAP = {
@@ -86,24 +87,30 @@ const ClinicalTrialsPage = () => {
     })();
   }, [tab, completedTrials.length]);
 
-  // Are we in semantic-search mode?
-  const semanticActive = semanticResults && semanticResults.length > 0;
-
   // The active list for the current tab
   const baseTrials = tab === "recruiting" ? recruitingTrials : completedTrials;
 
-  // 🔹 Apply substring + filter logic (only when NOT in semantic mode)
+  const tenantKey = (tenant.shortName || "").toUpperCase();
+  const searching = (searchQuery || "").trim().length > 0;
+  // Semantic results exist only for longer descriptions (see SearchClinical) and
+  // are already trimmed to genuine matches server-side; they extend, never
+  // replace, the keyword matches.
+  const semanticActive = searching && semanticResults.length > 0;
+
   const filteredTrials = useMemo(() => {
-    // Semantic results bypass client-side filters
-    if (semanticActive) return semanticResults;
+    // 1. Keyword matches first — on the trial's own vocabulary (official title,
+    //    acronym, conditions, keywords, plus known synonyms such as NF2-SWN), not
+    //    just the patient-friendly rewrite. Then any semantic matches the
+    //    keywords didn't catch, in relevance order.
+    let candidates = baseTrials;
+    if (searching) {
+      const keywordMatches = baseTrials.filter((t) => matchesQuery(t, searchQuery, tenantKey));
+      const seen = new Set(keywordMatches.map((t) => t.nct_id));
+      candidates = [...keywordMatches, ...semanticResults.filter((t) => !seen.has(t.nct_id))];
+    }
 
-    return baseTrials.filter((trial) => {
-      const matchesSearch =
-        !searchQuery ||
-        trial.ai_summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        trial.short_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        trial.nct_id?.toLowerCase().includes(searchQuery.toLowerCase());
-
+    // 2. The manual filters apply to everything, semantic matches included.
+    return candidates.filter((trial) => {
       const minAgeNum = trial.min_age ? parseInt(trial.min_age) : null;
       const matchesAge =
         ageFilter === "all" ||
@@ -124,9 +131,9 @@ const ClinicalTrialsPage = () => {
         (trialTypeFilter === "observational" && type === "observational") ||
         (trialTypeFilter === "expanded" && type === "expanded access");
 
-      return matchesSearch && matchesAge && matchesLocation && matchesTrialType;
+      return matchesAge && matchesLocation && matchesTrialType;
     });
-  }, [baseTrials, semanticActive, semanticResults, searchQuery, ageFilter, locationFilter, trialTypeFilter]);
+  }, [baseTrials, searching, searchQuery, semanticResults, tenantKey, ageFilter, locationFilter, trialTypeFilter]);
 
   // Split into verified/unverified for recruiting tab
   const verifiedTrials = filteredTrials.filter((t) => t.verified_by);
@@ -161,8 +168,7 @@ const ClinicalTrialsPage = () => {
             <SearchClinical placeholder="Search trials or describe your situation…" />
             {semanticActive && (
               <p className="clinical-trials-page__semantic-hint">
-                <Sparkles size={14} /> Semantic search active — showing best matches ranked by relevance.
-                Manual filters are disabled.
+                <Sparkles size={14} /> Also showing the closest matches for your description, ranked by relevance.
               </p>
             )}
             {semanticLoading && (
@@ -173,13 +179,12 @@ const ClinicalTrialsPage = () => {
           </div>
 
           {/* ---------- FILTERS ---------- */}
-          <div className={`clinical-trials-page__filters${semanticActive ? " clinical-trials-page__filters--disabled" : ""}`}>
+          <div className="clinical-trials-page__filters">
             <div className="filter-group">
               <label>Age</label>
               <select
                 value={ageFilter}
                 onChange={(e) => setAgeFilter(e.target.value)}
-                disabled={semanticActive}
               >
                 <option value="all">All Ages</option>
                 <option value="children">Children</option>
@@ -192,7 +197,6 @@ const ClinicalTrialsPage = () => {
               <select
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                disabled={semanticActive}
               >
                 <option value="all">All Locations</option>
                 <option value="north_america">North America</option>
@@ -209,7 +213,6 @@ const ClinicalTrialsPage = () => {
               <select
                 value={trialTypeFilter}
                 onChange={(e) => setTrialTypeFilter(e.target.value)}
-                disabled={semanticActive}
               >
                 <option value="all">All Types</option>
                 <option value="interventional">Interventional</option>
@@ -233,10 +236,14 @@ const ClinicalTrialsPage = () => {
             </div>
           ) : filteredTrials.length === 0 ? (
             <div className="clinical-trials-page__empty">
-              {tab === "recruiting" ? "No clinical trials found" : "No completed studies yet"}
+              {searching
+                ? `No trials match “${searchQuery.trim()}”. Try another word or acronym, or describe your situation in a sentence.`
+                : tab === "recruiting"
+                  ? "No clinical trials found"
+                  : "No completed studies yet"}
             </div>
-          ) : semanticActive ? (
-            // Semantic mode: single ranked list
+          ) : searching ? (
+            // Search results: one list, best matches first
             <TrialsListPaginated trials={filteredTrials} trialsPerPage={6} />
           ) : tab === "recruiting" && verifiedTrials.length > 0 ? (
             // Two-section mode: verified at top, then unverified

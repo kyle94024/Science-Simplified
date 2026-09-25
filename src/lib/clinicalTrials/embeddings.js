@@ -4,6 +4,14 @@
 import crypto from "crypto";
 import openai from "@/lib/openai";
 import { sql } from "@/lib/neon";
+import { expandQueryForEmbedding } from "./searchVocabulary";
+
+/** Results below this cosine similarity are noise, not matches. Calibrated on
+ *  NF: real patient queries score 0.45–0.66, nonsense scores ≤ 0.12, and bare
+ *  acronyms the model doesn't know ("STARFISH") score ~0.2. */
+export const MIN_SIMILARITY = 0.35;
+/** …and a result far weaker than the best one isn't a match either. */
+const MAX_DROP_FROM_TOP = 0.2;
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EMBEDDING_DIM = 1536;
@@ -14,11 +22,22 @@ const EMBEDDING_DIM = 1536;
  * eligibility, and disease context — not metadata.
  */
 function buildEmbeddingInput(trial) {
+  // The registered title, acronym and keywords carry the clinical vocabulary
+  // (STARFISH, "NF2-related schwannomatosis") that the patient-friendly rewrite
+  // leaves out; without them a search for the trial's own name can't find it.
+  const id = trial.raw_data?.protocolSection?.identificationModule || {};
+  const cm = trial.raw_data?.protocolSection?.conditionsModule || {};
+  const keywords = trial.keywords ?? cm.keywords;
   const parts = [
     trial.short_title || trial.short_title_manual || "",
+    [trial.brief_title || id.briefTitle, trial.acronym || id.acronym]
+      .filter(Boolean)
+      .join(" — "),
+    trial.official_title || id.officialTitle || "",
     trial.ai_summary || trial.ai_summary_manual || "",
     trial.ai_eligibility || trial.ai_eligibility_manual || "",
     Array.isArray(trial.conditions) ? trial.conditions.join(", ") : "",
+    Array.isArray(keywords) ? keywords.join(", ") : "",
   ].filter(Boolean);
   return parts.join("\n\n");
 }
@@ -107,13 +126,19 @@ export async function generateEmbeddingsBatched(trials, concurrency = 5, onProgr
  * @returns {Array<object>} trials with similarity score 0-1 ordered desc
  */
 export async function semanticSearchTrials(tenant, query, opts = {}) {
-  const { limit = 20, includeArchived = false } = opts;
+  const {
+    limit = 20,
+    includeArchived = false,
+    minSimilarity = MIN_SIMILARITY,
+    maxDropFromTop = MAX_DROP_FROM_TOP,
+  } = opts;
   if (!query || !query.trim()) return [];
 
-  // Embed the query
+  // Embed the query, with known synonyms spelled out ("NF2-SWN" → also
+  // "NF2-related schwannomatosis, neurofibromatosis type 2, …").
   const res = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
-    input: query.trim(),
+    input: expandQueryForEmbedding(query.trim(), tenant),
   });
   const queryEmbedding = res.data[0].embedding;
   const vectorLiteral = "[" + queryEmbedding.join(",") + "]";
@@ -127,6 +152,10 @@ export async function semanticSearchTrials(tenant, query, opts = {}) {
           COALESCE(short_title_manual, short_title) AS short_title,
           COALESCE(ai_summary_manual, ai_summary) AS ai_summary,
           conditions,
+          keywords,
+          raw_data->'protocolSection'->'identificationModule'->>'briefTitle' AS brief_title,
+          raw_data->'protocolSection'->'identificationModule'->>'officialTitle' AS official_title,
+          raw_data->'protocolSection'->'identificationModule'->>'acronym' AS acronym,
           overall_status,
           verified_by,
           archive_reason,
@@ -149,6 +178,10 @@ export async function semanticSearchTrials(tenant, query, opts = {}) {
           COALESCE(short_title_manual, short_title) AS short_title,
           COALESCE(ai_summary_manual, ai_summary) AS ai_summary,
           conditions,
+          keywords,
+          raw_data->'protocolSection'->'identificationModule'->>'briefTitle' AS brief_title,
+          raw_data->'protocolSection'->'identificationModule'->>'officialTitle' AS official_title,
+          raw_data->'protocolSection'->'identificationModule'->>'acronym' AS acronym,
           overall_status,
           verified_by,
           archive_reason,
@@ -168,5 +201,12 @@ export async function semanticSearchTrials(tenant, query, opts = {}) {
         LIMIT ${limit}
       `;
 
-  return rows;
+  // pgvector always returns the nearest N; "nearest" is not "relevant". Keep
+  // only genuine matches so an off-topic query yields nothing rather than a
+  // list of unrelated trials.
+  const top = rows.length ? Number(rows[0].similarity) : 0;
+  return rows.filter((r) => {
+    const s = Number(r.similarity);
+    return s >= minSimilarity && s >= top - maxDropFromTop;
+  });
 }

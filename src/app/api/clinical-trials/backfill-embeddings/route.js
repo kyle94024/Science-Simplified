@@ -6,6 +6,8 @@ import { generateEmbedding } from "@/lib/clinicalTrials/embeddings";
 /**
  * SSE-streamed backfill of embeddings for trials missing one.
  * Admin only. Iterates all trials for current tenant where embedding IS NULL.
+ * With ?all=1 it visits every trial instead — unchanged ones are skipped by the
+ * input hash, so this is how to pick up a change to what gets embedded.
  */
 export async function GET(req) {
   const authResult = requireAdmin(req);
@@ -18,6 +20,7 @@ export async function GET(req) {
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
+  const everyTrial = new URL(req.url).searchParams.get("all") === "1";
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
@@ -26,17 +29,28 @@ export async function GET(req) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
 
       try {
-        const trials = await sql`
-          SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
-                 ai_eligibility, ai_eligibility_manual, conditions, embedding_source_hash
-          FROM clinical_trials
-          WHERE LOWER(tenant) = LOWER(${tenant})
-            AND embedding IS NULL
-        `;
+        const trials = everyTrial
+          ? await sql`
+              SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
+                     ai_eligibility, ai_eligibility_manual, conditions, keywords, raw_data,
+                     embedding_source_hash
+              FROM clinical_trials
+              WHERE LOWER(tenant) = LOWER(${tenant})
+            `
+          : await sql`
+              SELECT nct_id, short_title, short_title_manual, ai_summary, ai_summary_manual,
+                     ai_eligibility, ai_eligibility_manual, conditions, keywords, raw_data,
+                     embedding_source_hash
+              FROM clinical_trials
+              WHERE LOWER(tenant) = LOWER(${tenant})
+                AND embedding IS NULL
+            `;
 
         send({
           type: "status",
-          message: `Found ${trials.length} trials needing embeddings`,
+          message: everyTrial
+            ? `Checking ${trials.length} trials (unchanged ones are skipped)`
+            : `Found ${trials.length} trials needing embeddings`,
           total: trials.length,
         });
 
