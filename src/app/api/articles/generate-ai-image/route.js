@@ -26,7 +26,7 @@ export async function POST(req) {
         }
 
         // ------------------------------
-        // 1️⃣ Generate AI IMAGE (gpt-image-1)
+        // 1️⃣ Generate AI IMAGE (gpt-image-1.5; gpt-image-1 was retired 2026-10-23)
         // ------------------------------
         const prompt = `
 Create a clean, high-quality scientific illustration based on the following text:
@@ -41,11 +41,11 @@ IMPORTANT:
 `;
 
         const aiImage = await openai.images.generate({
-            model: "gpt-image-1",
+            model: "gpt-image-1.5",
             prompt,
-            size: "1792x1024", // landscape orientation as requested
+            size: "1536x1024", // landscape; the gpt-image family has no 1792x1024
             quality: "high",
-            response_format: "b64_json",
+            // (no response_format: gpt-image models always return b64_json)
         });
 
         const base64Image = aiImage.data[0].b64_json;

@@ -26,7 +26,7 @@ const exampleHtmlPath = path.join(
 export async function summarizeArticle(content) {
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4.1-nano", // Fastest OpenAI model for simple summarization
+            model: "gpt-4.1-mini", // gpt-4.1-nano was retired 2026-10-23
             messages: [
                 {
                     role: "system",
@@ -194,7 +194,7 @@ CRITICAL RULES — follow these exactly:
 export async function translatePlainText(text, targetLanguage, languageName) {
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4.1-nano",
+            model: "gpt-4.1-mini", // gpt-4.1-nano was retired 2026-10-23
             messages: [
                 {
                     role: "system",

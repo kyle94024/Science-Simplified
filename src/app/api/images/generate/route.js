@@ -45,7 +45,7 @@ export async function POST(req) {
     // Build prompt — keep it clear, instruct "no text"
     const prompt = `${text}\n\nCreate a clean scientific illustration (no text on the image) that visually represents the simplified article above. Minimalistic, clear, high-quality, suitable as a magazine-style cover image.`;
 
-    // Call OpenAI Images (gpt-image-1) - returns base64
+    // Call OpenAI Images (gpt-image-1.5; gpt-image-1 was retired 2026-10-23) - returns base64
     const openaiResp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
@@ -53,7 +53,7 @@ export async function POST(req) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-image-1",
+        model: "gpt-image-1.5",
         prompt,
         size: "1536x1024",   // <- change here (supported)
         // you may set other options the API supports
