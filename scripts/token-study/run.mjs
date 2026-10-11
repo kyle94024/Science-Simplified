@@ -172,6 +172,9 @@ for (const ex of examples) {
                 cost_usd_uncached: cost(u, 0, price),
                 output_chars: html.length, output_words: words(plain).length,
                 output_paragraphs: (html.match(/<p\b/gi) || []).length,
+                // The prompt requires "Not reported" / "Unclear from the paper" whenever the
+                // source lacks something — a direct measure of what an abstract leaves out.
+                not_reported_mentions: (plain.match(/not reported|unclear from the (paper|study|article|abstract)/gi) || []).length,
                 flesch_reading_ease: readability(plain).ease,
                 flesch_kincaid_grade: readability(plain).grade,
                 usage_raw: u,
@@ -299,26 +302,26 @@ function markdownReport({ model, tenant, repeats, scaffold_tokens_local, prices_
     const L = [];
     L.push(`# Token study — ${model} (tenant ${tenant}${repeats > 1 ? `, ${repeats} runs each` : ""})`, "");
     L.push(`Fixed prompt scaffolding on every call: **~${scaffold_tokens_local} tokens** (system instruction + example output HTML/CSS). Prices used (USD/1M): input ${prices_usd_per_1m.input ?? "?"}, cached ${prices_usd_per_1m.cached ?? "?"}, output ${prices_usd_per_1m.output ?? "?"} — verify at openai.com/api/pricing.`, "");
-    L.push("| example | variant | article tok (local) | input tok (API) | cached | output tok (incl. hidden) | hidden reasoning | total | cost | cost if uncached | out words | ¶ | FK grade | s |");
-    L.push("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|");
+    L.push("| example | variant | article tok (local) | input tok (API) | cached | output tok (incl. hidden) | hidden reasoning | total | cost | cost if uncached | out words | ¶ | \"not reported\" | FK grade | s |");
+    L.push("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|");
     for (const r of rows) {
         const v = r.run > 1 ? `${r.variant} #${r.run}` : r.variant;
         if (r.error) { L.push(`| ${r.example} | ${v} | ${r.article_tokens_local} | — | — | — | — | — | — | — | — | — | — | FAILED: ${r.error} |`); continue; }
         if (r.input_tokens == null) { L.push(`| ${r.example} | ${v} | ${r.article_tokens_local} | (dry run ≈ ${r.input_tokens_local}) | | | | | | | | | | |`); continue; }
-        L.push(`| ${r.example} | ${v} | ${r.article_tokens_local} | ${r.input_tokens} | ${r.cached_input_tokens} | ${r.output_tokens} | ${r.reasoning_tokens} | ${r.total_tokens} | ${fmtCost(r.cost_usd)} | ${fmtCost(r.cost_usd_uncached)} | ${r.output_words} | ${r.output_paragraphs} | ${r.flesch_kincaid_grade ?? ""} | ${r.seconds} |`);
+        L.push(`| ${r.example} | ${v} | ${r.article_tokens_local} | ${r.input_tokens} | ${r.cached_input_tokens} | ${r.output_tokens} | ${r.reasoning_tokens} | ${r.total_tokens} | ${fmtCost(r.cost_usd)} | ${fmtCost(r.cost_usd_uncached)} | ${r.output_words} | ${r.output_paragraphs} | ${r.not_reported_mentions} | ${r.flesch_kincaid_grade ?? ""} | ${r.seconds} |`);
     }
     // per-example comparison
     const byEx = new Map();
     for (const r of rows) { if (r.input_tokens == null) continue; const e = byEx.get(r.example) || {}; (e[r.variant] ||= []).push(r); byEx.set(r.example, e); }
     if (byEx.size) {
-        L.push("", "## Full paper vs. abstract", "", "| example | input tokens | output tokens | cost (uncached) | out words | FK grade |", "|---|---:|---:|---:|---:|---:|");
+        L.push("", "## Full paper vs. abstract", "", "| example | input tokens | output tokens | cost (uncached) | out words | \"not reported\" | FK grade |", "|---|---:|---:|---:|---:|---:|---:|");
         const avg = (xs, k) => xs.reduce((n, x) => n + (x[k] || 0), 0) / xs.length;
         const totals = { ai: 0, fi: 0, ao: 0, fo: 0, ac: 0, fc: 0 };
         for (const [name, e] of byEx) {
             if (!e.abstract || !e.full) continue;
             const a = e.abstract, f = e.full;
             const ratio = (x, y) => (y ? `${round(x / y, 2)}×` : "—");
-            L.push(`| ${name} | ${round(avg(a, "input_tokens"), 0)} → ${round(avg(f, "input_tokens"), 0)} (${ratio(avg(f, "input_tokens"), avg(a, "input_tokens"))}) | ${round(avg(a, "output_tokens"), 0)} → ${round(avg(f, "output_tokens"), 0)} (${ratio(avg(f, "output_tokens"), avg(a, "output_tokens"))}) | ${fmtCost(avg(a, "cost_usd_uncached"))} → ${fmtCost(avg(f, "cost_usd_uncached"))} | ${round(avg(a, "output_words"), 0)} → ${round(avg(f, "output_words"), 0)} | ${round(avg(a, "flesch_kincaid_grade"), 1)} → ${round(avg(f, "flesch_kincaid_grade"), 1)} |`);
+            L.push(`| ${name} | ${round(avg(a, "input_tokens"), 0)} → ${round(avg(f, "input_tokens"), 0)} (${ratio(avg(f, "input_tokens"), avg(a, "input_tokens"))}) | ${round(avg(a, "output_tokens"), 0)} → ${round(avg(f, "output_tokens"), 0)} (${ratio(avg(f, "output_tokens"), avg(a, "output_tokens"))}) | ${fmtCost(avg(a, "cost_usd_uncached"))} → ${fmtCost(avg(f, "cost_usd_uncached"))} | ${round(avg(a, "output_words"), 0)} → ${round(avg(f, "output_words"), 0)} | ${round(avg(a, "not_reported_mentions"), 1)} → ${round(avg(f, "not_reported_mentions"), 1)} | ${round(avg(a, "flesch_kincaid_grade"), 1)} → ${round(avg(f, "flesch_kincaid_grade"), 1)} |`);
             totals.ai += avg(a, "input_tokens"); totals.fi += avg(f, "input_tokens"); totals.ao += avg(a, "output_tokens"); totals.fo += avg(f, "output_tokens"); totals.ac += avg(a, "cost_usd_uncached"); totals.fc += avg(f, "cost_usd_uncached");
         }
         L.push(`| **all** | ${round(totals.ai, 0)} → ${round(totals.fi, 0)} | ${round(totals.ao, 0)} → ${round(totals.fo, 0)} | ${fmtCost(totals.ac)} → ${fmtCost(totals.fc)} | | |`);
@@ -332,8 +335,10 @@ function previewPage(report, dir) {
     const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
     const byEx = new Map();
     for (const r of report.rows) { if (!r.output_file) continue; const e = byEx.get(r.example) || {}; (e[r.variant] ||= []).push(r); byEx.set(r.example, e); }
-    const col = (r) => `<section class="col"><header><h3>${esc(r.variant)}${r.run > 1 ? ` #${r.run}` : ""}</h3><p class="meta">in ${r.input_tokens} tok (cached ${r.cached_input_tokens}) · out ${r.output_tokens} tok · ${fmtCost(r.cost_usd)} · ${r.output_words} words · FK ${r.flesch_kincaid_grade}</p></header><div class="out">${fs.readFileSync(path.join(REPO, r.output_file), "utf8")}</div></section>`;
-    const blocks = [...byEx].map(([name, e]) => `<article class="example"><h2>${esc(name)}</h2><div class="cols">${[...(e.abstract || []), ...(e.full || [])].map(col).join("")}</div></article>`).join("");
+    const col = (r) => `<section class="col"><header><h3>${esc(r.variant)}${r.run > 1 ? ` #${r.run}` : ""}</h3><p class="meta">in ${r.input_tokens} tok (cached ${r.cached_input_tokens}) · out ${r.output_tokens} tok · ${fmtCost(r.cost_usd)} · ${r.output_words} words · "not reported" ×${r.not_reported_mentions} · FK ${r.flesch_kincaid_grade}</p></header><div class="out">${fs.readFileSync(path.join(REPO, r.output_file), "utf8")}</div></section>`;
+    // One column per variant (run #1) keeps it readable; extra runs stay on disk as <variant>.rN.html.
+    const extra = report.repeats > 1 ? `<p class="meta">Showing run 1 of ${report.repeats}; the other runs are in this folder as abstract.rN.html / full.rN.html.</p>` : "";
+    const blocks = [...byEx].map(([name, e]) => `<article class="example"><h2>${esc(name)}</h2>${extra}<div class="cols">${[...(e.abstract || []), ...(e.full || [])].filter((r) => r.run === 1).map(col).join("")}</div></article>`).join("");
     return `<!doctype html><meta charset="utf-8"><title>Token study ${esc(report.model)} — ${esc(path.basename(dir))}</title>
 <style>${css}
 body{font-family:system-ui,sans-serif;margin:0;background:#f6f7f8;color:#111} .page{max-width:1500px;margin:0 auto;padding:24px}
