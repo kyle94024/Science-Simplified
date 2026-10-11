@@ -5,10 +5,10 @@ import { simplifyArticle } from "@/utils/apiHelpers";
 
 export async function POST(req) {
     try {
-        const { content, lengthString } = await req.json();
+        const { content } = await req.json();
 
         // Use the utility function to simplify the article
-        const simplified = await simplifyArticle(content, lengthString);
+        const simplified = await simplifyArticle(content);
 
         return NextResponse.json({ simplified });
     } catch (error) {

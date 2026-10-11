@@ -50,8 +50,6 @@ const AddArticleForm = () => {
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState("");
     const [content, setContent] = useState("");
-    const [simplifyLength, setSimplifyLength] = useState(7);
-    const [simplifyUnit, setSimplifyUnit] = useState("paragraphs");
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(null);
     const [pdfLoader, setPdfLoader] = useState(false);
@@ -170,16 +168,6 @@ const AddArticleForm = () => {
         //     return;
         // }
 
-        // if (!simplifyLength || simplifyLength <= 0) {
-        //     toast.error("Please enter a valid simplification length");
-        //     return;
-        // }
-
-        // if (!simplifyUnit) {
-        //     toast.error("Please select a simplification unit");
-        //     return;
-        // }
-
         setIsLoading(true);
 
         try {
@@ -194,7 +182,6 @@ const AddArticleForm = () => {
                     innertext: content,
                     article_link: sourceLink,
                     authors: authors,
-                    simplifyLength: `${simplifyLength} ${simplifyUnit}`,
                     publisher: user,
                     image_url: imageUrl,
                     role: role,
@@ -599,77 +586,6 @@ const AddArticleForm = () => {
                     onChange={setContent}
                     className="add-article-form__editor"
                 />
-            </div>
-
-            <div className="add-article-form__row">
-                <div className="add-article-form__field" hidden={true}>
-                    <Label 
-                        htmlFor="simplifyLength"
-                        className="add-article-form__label"
-                    >
-                        Simplify Length
-                    </Label>
-                    <Input 
-                        id="simplifyLength"
-                        type="number"
-                        className="add-article-form__input"
-                        value={simplifyLength}
-                        onChange={(e) => setSimplifyLength(e.target.value)}
-                        placeholder="Enter quantity"
-                        min="1"
-                    />
-                </div>
-                <div className="add-article-form__field" hidden={true}>
-                    <Label 
-                        htmlFor="simplifyUnit"
-                        className="add-article-form__label"
-                    >
-                        Unit
-                    </Label>
-                    <Select 
-                        value={simplifyUnit}
-                        onValueChange={(value) => setSimplifyUnit(value)}
-                    >
-                        <SelectTrigger
-                            id="simplifyUnit"
-                            className="add-article-form__input add-article-form__select"
-                        >
-                            <SelectValue placeholder="Select unit" />
-                        </SelectTrigger>
-                        <SelectContent className="add-article-form__select-content">
-                            <SelectItem
-                                className="add-article-form__select-item"
-                                value="paragraphs"
-                            >
-                                Paragraphs
-                            </SelectItem>
-                            <SelectItem
-                                className="add-article-form__select-item"
-                                value="words"
-                            >
-                                Words
-                            </SelectItem>
-                            <SelectItem
-                                className="add-article-form__select-item"
-                                value="percent"
-                            >
-                                Percent
-                            </SelectItem>
-                            <SelectItem
-                                className="add-article-form__select-item"
-                                value="characters"
-                            >
-                                Characters
-                            </SelectItem>
-                            <SelectItem
-                                className="add-article-form__select-item"
-                                value="sentences"
-                            >
-                                Sentences
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
             </div>
 
             <div className="add-article-form__field">

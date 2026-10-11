@@ -63,7 +63,7 @@ const { encode } = await import("gpt-tokenizer/encoding/o200k_base"); // gpt-4.1
 const model = args.model || SIMPLIFY_MODEL;
 // Reasoning models (gpt-5 family, o-series) are the only ones with hidden
 // "reasoning" tokens, and they reject the production sampling parameters.
-const isReasoningModel = /^(gpt-5|o\d)/.test(model);
+const isReasoningModel = /^(gpt-5|gpt-6|o\d)/.test(model);
 const repeats = Math.max(1, Number(args.repeats) || 1);
 const examplesDir = path.resolve(args.examples || path.join(HERE, "examples"));
 
@@ -123,7 +123,7 @@ for (const ex of examples) {
     fs.mkdirSync(exDir, { recursive: true });
     for (const variant of ["abstract", "full"]) {
         const text = await ex.read(variant);
-        const request = adaptForModel({ ...buildSimplifyRequest(text), model });
+        const request = buildSimplifyRequest(text, { model });
         const localInput = countMessages(request.messages);
         const articleTokens = encode(text).length;
 
@@ -259,13 +259,6 @@ async function readDocument(file) {
     }
     const raw = fs.readFileSync(file, "utf8");
     return (ext === ".html" || ext === ".htm" ? stripHtml(raw) : raw).trim();
-}
-
-/** Same prompt; only the sampling parameters a reasoning model rejects are changed. */
-function adaptForModel(request) {
-    if (!isReasoningModel) return request;
-    const { temperature, max_tokens, ...rest } = request;
-    return { ...rest, max_completion_tokens: max_tokens };
 }
 
 /** Chat-format token count: each message carries a few framing tokens. */

@@ -44,15 +44,35 @@ export async function summarizeArticle(content) {
     }
 }
 
-/** The model behind the main article summary. */
+/**
+ * The model behind the main article summary.
+ *
+ * To change it, edit SIMPLIFY_MODEL (and SIMPLIFY_REASONING_EFFORT for
+ * reasoning models). To revert to the original setup, set them back to:
+ *     SIMPLIFY_MODEL = "gpt-4.1-mini"; SIMPLIFY_REASONING_EFFORT = null;
+ * (gpt-4.1-mini, temperature 0.7, max_tokens 32768 — production until 2026-10).
+ *
+ * Candidates are compared with scripts/simplify-eval (runtime, formatting,
+ * editor compatibility, grounding) before switching.
+ */
 export const SIMPLIFY_MODEL = "gpt-4.1-mini"; // Better at following complex formatting than nano
+export const SIMPLIFY_REASONING_EFFORT = null; // only used by reasoning models
+
+/** gpt-5*, gpt-6*, o* models reason before answering and take different parameters. */
+export function isReasoningModel(model) {
+    return /^(gpt-5|gpt-6|o\d)/.test(model);
+}
 
 /**
  * The exact Chat Completions request simplifyArticle sends (minus `stream`).
- * Shared with scripts/token-study so token measurements use the production
- * prompt byte-for-byte rather than a copy that drifts.
+ * Shared with scripts/token-study and scripts/simplify-eval so measurements use
+ * the production prompt byte-for-byte rather than a copy that drifts. `model` /
+ * `reasoningEffort` let those scripts try other models with the same prompt.
  */
-export function buildSimplifyRequest(content) {
+export function buildSimplifyRequest(
+    content,
+    { model = SIMPLIFY_MODEL, reasoningEffort = SIMPLIFY_REASONING_EFFORT } = {}
+) {
         // NF-specific addendum for updated nomenclature
         const nfAddendum = tenant.shortName === "NF" ? `
 IMPORTANT - NF NOMENCLATURE:
@@ -112,8 +132,18 @@ Make your output simpler in language than the example provided.
             { role: "user", content: `Now simplify this article:\n\n${content}` },
             ];
 
+        // Reasoning models reject max_tokens/temperature; they take an effort level
+        // instead (and spend part of max_completion_tokens on hidden reasoning).
+        if (isReasoningModel(model)) {
+            return {
+                model,
+                messages,
+                max_completion_tokens: 32768,
+                ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
+            };
+        }
         return {
-            model: SIMPLIFY_MODEL,
+            model,
             messages,
             max_tokens: 32768,
             temperature: 0.7,
@@ -129,7 +159,7 @@ export function cleanSimplifiedHtml(html) {
     return out.trim();
 }
 
-export async function simplifyArticle(content, lengthString) {
+export async function simplifyArticle(content) {
     try {
             // Stream so you can handle very long outputs incrementally
             const stream = await openai.chat.completions.create(

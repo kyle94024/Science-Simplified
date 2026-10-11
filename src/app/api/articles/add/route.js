@@ -10,7 +10,6 @@ export async function POST(req) {
             tags,
             innertext,
             article_link,
-            simplifyLength,
             publisher,
             image_url,
             role,
@@ -24,7 +23,7 @@ export async function POST(req) {
 
         // Generate the summary and simplified content
         const summary = await summarizeArticle(innertext);
-        const simplified = await simplifyArticle(innertext, simplifyLength);
+        const simplified = await simplifyArticle(innertext);
 
         // Start a transaction to ensure consistency
         await query("BEGIN");

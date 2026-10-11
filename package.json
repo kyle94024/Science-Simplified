@@ -9,7 +9,8 @@
     "lint": "next lint",
     "roundtrip": "node --no-warnings scripts/richtext-roundtrip.mjs",
     "roundtrip:selftest": "node --no-warnings scripts/richtext-roundtrip.mjs --selftest",
-    "token-study": "node scripts/token-study/run.mjs"
+    "token-study": "node scripts/token-study/run.mjs",
+    "simplify-eval": "node scripts/simplify-eval/run.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
