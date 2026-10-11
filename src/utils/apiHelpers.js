@@ -44,8 +44,15 @@ export async function summarizeArticle(content) {
     }
 }
 
-export async function simplifyArticle(content, lengthString) {
-    try {
+/** The model behind the main article summary. */
+export const SIMPLIFY_MODEL = "gpt-4.1-mini"; // Better at following complex formatting than nano
+
+/**
+ * The exact Chat Completions request simplifyArticle sends (minus `stream`).
+ * Shared with scripts/token-study so token measurements use the production
+ * prompt byte-for-byte rather than a copy that drifts.
+ */
+export function buildSimplifyRequest(content) {
         // NF-specific addendum for updated nomenclature
         const nfAddendum = tenant.shortName === "NF" ? `
 IMPORTANT - NF NOMENCLATURE:
@@ -104,16 +111,29 @@ Make your output simpler in language than the example provided.
             { role: "assistant", content: exampleoutput + examplecss },
             { role: "user", content: `Now simplify this article:\n\n${content}` },
             ];
-        
+
+        return {
+            model: SIMPLIFY_MODEL,
+            messages,
+            max_tokens: 32768,
+            temperature: 0.7,
+        };
+}
+
+/** Production: strip the ``` fences the model sometimes adds. */
+export function cleanSimplifiedHtml(html) {
+    let out = html;
+    if (out.startsWith("```html")) {
+        out = out.replace(/^```html\s*/, "").replace(/\s*```$/, "");
+    }
+    return out.trim();
+}
+
+export async function simplifyArticle(content, lengthString) {
+    try {
             // Stream so you can handle very long outputs incrementally
             const stream = await openai.chat.completions.create(
-            {
-                model: "gpt-4.1-mini", // Better at following complex formatting than nano
-                messages,
-                max_tokens: 32768,
-                temperature: 0.7,
-                stream: true,
-            },
+            { ...buildSimplifyRequest(content), stream: true },
             { responseType: "stream" }
             );
         
@@ -125,12 +145,7 @@ Make your output simpler in language than the example provided.
             }
             }
         
-            // strip fences if present
-            if (html.startsWith("```html")) {
-            html = html.replace(/^```html\s*/, "").replace(/\s*```$/, "");
-            }
-    
-        return html.trim();
+        return cleanSimplifiedHtml(html);
     } catch (error) {
         console.error("Error simplifying article:", error);
         throw error;

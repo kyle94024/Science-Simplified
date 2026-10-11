@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "roundtrip": "node --no-warnings scripts/richtext-roundtrip.mjs",
-    "roundtrip:selftest": "node --no-warnings scripts/richtext-roundtrip.mjs --selftest"
+    "roundtrip:selftest": "node --no-warnings scripts/richtext-roundtrip.mjs --selftest",
+    "token-study": "node scripts/token-study/run.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -74,6 +75,7 @@
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "15.2.6",
+    "gpt-tokenizer": "^4.0.0",
     "jsdom": "^27.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"

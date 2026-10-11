@@ -39,3 +39,8 @@ next-env.d.ts
 # stray build archive — never commit
 src.zip
 *.zip
+
+# token study inputs (papers) and outputs — local only
+scripts/token-study/examples/*
+!scripts/token-study/examples/README.md
+scripts/token-study/results/
