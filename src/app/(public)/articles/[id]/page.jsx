@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./ArticlePage.scss";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
@@ -16,6 +16,7 @@ import useAuthStore from "@/store/useAuthStore";
 import { HeartFilledIcon } from "@radix-ui/react-icons";
 import { SUPPORTED_LANGUAGES, TRANSLATION_WARNINGS, TRANSLATION_LOADING_MESSAGES } from "@/lib/translationWarnings";
 import { tenant } from "@/lib/config";
+import { useArticleLanguage } from "@/hooks/useArticleLanguage";
 
 import { format } from "date-fns";
 
@@ -36,6 +37,17 @@ const ArticlePage = ({ params }) => {
     const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [translation, setTranslation] = useState(null);
     const [translating, setTranslating] = useState(false);
+    // Site-wide article language (NF): this page follows the reader's choice and
+    // its language buttons set it. Elsewhere the buttons work per page as before.
+    const {
+        enabled: siteLanguage,
+        ready: siteLanguageReady,
+        language: siteLang,
+        setLanguage: setSiteLanguage,
+    } = useArticleLanguage();
+    const translationRequest = useRef(0); // newest request wins when switching quickly
+    const selectedLanguageRef = useRef(null);
+    const failedLanguages = useRef(new Set()); // don't auto-retry a failed one on this page
 
     // Audio state
     const [regeneratingAudio, setRegeneratingAudio] = useState(false);
@@ -177,31 +189,104 @@ const ArticlePage = ({ params }) => {
         return () => clearInterval(interval);
     }, [isAdmin, article, id]);
 
-    const handleTranslate = async (langCode) => {
-        if (langCode === selectedLanguage) {
-            // Clicking the same language again → revert to English
-            setSelectedLanguage(null);
+    /**
+     * Show the article in `langCode` (null = English). Stored translations come
+     * back immediately; a first-time one is generated server-side (202 = another
+     * request is already generating it — poll). The English text stays on screen
+     * until the translation arrives, and a newer choice cancels an older one.
+     */
+    const loadTranslation = useCallback(async (langCode) => {
+        const request = ++translationRequest.current;
+        selectedLanguageRef.current = langCode;
+        setSelectedLanguage(langCode);
+        if (!langCode) {
             setTranslation(null);
+            setTranslating(false);
             return;
         }
-
-        setSelectedLanguage(langCode);
         setTranslating(true);
         try {
-            const res = await fetch(
-                `/api/articles/${id}/translate?lang=${langCode}`
-            );
-            if (!res.ok) throw new Error("Translation failed");
-            const data = await res.json();
-            setTranslation(data);
+            const deadline = Date.now() + 90_000;
+            for (;;) {
+                const res = await fetch(`/api/articles/${id}/translate?lang=${langCode}`);
+                if (request !== translationRequest.current) return;
+                if (res.status === 202 && Date.now() < deadline) {
+                    await new Promise((r) => setTimeout(r, 3000));
+                    if (request !== translationRequest.current) return;
+                    continue;
+                }
+                if (res.status === 404) {
+                    // No such article — the page already shows its own error.
+                    selectedLanguageRef.current = null;
+                    setSelectedLanguage(null);
+                    setTranslation(null);
+                    return;
+                }
+                if (!res.ok) throw new Error(`Translation failed (${res.status})`);
+                const data = await res.json();
+                if (request !== translationRequest.current) return;
+                setTranslation(data);
+                break;
+            }
         } catch (e) {
+            if (request !== translationRequest.current) return;
             console.error("Translation error:", e);
-            toast.error("Failed to load translation. Please try again.");
+            failedLanguages.current.add(langCode);
+            toast.error("This translation isn't available right now. Showing the original English.");
+            selectedLanguageRef.current = null;
             setSelectedLanguage(null);
+            setTranslation(null);
         } finally {
-            setTranslating(false);
+            if (request === translationRequest.current) setTranslating(false);
         }
+    }, [id]);
+
+    // Follow the site-wide language (NF). The translation only needs the id, so it
+    // loads in parallel with the English article rather than after it.
+    useEffect(() => {
+        if (!siteLanguage || !siteLanguageReady) return;
+        const target = siteLang === "en" ? null : siteLang;
+        if (target && failedLanguages.current.has(target)) return;
+        if (target !== selectedLanguageRef.current) loadTranslation(target);
+    }, [siteLanguage, siteLanguageReady, siteLang, loadTranslation]);
+
+    // Language buttons: pick a language, or click the current one / "English" to go back.
+    const handleTranslate = (langCode) => {
+        const next = langCode && langCode !== selectedLanguage ? langCode : null;
+        if (!siteLanguage) {
+            loadTranslation(next);
+            return;
+        }
+        if (next) failedLanguages.current.delete(next); // an explicit click retries
+        const nextSite = next || "en";
+        setSiteLanguage(nextSite); // persists; the effect above loads it…
+        if (nextSite === siteLang) loadTranslation(next); // …unless it was already the site language
     };
+
+    // The translation on screen (only once it matches the chosen language).
+    const activeTranslation =
+        selectedLanguage && translation && translation.language === selectedLanguage ? translation : null;
+
+    // Reading in another language: hold the page loader briefly so the English
+    // text doesn't flash first. A stored translation lands well within the hold;
+    // a first-time one (generated now, ~15s) releases it and the English text
+    // shows with the "translating" note instead of a long blank wait.
+    const [translationSlow, setTranslationSlow] = useState(false);
+    useEffect(() => {
+        if (!translating) return;
+        setTranslationSlow(false);
+        const timer = setTimeout(() => setTranslationSlow(true), 1200);
+        return () => clearTimeout(timer);
+    }, [translating, selectedLanguage]);
+    // Only on first load: switching languages mid-read keeps the article on screen.
+    const [contentShown, setContentShown] = useState(false);
+    const holdForTranslation =
+        siteLanguage &&
+        !contentShown &&
+        (!siteLanguageReady || (!!selectedLanguage && translating && !activeTranslation && !translationSlow));
+    useEffect(() => {
+        if (!loading && article && !holdForTranslation) setContentShown(true);
+    }, [loading, article, holdForTranslation]);
 
     const handleRegenerateAudio = async () => {
         setRegeneratingAudio(true);
@@ -254,7 +339,7 @@ const ArticlePage = ({ params }) => {
             <ToastContainer />
             <div className="article-page__content padding">
                 <div className="boxed">
-                    {loading ? (
+                    {loading || holdForTranslation ? (
                         <div className="article-page__loader">
                             <SectionLoader />
                         </div>
@@ -264,9 +349,12 @@ const ArticlePage = ({ params }) => {
                         <article className="article-page__article">
                             <div className="flex flex-col gap-16">
                                 <div className="article-page__article-details">
-                                    <h1 className="article-page__title heading-tertiary">
-                                        {selectedLanguage && translation
-                                            ? translation.translated_title
+                                    <h1
+                                        className="article-page__title heading-tertiary"
+                                        lang={activeTranslation ? selectedLanguage : undefined}
+                                    >
+                                        {activeTranslation
+                                            ? activeTranslation.translated_title
                                             : article.title}
                                     </h1>
                                     <div className="mb-4">
@@ -442,7 +530,7 @@ const ArticlePage = ({ params }) => {
                             ) : null}
 
                             {/* Translation warning banner */}
-                            {selectedLanguage && translation && (
+                            {activeTranslation && (
                                 <div className="article-page__translation-warning">
                                     <div className="article-page__translation-warning-header">
                                         <AlertTriangle className="w-8 h-8" />
@@ -476,31 +564,32 @@ const ArticlePage = ({ params }) => {
                                     Summary
                                 </h2>
                                 <div
+                                    lang={activeTranslation ? selectedLanguage : undefined}
                                     dangerouslySetInnerHTML={{
-                                        __html:
-                                            selectedLanguage && translation
-                                                ? translation.translated_summary
-                                                : article.summary,
+                                        __html: activeTranslation
+                                            ? activeTranslation.translated_summary
+                                            : article.summary,
                                     }}
                                 ></div>
                             </div>
 
-                            {translating ? (
-                                <div className="article-page__translating">
-                                    <Loader2 className="h-12 w-12 animate-spin" />
+                            {/* While a translation loads, the current text stays readable;
+                                the note only appears if it takes more than a moment. */}
+                            {translating && translationSlow && (
+                                <div className="article-page__translating" role="status">
+                                    <Loader2 className="h-6 w-6 animate-spin" />
                                     <p>{TRANSLATION_LOADING_MESSAGES[selectedLanguage] || "The translation may take a moment. Thank you for your patience."}</p>
                                 </div>
-                            ) : (
-                                <div
-                                    className="article-page__content-text apicss-body"
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            selectedLanguage && translation
-                                                ? translation.translated_innertext
-                                                : article.innertext,
-                                    }}
-                                ></div>
                             )}
+                            <div
+                                className="article-page__content-text apicss-body"
+                                lang={activeTranslation ? selectedLanguage : undefined}
+                                dangerouslySetInnerHTML={{
+                                    __html: activeTranslation
+                                        ? activeTranslation.translated_innertext
+                                        : article.innertext,
+                                }}
+                            ></div>
 
                             {/* Language selector */}
                             <div className="article-page__translation-selector">
@@ -512,10 +601,7 @@ const ArticlePage = ({ params }) => {
                                     {selectedLanguage && (
                                         <button
                                             className="article-page__lang-btn article-page__lang-btn--active"
-                                            onClick={() => {
-                                                setSelectedLanguage(null);
-                                                setTranslation(null);
-                                            }}
+                                            onClick={() => handleTranslate(null)}
                                         >
                                             English
                                         </button>
@@ -531,7 +617,7 @@ const ArticlePage = ({ params }) => {
                                             onClick={() =>
                                                 handleTranslate(lang.code)
                                             }
-                                            disabled={translating}
+                                            aria-pressed={selectedLanguage === lang.code}
                                         >
                                             {lang.nativeName}
                                         </button>

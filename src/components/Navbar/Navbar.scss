@@ -564,6 +564,12 @@ header {
         }
     }
 
+    .navbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
     .auth-buttons {
         display: flex;
         gap: 1rem;

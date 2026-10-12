@@ -208,13 +208,18 @@
     // Translation loading state
     &__translating {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 1.6rem;
-        padding: 6rem 2rem;
-        color: #666;
-        font-size: 1.6rem;
+        gap: 1rem;
+        margin: 0 0 1.6rem;
+        padding: 1rem 1.4rem;
+        border-radius: 0.8rem;
+        background: #f0faf7;
+        color: #2c7a6c;
+        font-size: 1.4rem;
+
+        svg {
+            flex: none;
+        }
     }
 
     // Language selector
@@ -561,5 +566,3 @@
     flex-shrink: 0;
   }
 }
-
-

@@ -12,6 +12,8 @@ import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExt
 import useSearchStore from "@/store/useSearchStore";
 import useAuthStore from "@/store/useAuthStore";
 import { tenant } from "@/lib/config";
+import { useArticleLanguage } from "@/hooks/useArticleLanguage";
+import { useTranslationOverlay, applyTranslationOverlay } from "@/hooks/useTranslationOverlay";
 import {
     Select,
     SelectContent,
@@ -28,6 +30,11 @@ const ArticleSearchPage = () => {
     const [error, setError] = useState(false);
     const [sortBy, setSortBy] = useState("recent");
 
+    // Reader's language (NF): cards switch to stored translations where they exist,
+    // and search also matches the translated text.
+    const { language, ready } = useArticleLanguage();
+    const { overlay, loading: translationsLoading } = useTranslationOverlay(language, ready);
+
     const isHS = tenant.shortName === "HS";
     // While the partner takeover is ON, patients get a pointer card instead of
     // the listing and only staff see it; while it's OFF, everyone sees the
@@ -38,8 +45,9 @@ const ArticleSearchPage = () => {
     useEffect(() => {
     const fetchArticles = async () => {
         try {
+            const langParam = language !== "en" ? `&lang=${language}` : "";
             const response = await fetch(
-                `/api/articles?search=${searchQuery}`
+                `/api/articles?search=${encodeURIComponent(searchQuery)}${langParam}`
             );
             if (!response.ok) throw new Error("Failed to fetch articles");
             const data = await response.json();
@@ -57,9 +65,11 @@ const ArticleSearchPage = () => {
         setLoading(false);
         return;
     }
+    // Wait for the saved language so a search isn't run twice.
+    if (!ready) return;
 
     fetchArticles();
-}, [searchQuery, sortBy, patientExternalView]);
+}, [searchQuery, sortBy, patientExternalView, language, ready]);
 
    const parseDateSafe = (dateStr) => {
   if (!dateStr) return 0;
@@ -107,7 +117,9 @@ const sortArticles = (articlesToSort) => {
 
   return articlesToSort;
 };
-    const filteredArticles = articles.filter((article) => {
+    // In another language the server already matched the translations too, so its
+    // results stand; the English-only re-filter below would drop those matches.
+    const filteredArticles = language !== "en" ? articles : articles.filter((article) => {
     const query = searchQuery.toLowerCase();
 
     const titleMatch = article.title?.toLowerCase().includes(query);
@@ -186,7 +198,7 @@ const sortArticles = (articlesToSort) => {
                     )}
 
                     {/* ---------- MAIN CONTENT ---------- */}
-                    {loading ? (
+                    {loading || translationsLoading ? (
                         <div className="article-search-page__loading">
                             {[...Array(6)].map((_, index) => (
                                 <ArticleCardSkeleton key={index} />
@@ -201,7 +213,7 @@ const sortArticles = (articlesToSort) => {
                         </div>
                     ) : (
                         <ArticlesListPaginated
-                            articles={sortedArticles}
+                            articles={applyTranslationOverlay(sortedArticles, overlay, language)}
                             articlesPerPage={6}
                         />
                     )}

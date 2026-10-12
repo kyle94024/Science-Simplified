@@ -42,7 +42,7 @@ env var. Customization happens at three layers:
 
 | shortName | Disease | Domain | Notable customizations |
 |---|---|---|---|
-| `NF` | Neurofibromatosis | nfsimplified.com | full-width home bg; AI nomenclature addendum; HSF-style ids n/a |
+| `NF` | Neurofibromatosis | nfsimplified.com | full-width home bg; AI nomenclature addendum; **site-wide article language switcher with pre-translated articles** (`articleTranslations`); HSF-style ids n/a |
 | `HS` | Hidradenitis Suppurativa | hssimplified.org | **partnered with the HS Foundation (reinstated 2026-07):** original logo + purple partnership top bar linking to hs-foundation.org; **articles published on HSF's site** — patients see a pointer to hs-foundation.org/research-summaries instead of listings (`articlesExternalUrl`), admins keep internal listings; article pages `noindex`; Clinical Trials hidden; `hs-mode` theming; HSF deep-link redirects; RSS excludes legacy already-on-HSF articles |
 | `EB` | Epidermolysis Bullosa | sseb.vercel.app | config only |
 | `CF` | Cystic Fibrosis | sscf-coral.vercel.app | `background-alt` banners |
@@ -105,6 +105,8 @@ treat them as hints.
 | HS | Article byline label reads **"Summary Prepared or Reviewed By:"** (others: "Summary Prepared By:") | `src/app/(public)/articles/[id]/page.jsx` (~L272) — note: this byline block is currently `hidden` |
 | (none currently) | `resolveArticleCredit` in `articleAuthor.js` is a **passthrough** — the stored certifier displays as-is. (The June-2026 HS first-author swap was reverted when the HSF partnership was reinstated; the hook + pastel default avatars in `public/assets/default-avatars/` remain available.) | `src/lib/articleAuthor.js`; `src/lib/defaultAvatar.js`; call sites `ArticlesListPaginated.jsx` + `ArticlesSection.jsx` |
 | **Any tenant with `articlesExternalUrl`** (currently HS) | Article **detail pages get `robots: noindex,follow`** so the partner site's copies rank; pages stay accessible (RSS guid links, `?hsf-id=` redirects, admin review). | `src/app/(public)/articles/[id]/layout.js` |
+| **Any tenant with `articleTranslations: true`** (currently NF) | **Site-wide article language** (es, fr, de, zh, pt): a language menu in the navbar; home cards, `/articles` and article pages switch instantly to stored translations; the choice persists in `localStorage` (`ss-article-language`, default English); search also matches translated text. All articles are **pre-translated** (`npm run translations:backfill -- --tenant NF`) and re-translated in the background after publish/edit. Other tenants keep the per-article "Read in another language" buttons (translated on demand). | `src/lib/articleTranslations.js` (storage, freshness, generation); `src/lib/articleTranslationsWarmup.js`; `src/app/api/articles/translations/route.js` (card overlay); `src/app/api/articles/[id]/translate/route.js`; `src/components/LanguageSelect/`; `src/hooks/useArticleLanguage.js`, `useTranslationOverlay.js`; `src/store/useLanguageStore.js`; `scripts/translations/backfill.mjs` |
+| All tenants (storage) | `article_translations` rows are served only while `source_hash` matches the article's current English text (an edit makes them stale automatically); a `generating_since` claim prevents duplicate generation; FK → `article` with cascade. Bump `TRANSLATION_VERSION` to invalidate every stored translation after a prompt/model change. | `scripts/migrations/2026-article-translations-v2.sql` (applied to all 18 DBs, 2026-10-12); `src/lib/articleTranslations.js` |
 
 ### Auth pages
 

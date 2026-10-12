@@ -7,6 +7,8 @@ export const sites = {
       disease: "Neurofibromatosis",
       apiUrl: process.env.NEXT_PUBLIC_NF_API_URL,
       domain: "https://nfsimplified.com",
+      // Site-wide language switcher + pre-translated articles (src/lib/articleTranslations.js)
+      articleTranslations: true,
 
 
       theme: { // Theme

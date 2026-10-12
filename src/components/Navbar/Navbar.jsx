@@ -9,6 +9,7 @@ import { tenant } from "@/lib/config";
 import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
+import LanguageSelect from "@/components/LanguageSelect/LanguageSelect";
 
 function Badge({ count, dot = false }) {
     if (!count || count <= 0) return null;
@@ -359,15 +360,22 @@ export default function Navbar() {
                     )}
                 </ul>
 
-                {/* Auth buttons */}
-                {!user && (
-                    <div className="auth-buttons">
-                        <Link href="/login" className="btn">
-                            Login
-                        </Link>
-                        <Link href="/signup" className="btn btn-primary">
-                            Sign Up
-                        </Link>
+                {/* Article language (tenants with pre-translated articles) + auth buttons.
+                    Rendered only when non-empty: an empty flex item would shift the
+                    space-between layout for signed-in users on other tenants. */}
+                {(tenant.articleTranslations || !user) && (
+                    <div className="navbar-actions">
+                        <LanguageSelect />
+                        {!user && (
+                            <div className="auth-buttons">
+                                <Link href="/login" className="btn">
+                                    Login
+                                </Link>
+                                <Link href="/signup" className="btn btn-primary">
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -380,6 +388,8 @@ export default function Navbar() {
             {/* Mobile dropdown fallback */}
             {navbarOpen && (
                 <div className="mobile-menu">
+                    {/* On phones the header row has no room for it, so the picker lives here. */}
+                    <LanguageSelect className="language-select--in-menu" />
                     {navItems.map((item) =>
                         item.dropdown ? (
                             item.dropdown.map((sub) => (

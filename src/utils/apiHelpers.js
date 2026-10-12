@@ -186,6 +186,9 @@ export async function simplifyArticle(content) {
  * Translate HTML content from English to target language, preserving all
  * HTML tags and apicss-* class attributes exactly.
  */
+/** Model used for article/trial translations (recorded on each stored translation). */
+export const TRANSLATION_MODEL = "gpt-4.1-mini";
+
 export async function translateHtmlContent(htmlContent, targetLanguage, languageName) {
     try {
         const instruction = `
@@ -202,7 +205,7 @@ CRITICAL RULES — follow these exactly:
 
         const stream = await openai.chat.completions.create(
             {
-                model: "gpt-4.1-mini",
+                model: TRANSLATION_MODEL,
                 messages: [
                     { role: "system", content: instruction },
                     { role: "user", content: htmlContent },
@@ -239,7 +242,7 @@ CRITICAL RULES — follow these exactly:
 export async function translatePlainText(text, targetLanguage, languageName) {
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4.1-mini", // gpt-4.1-nano was retired 2026-10-23
+            model: TRANSLATION_MODEL, // gpt-4.1-nano was retired 2026-10-23
             messages: [
                 {
                     role: "system",

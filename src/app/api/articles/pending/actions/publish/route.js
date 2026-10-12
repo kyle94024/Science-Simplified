@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/adminGuard";
 import { generateArticleAudio } from "@/lib/tts";
 import { sanitizeRichText } from "@/lib/richText";
+import { scheduleTranslationWarmup } from "@/lib/articleTranslationsWarmup";
+
+// Room for the background translation warm-up scheduled after publishing.
+export const maxDuration = 60;
 
 
 // Only allow POST method
@@ -62,6 +66,9 @@ export async function POST(req) {
 
         // Delete the article from the pending_article table
         await query("DELETE FROM pending_article WHERE id = $1", [id]);
+
+        // Tenants with the language switcher pre-translate new articles.
+        scheduleTranslationWarmup(newArticleId);
 
         // Fire-and-forget TTS generation (don't block publish response)
         generateArticleAudio(newArticleId, article.title, innertext)

@@ -2,17 +2,34 @@ export const revalidate = 0;
 
 import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { SUPPORTED_LANGUAGES } from "@/lib/translationWarnings";
 
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const search = searchParams.get("search");
         const sort = searchParams.get("sort");
+        // When a reader browses in another language, search its translations too.
+        const lang = searchParams.get("lang");
+        const searchLang = SUPPORTED_LANGUAGES.some((l) => l.code === lang) ? lang : null;
 
         let whereClause = "";
         let values = [];
 
         if (search) {
+            values.push(`%${search}%`);
+            let translationMatch = "";
+            if (searchLang) {
+                values.push(searchLang);
+                translationMatch = `
+                    OR EXISTS (
+                        SELECT 1 FROM article_translations tr
+                        WHERE tr.article_id = a.id AND tr.language = $2 AND tr.source_hash IS NOT NULL
+                          AND (LOWER(tr.translated_title) LIKE LOWER($1)
+                               OR LOWER(tr.translated_summary) LIKE LOWER($1)
+                               OR LOWER(tr.translated_innertext) LIKE LOWER($1))
+                    )`;
+            }
             whereClause = `
                 WHERE 
                     LOWER(a.title) LIKE LOWER($1)
@@ -21,9 +38,8 @@ export async function GET(request) {
                     OR EXISTS (
                         SELECT 1 FROM unnest(a.authors) author
                         WHERE LOWER(author) LIKE LOWER($1)
-                    )
+                    )${translationMatch}
             `;
-            values.push(`%${search}%`);
         }
 
         let orderClause = "ORDER BY a.id DESC";

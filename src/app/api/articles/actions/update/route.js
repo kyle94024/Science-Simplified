@@ -2,6 +2,10 @@ import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/adminGuard";
 import { sanitizeRichText } from "@/lib/richText";
+import { scheduleTranslationWarmup } from "@/lib/articleTranslationsWarmup";
+
+// Room for the background re-translation scheduled after an edit.
+export const maxDuration = 60;
 
 // Only allow POST method
 export async function POST(req) {
@@ -17,6 +21,10 @@ export async function POST(req) {
             "UPDATE article SET title = $1, tags = $2, innertext = $3, summary = $4, article_link = $5, image_url = $6, authors = $7, publication_date = $8, source_publication = $9, image_credit = $10, additional_editors = $11 WHERE id = $12",
             [title, tags, sanitizeRichText(innertext), sanitizeRichText(summary), article_link, image_url, authors, publication_date, source_publication || null, image_credit || null, additional_editors || [], id]
         );
+
+        // The edit made this article's stored translations stale (they're keyed to
+        // the English text); re-translate in the background on tenants that pre-translate.
+        scheduleTranslationWarmup(id);
 
         return NextResponse.json({
             success: true,

@@ -1,7 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ArticlesSection from "../ArticlesSection/ArticlesSection";
 import useSearchStore from "@/store/useSearchStore";
+import { useArticleLanguage } from "@/hooks/useArticleLanguage";
+import { useTranslationOverlay, applyTranslationOverlay } from "@/hooks/useTranslationOverlay";
 
 // Keep in sync with the /articles page, which paginates 6 per page — this is
 // both how many we preview here and the page-size that decides whether a
@@ -12,9 +14,16 @@ const RecentArticlesSection = () => {
   const { searchQuery } = useSearchStore();
 
   const [allArticles, setAllArticles] = useState([]);
-  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  // Reader's language (NF): cards switch to stored translations where they exist.
+  const { language, ready } = useArticleLanguage();
+  const { overlay, loading: translationsLoading } = useTranslationOverlay(language, ready);
+  const shownArticles = useMemo(
+    () => applyTranslationOverlay(allArticles, overlay, language),
+    [allArticles, overlay, language]
+  );
 
   // Fetch ALL articles once
   useEffect(() => {
@@ -24,8 +33,7 @@ const RecentArticlesSection = () => {
         if (!response.ok) throw new Error("Failed to fetch articles");
 
         const data = await response.json();
-        setAllArticles(data);
-        setArticles(data.slice(0, ARTICLES_PER_PAGE)); // initial page
+        setAllArticles(data); // the effect below derives the visible page
         setError(false);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -38,14 +46,11 @@ const RecentArticlesSection = () => {
     fetchArticles();
   }, []);
 
-  // React to search input
-  useEffect(() => {
-    if (!searchQuery) {
-      setArticles(allArticles.slice(0, ARTICLES_PER_PAGE));
-      return;
-    }
+  // The visible page: newest first, narrowed by the home search box.
+  const articles = useMemo(() => {
+    if (!searchQuery) return shownArticles.slice(0, ARTICLES_PER_PAGE);
 
-    const filtered = allArticles.filter((article) =>
+    const filtered = shownArticles.filter((article) =>
       (
         article.title +
         " " +
@@ -59,13 +64,13 @@ const RecentArticlesSection = () => {
         .includes(searchQuery.toLowerCase())
     );
 
-    setArticles(filtered.slice(0, ARTICLES_PER_PAGE));
-  }, [searchQuery, allArticles]);
+    return filtered.slice(0, ARTICLES_PER_PAGE);
+  }, [searchQuery, shownArticles]);
 
   return (
     <ArticlesSection
       articles={articles}
-      loading={loading}
+      loading={loading || translationsLoading}
       error={error}
       sectionTitle={"Recently Added Articles"}
       viewAllHref="/articles"
