@@ -636,7 +636,7 @@ const AddArticleForm = () => {
                     {isLoading ? (
                         <>
                             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                            Please wait
+                            Simplifying (about 30 seconds)…
                         </>
                     ) : (
                         "Run Simplification"

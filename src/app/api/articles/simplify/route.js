@@ -3,6 +3,9 @@
 import { NextResponse } from "next/server";
 import { simplifyArticle } from "@/utils/apiHelpers";
 
+// Simplification takes ~16–30 s on gpt-6.1-sol (see SIMPLIFY_MODEL).
+export const maxDuration = 60;
+
 export async function POST(req) {
     try {
         const { content } = await req.json();

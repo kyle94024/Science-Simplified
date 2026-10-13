@@ -3,6 +3,9 @@ import { query } from "@/lib/db";
 import { summarizeArticle, simplifyArticle } from "@/utils/apiHelpers"; // Utility functions for OpenAI API calls
 import { sanitizeRichText } from "@/lib/richText";
 
+// Simplification takes ~16–30 s on gpt-6.1-sol (see SIMPLIFY_MODEL).
+export const maxDuration = 60;
+
 export async function POST(req) {
     try {
         const {
@@ -21,9 +24,11 @@ export async function POST(req) {
             additional_editors,
         } = await req.json();
 
-        // Generate the summary and simplified content
-        const summary = await summarizeArticle(innertext);
-        const simplified = await simplifyArticle(innertext);
+        // Generate the summary and simplified content (independent, so in parallel)
+        const [summary, simplified] = await Promise.all([
+            summarizeArticle(innertext),
+            simplifyArticle(innertext),
+        ]);
 
         // Start a transaction to ensure consistency
         await query("BEGIN");

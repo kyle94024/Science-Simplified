@@ -50,13 +50,18 @@ export async function summarizeArticle(content) {
  * To change it, edit SIMPLIFY_MODEL (and SIMPLIFY_REASONING_EFFORT for
  * reasoning models). To revert to the original setup, set them back to:
  *     SIMPLIFY_MODEL = "gpt-4.1-mini"; SIMPLIFY_REASONING_EFFORT = null;
- * (gpt-4.1-mini, temperature 0.7, max_tokens 32768 — production until 2026-10).
+ * (gpt-4.1-mini, temperature 0.7, max_tokens 32768 — production until 2026-10-12).
+ *
+ * gpt-6.1-sol (effort "low") since 2026-10-12: in scripts/simplify-eval it made
+ * no unsupported claims where gpt-4.1-mini made several, with the same
+ * formatting. It's slower: ~16–30 s per full paper vs ~9 s, which is why the
+ * routes that call this set maxDuration = 60.
  *
  * Candidates are compared with scripts/simplify-eval (runtime, formatting,
  * editor compatibility, grounding) before switching.
  */
-export const SIMPLIFY_MODEL = "gpt-4.1-mini"; // Better at following complex formatting than nano
-export const SIMPLIFY_REASONING_EFFORT = null; // only used by reasoning models
+export const SIMPLIFY_MODEL = "gpt-6.1-sol";
+export const SIMPLIFY_REASONING_EFFORT = "low"; // only used by reasoning models; "low" is sol's minimum
 
 /** gpt-5*, gpt-6*, o* models reason before answering and take different parameters. */
 export function isReasoningModel(model) {
