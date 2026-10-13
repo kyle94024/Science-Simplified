@@ -24,9 +24,11 @@ import { withAuth } from "@/components/withAuth/withAuth";
 import Footer from "@/components/Footer/Footer";
 import Image from "next/image";
 import UpdatePassword from "@/components/UpdatePassword/UpdatePassword";
+import { useUiText } from "@/hooks/useUiText";
 
 const ProfilePage = () => {
     const { user } = useAuthStore();
+    const t = useUiText();
     const [profileData, setProfileData] = useState(null);
     const [initialProfileData, setInitialProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -68,11 +70,11 @@ const ProfilePage = () => {
                 );
             } else {
                 console.error("Failed to fetch profile");
-                toast.error("Failed to fetch profile.");
+                toast.error(t("Failed to fetch profile."));
             }
         } catch (error) {
             console.error("Error:", error);
-            toast.error("Error fetching profile.");
+            toast.error(t("Error fetching profile."));
         } finally {
             setLoading(false);
         }
@@ -99,15 +101,15 @@ const ProfilePage = () => {
             });
 
             if (response.ok) {
-                toast.success("Profile updated successfully!");
+                toast.success(t("Profile updated successfully!"));
                 setInitialProfileData(profileData);
                 setIsEditing(false);
             } else {
-                toast.error("Failed to update profile.");
+                toast.error(t("Failed to update profile."));
             }
         } catch (error) {
             console.error("Error:", error);
-            toast.error("Error updating profile.");
+            toast.error(t("Error updating profile."));
         } finally {
             setIsSaving(false);
         }
@@ -145,7 +147,7 @@ const ProfilePage = () => {
             <main className="profile">
                 <Navbar />
                 <section className="profile__content">
-                    <h1 className="profile__title">Profile not found</h1>
+                    <h1 className="profile__title">{t("Profile not found")}</h1>
                 </section>
                 <Footer />
             </main>
@@ -158,8 +160,9 @@ const ProfilePage = () => {
             <section className="profile__content">
                 <div className="profile__actions">
                     <h1 className="heading-quaternary w-500">
-                        Welcome,{" "}
-                        <span className="color-green">{profileData.name}</span>
+                        {t.rich("Welcome, {name}", {
+                            name: <span className="color-green">{profileData.name}</span>,
+                        })}
                     </h1>
                     {!isEditing && (
                         <Button
@@ -167,7 +170,7 @@ const ProfilePage = () => {
                             className="btn btn-primary"
                             onClick={() => setIsEditing(true)}
                         >
-                            Edit Details
+                            {t("Edit Details")}
                         </Button>
                     )}
 
@@ -182,10 +185,10 @@ const ProfilePage = () => {
                                 {isSaving ? (
                                     <>
                                         <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                                        Saving...
+                                        {t("Saving...")}
                                     </>
                                 ) : (
-                                    "Save Changes"
+                                    t("Save Changes")
                                 )}
                             </Button>
                             <Button
@@ -193,7 +196,7 @@ const ProfilePage = () => {
                                 className="btn btn-primary-white"
                                 onClick={handleCancel}
                             >
-                                Cancel
+                                {t("Cancel")}
                             </Button>
                         </div>
                     )}
@@ -202,13 +205,13 @@ const ProfilePage = () => {
                 <form className="profile__form" onSubmit={handleSubmit}>
                     <div className="profile__form-group">
                         <label htmlFor="photo" className="profile__label">
-                            Photo
+                            {t("Photo")}
                         </label>
                         {profileData.photo ? (
                             <div className="profile__photo-container">
                                 <Image
                                     src={profileData.photo}
-                                    alt="Profile"
+                                    alt={t("Profile")}
                                     className="profile__photo mb-4"
                                     width={100}
                                     height={100}
@@ -233,12 +236,12 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="name" className="profile__label">
-                            Name
+                            {t("Name")}
                         </label>
                         <Input
                             id="name"
                             className="profile__input"
-                            placeholder="Enter your full name"
+                            placeholder={t("Enter your full name")}
                             value={profileData.name || ""}
                             onChange={(e) =>
                                 setProfileData({
@@ -252,7 +255,7 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="email" className="profile__label">
-                            Email
+                            {t("Email")}
                         </label>
                         <Input
                             type="email"
@@ -265,7 +268,7 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="degree" className="profile__label">
-                            Degree
+                            {t("Degree")}
                         </label>
                         <Select
                             value={
@@ -294,7 +297,7 @@ const ProfilePage = () => {
                                 id="degree"
                                 className="profile__select"
                             >
-                                <SelectValue placeholder="Select your highest degree" />
+                                <SelectValue placeholder={t("Select your highest degree")} />
                             </SelectTrigger>
                             <SelectContent className="profile__select-content">
                                 {predefinedDegrees.map((degree) => (
@@ -310,7 +313,7 @@ const ProfilePage = () => {
                                     className="profile__select-item"
                                     value="Other"
                                 >
-                                    Other
+                                    {t("Other")}
                                 </SelectItem>
                             </SelectContent>
                         </Select>
@@ -320,12 +323,12 @@ const ProfilePage = () => {
                                     htmlFor="customDegree"
                                     className="profile__label"
                                 >
-                                    Other Degree
+                                    {t("Other Degree")}
                                 </label>
                                 <Input
                                     id="customDegree"
                                     className="profile__input"
-                                    placeholder="Enter your custom degree"
+                                    placeholder={t("Enter your custom degree")}
                                     value={profileData.degree || ""}
                                     onChange={(e) =>
                                         setProfileData({
@@ -341,12 +344,12 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="title" className="profile__label">
-                            Title
+                            {t("Title")}
                         </label>
                         <Input
                             id="title"
                             className="profile__input"
-                            placeholder="Enter your professional title"
+                            placeholder={t("Enter your professional title")}
                             value={profileData.title || ""}
                             onChange={(e) =>
                                 setProfileData({
@@ -360,12 +363,12 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="university" className="profile__label">
-                            University Affiliation
+                            {t("University Affiliation")}
                         </label>
                         <Input
                             id="university"
                             className="profile__input"
-                            placeholder="Enter your current university"
+                            placeholder={t("Enter your current university")}
                             value={profileData.university || ""}
                             onChange={(e) =>
                                 setProfileData({
@@ -379,13 +382,13 @@ const ProfilePage = () => {
 
                     <div className="profile__form-group">
                         <label htmlFor="bio" className="profile__label">
-                            Bio
+                            {t("Bio")}
                         </label>
                         <Textarea
                             id="bio"
                             rows={3}
                             className="profile__input !h-[unset] leading-[140%]"
-                            placeholder="Write a brief bio"
+                            placeholder={t("Write a brief bio")}
                             value={profileData.bio || ""}
                             onChange={(e) =>
                                 setProfileData({

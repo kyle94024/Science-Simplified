@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import "./HomeServiceBanner.scss";
 import Link from "next/link";
 import { tenant } from "@/lib/config";
+import { useUiText } from "@/hooks/useUiText";
 
 function HomeServiceBanner() {
+    const t = useUiText();
     useEffect(() => {
         document.documentElement.style.setProperty('--cta-background', `url(/assets/${tenant.pathName}/home/${tenant.homeExploreAllBG})`);
     }, []);
@@ -12,14 +14,14 @@ function HomeServiceBanner() {
         <div className={`service-banner ${tenant.shortName === "HS" || tenant.shortName === "CF" || tenant.shortName === "Vitiligo" || tenant.shortName === "Canavan" || tenant.shortName === "Progeria" || tenant.shortName === "Huntington's" || tenant.shortName === "Rett" || tenant.shortName === "RYR1" || tenant.shortName === "ALS" || tenant.shortName === "NF" || tenant.shortName === "Asherman's" || tenant.shortName === "Aicardi" || tenant.shortName === "TS" || tenant.shortName === "RUNX1" || tenant.shortName === "Scleroderma" || tenant.shortName === "Myositis" ? "background-alt" : ""}`}>
             <div className="service-banner__content">
                 <h2 className={`heading-quaternary ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
-                    {tenant.text_exploreAllTitle}{" "}
+                    {t(tenant.text_exploreAllTitle)}{" "}
                 </h2>
                 <p className={`body-large color-light-grey w-300 ${tenant.shortName === "ALS" ? "invisible" : ""}`}>
-                    {tenant.text_exploreAllDescription}
+                    {t(tenant.text_exploreAllDescription)}
                 </p>
             </div>
             <Link href="/articles" className={`btn ${tenant.shortName === "Scleroderma" ? "btn-scleroderma-orange" : "btn-primary-white"}`}>
-                Explore All
+                {t("Explore All")}
             </Link>
         </div>
     );

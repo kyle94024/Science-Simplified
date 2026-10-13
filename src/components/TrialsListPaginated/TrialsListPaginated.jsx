@@ -12,6 +12,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { SearchX, Unplug, ChevronLeft, ChevronRight } from "lucide-react";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function TrialsListPaginated({
   trials = [],
@@ -19,6 +20,7 @@ export default function TrialsListPaginated({
   loading = false,
   error = false,
 }) {
+  const t = useUiText();
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -93,14 +95,14 @@ export default function TrialsListPaginated({
 
   /* ---------- STATES ---------- */
   if (loading) {
-    return <p>Loading trials…</p>;
+    return <p>{t("Loading trials…")}</p>;
   }
 
   if (error) {
     return (
       <div className="trial-list__error">
         <Unplug />
-        <p>Something went wrong. Please try again later.</p>
+        <p>{t("Something went wrong. Please try again later.")}</p>
       </div>
     );
   }
@@ -109,7 +111,7 @@ export default function TrialsListPaginated({
     return (
       <div className="trial-list__empty-state">
         <SearchX />
-        <p>No clinical trials found.</p>
+        <p>{t("No clinical trials found.")}</p>
       </div>
     );
   }

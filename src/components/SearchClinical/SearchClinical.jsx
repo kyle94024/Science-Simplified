@@ -6,11 +6,13 @@ import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import useSearchStore from "@/store/useSearchStore";
+import { useUiText } from "@/hooks/useUiText";
 
 const SEMANTIC_THRESHOLD = 20; // chars
 
-const SearchClinical = ({ placeholder = "Search for clinical trials" }) => {
+const SearchClinical = ({ placeholder }) => {
     const router = useRouter();
+    const t = useUiText();
     const {
         searchQuery,
         setSearchQuery,
@@ -81,7 +83,7 @@ const SearchClinical = ({ placeholder = "Search for clinical trials" }) => {
                 <Search className="search-articles__icon" />
                 <Input
                     type="text"
-                    placeholder={placeholder}
+                    placeholder={placeholder ?? t("Search for clinical trials")}
                     className="search-articles__input"
                     value={searchQuery}
                     onChange={handleChange}

@@ -7,15 +7,19 @@ import {
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { useUiText } from "@/hooks/useUiText";
 
-const Pagination = ({ className, ...props }) => (
-    <nav
-        role="navigation"
-        aria-label="pagination"
-        className={cn("mx-auto flex w-full justify-center", className)}
-        {...props}
-    />
-);
+const Pagination = ({ className, ...props }) => {
+    const t = useUiText();
+    return (
+        <nav
+            role="navigation"
+            aria-label={t("pagination")}
+            className={cn("mx-auto flex w-full justify-center", className)}
+            {...props}
+        />
+    );
+};
 Pagination.displayName = "Pagination";
 
 const PaginationContent = React.forwardRef(({ className, ...props }, ref) => (
@@ -47,42 +51,51 @@ const PaginationLink = ({ className, isActive, size = "icon", ...props }) => (
 );
 PaginationLink.displayName = "PaginationLink";
 
-const PaginationPrevious = ({ className, ...props }) => (
-    <PaginationLink
-        aria-label="Go to previous page"
-        size="default"
-        className={cn("gap-1 pl-2.5", className)}
-        {...props}
-    >
-        <ChevronLeftIcon className="h-4 w-4" />
-        <span>Previous</span>
-    </PaginationLink>
-);
+const PaginationPrevious = ({ className, ...props }) => {
+    const t = useUiText();
+    return (
+        <PaginationLink
+            aria-label={t("Go to previous page")}
+            size="default"
+            className={cn("gap-1 pl-2.5", className)}
+            {...props}
+        >
+            <ChevronLeftIcon className="h-4 w-4" />
+            <span>{t("Previous")}</span>
+        </PaginationLink>
+    );
+};
 PaginationPrevious.displayName = "PaginationPrevious";
 
-const PaginationNext = ({ className, ...props }) => (
-    <PaginationLink
-        aria-label="Go to next page"
-        size="default"
-        className={cn("gap-1 pr-2.5", className)}
-        {...props}
-    >
-        <span>Next</span>
-        <ChevronRightIcon className="h-4 w-4" />
-    </PaginationLink>
-);
+const PaginationNext = ({ className, ...props }) => {
+    const t = useUiText();
+    return (
+        <PaginationLink
+            aria-label={t("Go to next page")}
+            size="default"
+            className={cn("gap-1 pr-2.5", className)}
+            {...props}
+        >
+            <span>{t("Next")}</span>
+            <ChevronRightIcon className="h-4 w-4" />
+        </PaginationLink>
+    );
+};
 PaginationNext.displayName = "PaginationNext";
 
-const PaginationEllipsis = ({ className, ...props }) => (
-    <span
-        aria-hidden
-        className={cn("flex h-9 w-9 items-center justify-center", className)}
-        {...props}
-    >
-        <DotsHorizontalIcon className="h-4 w-4" />
-        <span className="sr-only">More pages</span>
-    </span>
-);
+const PaginationEllipsis = ({ className, ...props }) => {
+    const t = useUiText();
+    return (
+        <span
+            aria-hidden
+            className={cn("flex h-9 w-9 items-center justify-center", className)}
+            {...props}
+        >
+            <DotsHorizontalIcon className="h-4 w-4" />
+            <span className="sr-only">{t("More pages")}</span>
+        </span>
+    );
+};
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
 export {

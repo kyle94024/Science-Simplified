@@ -2,9 +2,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+/** localStorage key holding the reader's language (zustand persist format). */
+export const LANGUAGE_STORAGE_KEY = "ss-article-language";
+
 /**
- * The reader's chosen article language, remembered in localStorage so it
- * survives refreshes and return visits. "en" (the original) is the default.
+ * The reader's chosen language — articles and interface text — remembered in
+ * localStorage so it survives refreshes and return visits. "en" (the
+ * original) is the default.
  *
  * skipHydration: the saved value is applied after mount (useArticleLanguage
  * calls rehydrate), never during the first render — so the server-rendered
@@ -18,7 +22,7 @@ const useLanguageStore = create(
             setLanguage: (language) => set({ language }),
         }),
         {
-            name: "ss-article-language",
+            name: LANGUAGE_STORAGE_KEY,
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({ language: state.language }),
             skipHydration: true,
@@ -27,5 +31,14 @@ const useLanguageStore = create(
         }
     )
 );
+
+/** The saved language read straight from storage (before the store rehydrates), or null. */
+export function readSavedLanguage() {
+    try {
+        return JSON.parse(localStorage.getItem(LANGUAGE_STORAGE_KEY))?.state?.language ?? null;
+    } catch {
+        return null;
+    }
+}
 
 export default useLanguageStore;

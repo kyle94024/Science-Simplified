@@ -11,6 +11,7 @@ import TrialsListPaginated from "@/components/TrialsListPaginated/TrialsListPagi
 import useSearchStore from "@/store/useSearchStore";
 import { tenant } from "@/lib/config";
 import { matchesQuery } from "@/lib/clinicalTrials/searchVocabulary";
+import { useUiText } from "@/hooks/useUiText";
 import "./ClinicalTrialsPage.scss";
 
 const CONTINENT_MAP = {
@@ -31,6 +32,7 @@ const CONTINENT_MAP = {
 
 const ClinicalTrialsPage = () => {
   const router = useRouter();
+  const t = useUiText();
   // Tenants with tenant.hideClinicalTrials don't use the feature — send visitors home.
   const trialsDisabled = !!tenant.hideClinicalTrials;
 
@@ -104,9 +106,9 @@ const ClinicalTrialsPage = () => {
     //    keywords didn't catch, in relevance order.
     let candidates = baseTrials;
     if (searching) {
-      const keywordMatches = baseTrials.filter((t) => matchesQuery(t, searchQuery, tenantKey));
-      const seen = new Set(keywordMatches.map((t) => t.nct_id));
-      candidates = [...keywordMatches, ...semanticResults.filter((t) => !seen.has(t.nct_id))];
+      const keywordMatches = baseTrials.filter((trial) => matchesQuery(trial, searchQuery, tenantKey));
+      const seen = new Set(keywordMatches.map((trial) => trial.nct_id));
+      candidates = [...keywordMatches, ...semanticResults.filter((trial) => !seen.has(trial.nct_id))];
     }
 
     // 2. The manual filters apply to everything, semantic matches included.
@@ -129,15 +131,16 @@ const ClinicalTrialsPage = () => {
         trialTypeFilter === "all" ||
         (trialTypeFilter === "interventional" && type === "interventional") ||
         (trialTypeFilter === "observational" && type === "observational") ||
-        (trialTypeFilter === "expanded" && type === "expanded access");
+        // The API sends ClinicalTrials.gov's "EXPANDED_ACCESS" lowercased.
+        (trialTypeFilter === "expanded" && (type === "expanded_access" || type === "expanded access"));
 
       return matchesAge && matchesLocation && matchesTrialType;
     });
   }, [baseTrials, searching, searchQuery, semanticResults, tenantKey, ageFilter, locationFilter, trialTypeFilter]);
 
   // Split into verified/unverified for recruiting tab
-  const verifiedTrials = filteredTrials.filter((t) => t.verified_by);
-  const unverifiedTrials = filteredTrials.filter((t) => !t.verified_by);
+  const verifiedTrials = filteredTrials.filter((trial) => trial.verified_by);
+  const unverifiedTrials = filteredTrials.filter((trial) => !trial.verified_by);
 
   const isLoading = tab === "recruiting" ? loading : completedLoading;
 
@@ -152,28 +155,30 @@ const ClinicalTrialsPage = () => {
         <div className="boxed">
           {/* ---------- HEADER ---------- */}
           <div className="clinical-trials-page__header">
-            <h1 className="clinical-trials-page__title">Clinical Studies & Trials</h1>
+            <h1 className="clinical-trials-page__title">{t("Clinical Studies & Trials")}</h1>
             <p className="clinical-trials-page__subtitle">
-              Patient-friendly summaries of {tab === "recruiting" ? "currently recruiting" : "completed"} clinical research.
+              {tab === "recruiting"
+                ? t("Patient-friendly summaries of currently recruiting clinical research.")
+                : t("Patient-friendly summaries of completed clinical research.")}
             </p>
             {tab === "recruiting" && unverifiedTrials.length > 0 && (
               <p className="clinical-trials-page__disclaimer">
-                ⚠️ Trials without a verification badge have not yet been reviewed and verified by an editor.
+                ⚠️ {t("Trials without a verification badge have not yet been reviewed and verified by an editor.")}
               </p>
             )}
           </div>
 
           {/* ---------- SEARCH ---------- */}
           <div className="clinical-trials-page__search">
-            <SearchClinical placeholder="Search trials or describe your situation…" />
+            <SearchClinical placeholder={t("Search trials or describe your situation…")} />
             {semanticActive && (
               <p className="clinical-trials-page__semantic-hint">
-                <Sparkles size={14} /> Also showing the closest matches for your description, ranked by relevance.
+                <Sparkles size={14} /> {t("Also showing the closest matches for your description, ranked by relevance.")}
               </p>
             )}
             {semanticLoading && (
               <p className="clinical-trials-page__semantic-hint">
-                <Sparkles size={14} /> Finding best matches…
+                <Sparkles size={14} /> {t("Finding best matches…")}
               </p>
             )}
           </div>
@@ -181,43 +186,43 @@ const ClinicalTrialsPage = () => {
           {/* ---------- FILTERS ---------- */}
           <div className="clinical-trials-page__filters">
             <div className="filter-group">
-              <label>Age</label>
+              <label>{t("Age")}</label>
               <select
                 value={ageFilter}
                 onChange={(e) => setAgeFilter(e.target.value)}
               >
-                <option value="all">All Ages</option>
-                <option value="children">Children</option>
-                <option value="adults">Adults</option>
+                <option value="all">{t("All Ages")}</option>
+                <option value="children">{t("Children")}</option>
+                <option value="adults">{t("Adults")}</option>
               </select>
             </div>
 
             <div className="filter-group">
-              <label>Location</label>
+              <label>{t("Location")}</label>
               <select
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
               >
-                <option value="all">All Locations</option>
-                <option value="north_america">North America</option>
-                <option value="south_america">South America</option>
-                <option value="europe">Europe</option>
-                <option value="asia">Asia</option>
-                <option value="australia">Australia</option>
-                <option value="other">Other</option>
+                <option value="all">{t("All Locations")}</option>
+                <option value="north_america">{t("North America")}</option>
+                <option value="south_america">{t("South America")}</option>
+                <option value="europe">{t("Europe")}</option>
+                <option value="asia">{t("Asia")}</option>
+                <option value="australia">{t("Australia")}</option>
+                <option value="other">{t("Other")}</option>
               </select>
             </div>
 
             <div className="filter-group">
-              <label>Trial Type</label>
+              <label>{t("Trial Type")}</label>
               <select
                 value={trialTypeFilter}
                 onChange={(e) => setTrialTypeFilter(e.target.value)}
               >
-                <option value="all">All Types</option>
-                <option value="interventional">Interventional</option>
-                <option value="observational">Observational</option>
-                <option value="expanded">Expanded Access</option>
+                <option value="all">{t("All Types")}</option>
+                <option value="interventional">{t("Interventional")}</option>
+                <option value="observational">{t("Observational")}</option>
+                <option value="expanded">{t("Expanded Access")}</option>
               </select>
             </div>
           </div>
@@ -232,15 +237,17 @@ const ClinicalTrialsPage = () => {
           ) : error ? (
             <div className="clinical-trials-page__error">
               <Unplug />
-              <p>Failed to load trials</p>
+              <p>{t("Failed to load trials")}</p>
             </div>
           ) : filteredTrials.length === 0 ? (
             <div className="clinical-trials-page__empty">
               {searching
-                ? `No trials match “${searchQuery.trim()}”. Try another word or acronym, or describe your situation in a sentence.`
+                ? t("No trials match “{query}”. Try another word or acronym, or describe your situation in a sentence.", {
+                    query: searchQuery.trim(),
+                  })
                 : tab === "recruiting"
-                  ? "No clinical trials found"
-                  : "No completed studies yet"}
+                  ? t("No clinical trials found")
+                  : t("No completed studies yet")}
             </div>
           ) : searching ? (
             // Search results: one list, best matches first
@@ -250,22 +257,22 @@ const ClinicalTrialsPage = () => {
             <>
               <div className="clinical-trials-page__section">
                 <h2 className="clinical-trials-page__section-title">
-                  <BadgeCheck size={20} /> Verified Trials
+                  <BadgeCheck size={20} /> {t("Verified Trials")}
                   <span className="clinical-trials-page__section-count">({verifiedTrials.length})</span>
                 </h2>
                 <p className="clinical-trials-page__section-subtitle">
-                  Reviewed and verified by a subject-matter editor.
+                  {t("Reviewed and verified by a subject-matter editor.")}
                 </p>
                 <TrialsListPaginated trials={verifiedTrials} trialsPerPage={6} />
               </div>
               {unverifiedTrials.length > 0 && (
                 <div className="clinical-trials-page__section">
                   <h2 className="clinical-trials-page__section-title clinical-trials-page__section-title--secondary">
-                    Other Trials
+                    {t("Other Trials")}
                     <span className="clinical-trials-page__section-count">({unverifiedTrials.length})</span>
                   </h2>
                   <p className="clinical-trials-page__section-subtitle">
-                    Not yet reviewed and verified by an editor.
+                    {t("Not yet reviewed and verified by an editor.")}
                   </p>
                   <TrialsListPaginated trials={unverifiedTrials} trialsPerPage={6} />
                 </div>

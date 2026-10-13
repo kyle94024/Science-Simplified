@@ -1,4 +1,5 @@
 import { Search, Cpu, ShieldCheck, BookOpen, Users, Microscope, FileText, Sparkles } from "lucide-react";
+import { UiText, UiHtml } from "@/components/UiText/UiText";
 
 const iconMap = {
   Search,
@@ -16,12 +17,9 @@ export default function ProcessSection({ content }) {
 
   return (
     <section className="about-process">
-      <h2 className="about-section-title">{content.title}</h2>
+      <h2 className="about-section-title"><UiText text={content.title} /></h2>
       {content.description && (
-        <div
-          className="about-process__description"
-          dangerouslySetInnerHTML={{ __html: content.description }}
-        />
+        <UiHtml className="about-process__description" html={content.description} />
       )}
       <div className="about-process__steps">
         {steps.map((step, i) => {
@@ -32,8 +30,8 @@ export default function ProcessSection({ content }) {
               <div className="about-process__icon-wrap">
                 <Icon size={28} />
               </div>
-              <h3 className="about-process__step-title">{step.title}</h3>
-              <p className="about-process__step-desc">{step.description}</p>
+              <h3 className="about-process__step-title"><UiText text={step.title} /></h3>
+              <p className="about-process__step-desc"><UiText text={step.description} /></p>
             </div>
           );
         })}

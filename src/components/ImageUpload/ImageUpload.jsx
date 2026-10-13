@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
+import { useUiText } from "@/hooks/useUiText";
+import { uiText } from "@/lib/uiText";
 
 const ImageUpload = ({
     onImageUpload,
@@ -14,6 +16,7 @@ const ImageUpload = ({
     const [uploading, setUploading] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
+    const t = useUiText();
 
     // ✅ Make sure uploadedUrl updates when AI generates an image
     useEffect(() => {
@@ -31,7 +34,7 @@ const ImageUpload = ({
     const handleUpload = async (fileToUpload) => {
         const f = fileToUpload || file;
         if (!f) {
-            setError("Please select a file to upload.");
+            setError(uiText("Please select a file to upload."));
             return;
         }
 
@@ -47,7 +50,7 @@ const ImageUpload = ({
             });
 
             if (!response.ok) {
-                setError("Upload failed. Please try again.");
+                setError(uiText("Upload failed. Please try again."));
                 return;
             }
 
@@ -56,7 +59,7 @@ const ImageUpload = ({
             onImageUpload(data.url);
             setFile(null);
         } catch {
-            setError("An error occurred during upload.");
+            setError(uiText("An error occurred during upload."));
         } finally {
             setUploading(false);
         }
@@ -81,7 +84,7 @@ const ImageUpload = ({
             });
 
             if (!response.ok) {
-                setError("Delete failed. Please try again.");
+                setError(uiText("Delete failed. Please try again."));
                 return;
             }
 
@@ -89,7 +92,7 @@ const ImageUpload = ({
             setFile(null);
             onImageUpload(null);
         } catch {
-            setError("An error occurred during deletion.");
+            setError(uiText("An error occurred during deletion."));
         } finally {
             setDeleting(false);
         }
@@ -117,14 +120,14 @@ const ImageUpload = ({
                     disabled={uploading}
                 >
                     {uploading
-                        ? "Uploading..."
+                        ? t("Uploading...")
                         : uploadedUrl
-                        ? "Replace Image"
-                        : "Upload Image to Cloud"}
+                        ? t("Replace Image")
+                        : t("Upload Image to Cloud")}
                 </Button>
             )}
             {autoUpload && uploading && (
-                <p className="image-upload__status">Uploading…</p>
+                <p className="image-upload__status">{t("Uploading…")}</p>
             )}
 
             {/* Delete button — ALWAYS appears when uploadedUrl exists */}
@@ -135,11 +138,11 @@ const ImageUpload = ({
                     onClick={handleDelete}
                     disabled={deleting}
                 >
-                    {deleting ? "Deleting..." : "Delete Image"}
+                    {deleting ? t("Deleting...") : t("Delete Image")}
                 </Button>
             )}
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p style={{ color: "red" }}>{t(error)}</p>}
         </div>
     );
 };

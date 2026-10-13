@@ -4,6 +4,7 @@ import ArticlesSection from "../ArticlesSection/ArticlesSection";
 import useSearchStore from "@/store/useSearchStore";
 import { useArticleLanguage } from "@/hooks/useArticleLanguage";
 import { useTranslationOverlay, applyTranslationOverlay } from "@/hooks/useTranslationOverlay";
+import { useUiText } from "@/hooks/useUiText";
 
 // Keep in sync with the /articles page, which paginates 6 per page — this is
 // both how many we preview here and the page-size that decides whether a
@@ -12,6 +13,7 @@ const ARTICLES_PER_PAGE = 6;
 
 const RecentArticlesSection = () => {
   const { searchQuery } = useSearchStore();
+  const t = useUiText();
 
   const [allArticles, setAllArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ const RecentArticlesSection = () => {
       articles={articles}
       loading={loading || translationsLoading}
       error={error}
-      sectionTitle={"Recently Added Articles"}
+      sectionTitle={t("Recently Added Articles")}
       viewAllHref="/articles"
       // The home page shows the first 6 articles, and /articles paginates 6 per
       // page — so a page 2 exists only when the site has more than 6 articles.

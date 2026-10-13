@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Play, Pause, Headphones } from "lucide-react";
+import { useUiText } from "@/hooks/useUiText";
 import "./AudioPlayer.scss";
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
@@ -19,6 +20,7 @@ export default function AudioPlayer({ audioUrl, title }) {
   const [duration, setDuration] = useState(0);
   const [speedIndex, setSpeedIndex] = useState(1); // default 1x
   const [isLoaded, setIsLoaded] = useState(false);
+  const t = useUiText();
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
@@ -86,20 +88,20 @@ export default function AudioPlayer({ audioUrl, title }) {
     <div
       className="audio-player"
       role="region"
-      aria-label={`Audio player for article: ${title}`}
+      aria-label={t("Audio player for article: {title}", { title })}
     >
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
 
       <div className="audio-player__header">
         <Headphones size={18} className="audio-player__icon" />
-        <span className="audio-player__label">Listen to this article</span>
+        <span className="audio-player__label">{t("Listen to this article")}</span>
       </div>
 
       <div className="audio-player__controls">
         <button
           onClick={togglePlay}
           className="audio-player__play-btn"
-          aria-label={isPlaying ? "Pause article audio" : "Play article audio"}
+          aria-label={isPlaying ? t("Pause article audio") : t("Play article audio")}
         >
           {isPlaying ? <Pause size={20} /> : <Play size={20} />}
         </button>
@@ -114,7 +116,7 @@ export default function AudioPlayer({ audioUrl, title }) {
             step={0.1}
             value={currentTime}
             onChange={handleSeek}
-            aria-label="Audio progress"
+            aria-label={t("Audio progress")}
             aria-valuemin={0}
             aria-valuemax={duration}
             aria-valuenow={currentTime}
@@ -126,7 +128,7 @@ export default function AudioPlayer({ audioUrl, title }) {
         <button
           onClick={cycleSpeed}
           className="audio-player__speed-btn"
-          aria-label={`Playback speed: ${SPEEDS[speedIndex]}x`}
+          aria-label={t("Playback speed: {speed}x", { speed: SPEEDS[speedIndex] })}
         >
           {SPEEDS[speedIndex]}x
         </button>

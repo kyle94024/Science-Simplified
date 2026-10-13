@@ -16,6 +16,8 @@ import {
   TRANSLATION_WARNINGS,
   TRANSLATION_LOADING_MESSAGES,
 } from "@/lib/translationWarnings";
+import { useUiText } from "@/hooks/useUiText";
+import { formatTrialAge } from "@/lib/clinicalTrials/ageLabels";
 
 function getTrialIcon(trial) {
   const protocol = trial.raw_data?.protocolSection;
@@ -40,10 +42,10 @@ function getTrialIcon(trial) {
   return "/trial-icons/observational.png";
 }
 
-function formatVerifiedDate(iso) {
+function formatVerifiedDate(iso, locale) {
   if (!iso) return "";
   try {
-    return new Date(iso).toLocaleDateString(undefined, {
+    return new Date(iso).toLocaleDateString(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -56,6 +58,7 @@ function formatVerifiedDate(iso) {
 export default function TrialDetailPage() {
   const { nctId } = useParams();
   const { isAdmin } = useAuthStore();
+  const t = useUiText();
   const [trial, setTrial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAllLocations, setShowAllLocations] = useState(false);
@@ -75,8 +78,8 @@ export default function TrialDetailPage() {
     fetchTrial();
   }, [nctId]);
 
-  if (loading) return <p className="page-loading">Loading…</p>;
-  if (!trial) return <p className="page-error">Trial not found</p>;
+  if (loading) return <p className="page-loading">{t("Loading…")}</p>;
+  if (!trial) return <p className="page-error">{t("Trial not found")}</p>;
 
   const protocol = trial.raw_data?.protocolSection;
   const locations =
@@ -89,6 +92,7 @@ export default function TrialDetailPage() {
   const isVerified = !!trial.verified_by;
   const isCompleted = trial.archive_reason === "completed";
   const hasFindings = !!trial.findings;
+  const dateLocale = t.lang === "en" ? undefined : t.lang;
 
   const handleTranslate = async (langCode) => {
     if (langCode === selectedLanguage) {
@@ -112,7 +116,7 @@ export default function TrialDetailPage() {
   };
 
   // Pick translated content if available; otherwise fall back to original
-  const t = (field) => translation?.[`translated_${field}`] || trial[field];
+  const tf = (field) => translation?.[`translated_${field}`] || trial[field];
 
   return (
     <>
@@ -138,11 +142,13 @@ export default function TrialDetailPage() {
             <div className="trial-detail__verified-banner">
               <BadgeCheck size={26} />
               <div>
-                <strong>Editor Verified</strong>
+                <strong>{t("Editor Verified")}</strong>
                 <span className="trial-detail__verified-date">
                   {trial.verified_at
-                    ? ` — reviewed by a subject-matter editor on ${formatVerifiedDate(trial.verified_at)}`
-                    : " — reviewed by a subject-matter editor"}
+                    ? ` — ${t("reviewed by a subject-matter editor on {date}", {
+                        date: formatVerifiedDate(trial.verified_at, dateLocale),
+                      })}`
+                    : ` — ${t("reviewed by a subject-matter editor")}`}
                 </span>
               </div>
             </div>
@@ -153,22 +159,22 @@ export default function TrialDetailPage() {
             <div className="trial-detail__title-row">
               <img
                 src={getTrialIcon(trial)}
-                alt="Trial type"
+                alt={t("Trial type")}
                 className="trial-detail__icon"
               />
-              <h1 className="trial-detail__title">{t("short_title")}</h1>
+              <h1 className="trial-detail__title">{tf("short_title")}</h1>
             </div>
 
             {/* Status badges */}
             <div className="trial-detail__status-badges">
               {isCompleted && (
                 <span className="trial-detail__status-badge trial-detail__status-badge--completed">
-                  Completed
+                  {t("Completed")}
                 </span>
               )}
               {hasFindings && (
                 <span className="trial-detail__status-badge trial-detail__status-badge--findings">
-                  <FileText size={12} /> Findings published
+                  <FileText size={12} /> {t("Findings published")}
                 </span>
               )}
             </div>
@@ -177,7 +183,7 @@ export default function TrialDetailPage() {
           {/* ---------- LANGUAGE SWITCHER ---------- */}
           <div className="trial-detail__language-switcher">
             <Languages size={16} />
-            <span className="trial-detail__language-label">Language:</span>
+            <span className="trial-detail__language-label">{t("Language:")}</span>
             <button
               className={`trial-detail__language-btn${selectedLanguage === null ? " trial-detail__language-btn--active" : ""}`}
               onClick={() => {
@@ -203,7 +209,7 @@ export default function TrialDetailPage() {
           {translating && selectedLanguage && (
             <p className="trial-detail__translating">
               {TRANSLATION_LOADING_MESSAGES[selectedLanguage] ||
-                "The translation may take a moment. Thank you for your patience."}
+                t("The translation may take a moment. Thank you for your patience.")}
             </p>
           )}
 
@@ -239,8 +245,8 @@ export default function TrialDetailPage() {
                 onClick={() => setShowAllLocations((prev) => !prev)}
               >
                 {showAllLocations
-                  ? "Show fewer locations"
-                  : `+ ${locations.length - 6} more locations`}
+                  ? t("Show fewer locations")
+                  : t("+ {count} more locations", { count: locations.length - 6 })}
               </button>
             )}
 
@@ -248,7 +254,10 @@ export default function TrialDetailPage() {
               <div className="meta-item">
                 <span className="meta-icon">👤</span>
                 <span>
-                  Ages {minAge ?? "?"} – {maxAge ?? "?"}
+                  {t("Ages {min} – {max}", {
+                    min: minAge ? formatTrialAge(minAge, t) : "?",
+                    max: maxAge ? formatTrialAge(maxAge, t) : "?",
+                  })}
                 </span>
               </div>
             )}
@@ -258,12 +267,12 @@ export default function TrialDetailPage() {
           {hasFindings && (
             <section className="trial-detail__section trial-detail__findings">
               <h2>
-                <FileText size={20} /> Study Findings
+                <FileText size={20} /> {t("Study Findings")}
               </h2>
               <div
                 className="trial-detail__findings-content"
                 dangerouslySetInnerHTML={{
-                  __html: t("findings") || "",
+                  __html: tf("findings") || "",
                 }}
               />
               {trial.findings_url && (
@@ -273,7 +282,7 @@ export default function TrialDetailPage() {
                   rel="noopener noreferrer"
                   className="trial-detail__findings-link"
                 >
-                  Read the full paper <ExternalLink size={14} />
+                  {t("Read the full paper")} <ExternalLink size={14} />
                 </Link>
               )}
             </section>
@@ -282,9 +291,9 @@ export default function TrialDetailPage() {
           {/* ---------- SUMMARY ---------- */}
           {(trial.ai_summary_manual || trial.ai_summary) && (
             <section className="trial-detail__section">
-              <h2>About This Study</h2>
+              <h2>{t("About This Study")}</h2>
               <p className="trial-detail__summary">
-                {t("ai_summary")}
+                {tf("ai_summary")}
               </p>
             </section>
           )}
@@ -296,13 +305,16 @@ export default function TrialDetailPage() {
           <div className="trial-detail__disclaimer">
             {isVerified ? (
               <p>
-                <BadgeCheck size={14} /> This summary was reviewed and verified by a
-                subject-matter editor
-                {trial.verified_at ? ` on ${formatVerifiedDate(trial.verified_at)}` : ""}.
+                <BadgeCheck size={14} />{" "}
+                {trial.verified_at
+                  ? t("This summary was reviewed and verified by a subject-matter editor on {date}.", {
+                      date: formatVerifiedDate(trial.verified_at, dateLocale),
+                    })
+                  : t("This summary was reviewed and verified by a subject-matter editor.")}
               </p>
             ) : (
               <p>
-                ⚠️ This summary has not yet been reviewed and verified by an editor.
+                ⚠️ {t("This summary has not yet been reviewed and verified by an editor.")}
               </p>
             )}
           </div>
@@ -314,7 +326,7 @@ export default function TrialDetailPage() {
               target="_blank"
               className="btn btn-primary-green"
             >
-              View full study on ClinicalTrials.gov
+              {t("View full study on ClinicalTrials.gov")}
             </Link>
           </div>
         </div>

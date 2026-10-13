@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { tenant } from "@/lib/config";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useUiText } from "@/hooks/useUiText";
+import { formatPublicationDate } from "@/lib/publicationDate";
 import "./ArticleCard.scss";
 
 // Truncate helper
@@ -39,9 +41,10 @@ function ArticleCard({
 }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const t = useUiText();
 
     const displayName =
-        authorName && authorName.trim() ? authorName : "Anonymous";
+        authorName && authorName.trim() ? authorName : t("Anonymous");
 
     const showDegree =
         authorCreds && authorCreds.trim() && authorCreds !== "No Degree";
@@ -126,7 +129,7 @@ function ArticleCard({
             <div className="article-card__image-container">
                 <Image
                     src={imageUrl || articleThumbnailPlaceholder}
-                    alt={`Article image for ${title}`}
+                    alt={t("Article image for {title}", { title })}
                     className="article-card__image"
                     layout="responsive"
                     width={420}
@@ -137,7 +140,7 @@ function ArticleCard({
             </div>
 
             <div className="article-card__content">
-                <time className="article-card__date">{date}</time>
+                <time className="article-card__date">{formatPublicationDate(date, t.lang)}</time>
 
                 <h2 className="article-card__title">
                     {truncateText(title, 80)}
@@ -157,7 +160,7 @@ function ArticleCard({
                                 router.push(`/articles/${id}`);
                             }}
                         >
-                            read more
+                            {t("read more")}
                         </span>
                     )}
                 </p>
@@ -166,7 +169,7 @@ function ArticleCard({
                     {authorImageUrl ? (
                         <Image
                             src={authorImageUrl}
-                            alt={`Author image for ${displayName}`}
+                            alt={t("Author image for {name}", { name: displayName })}
                             width={50}
                             height={50}
                             className="article-card__author-image"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
+import { UiText } from "@/components/UiText/UiText";
 
 export default function SupportersSection({ content }) {
   // Hide placeholder supporter rows across all tenants (same rule as the Team
@@ -12,9 +13,9 @@ export default function SupportersSection({ content }) {
   return (
     <section className="about-supporters">
       <div className="about-supporters__header">
-        <h2 className="about-section-title">{content.title}</h2>
+        <h2 className="about-section-title"><UiText text={content.title} /></h2>
         {content.description && (
-          <p className="about-supporters__description">{content.description}</p>
+          <p className="about-supporters__description"><UiText text={content.description} /></p>
         )}
       </div>
       <div className="about-supporters__logos">

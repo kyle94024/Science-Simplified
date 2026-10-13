@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useUiText } from "@/hooks/useUiText";
+import { uiText } from "@/lib/uiText";
 import "./TrialDetailQuestions.scss";
 
 /* ---------------- SAFETY CHECK ---------------- */
@@ -89,46 +91,47 @@ function renderContent(text, fallback, isManual = false) {
 
 // Default 8 questions — keyed by field name so admins can hide them via hidden_questions[]
 const DEFAULT_SECTIONS = [
-  { key: "ai_purpose", title: "What is the purpose of this study?", fallback: "The purpose of this study is being reviewed by the research team." },
-  { key: "ai_treatments", title: "What treatments are being tested?", fallback: "The study team will explain what treatment or approach is being studied." },
-  { key: "ai_prior_research", title: "Is there past research on this treatment?", fallback: "There is limited publicly available information about prior research for this treatment." },
-  { key: "ai_design", title: "How is this study designed?", fallback: "The study design will be explained by the research team." },
-  { key: "ai_eligibility", title: "Am I a good fit for this study?", fallback: "Eligibility will be reviewed by the study team." },
-  { key: "ai_participation", title: "What is participation like?", fallback: "The study team will explain what participation involves." },
-  { key: "ai_leadership", title: "Who is running the study?", fallback: "This study is being run by the research team listed on ClinicalTrials.gov." },
-  { key: "ai_locations", title: "Where is the study taking place?", fallback: "Study locations will be provided by the research team." },
+  { key: "ai_purpose", title: uiText("What is the purpose of this study?"), fallback: uiText("The purpose of this study is being reviewed by the research team.") },
+  { key: "ai_treatments", title: uiText("What treatments are being tested?"), fallback: uiText("The study team will explain what treatment or approach is being studied.") },
+  { key: "ai_prior_research", title: uiText("Is there past research on this treatment?"), fallback: uiText("There is limited publicly available information about prior research for this treatment.") },
+  { key: "ai_design", title: uiText("How is this study designed?"), fallback: uiText("The study design will be explained by the research team.") },
+  { key: "ai_eligibility", title: uiText("Am I a good fit for this study?"), fallback: uiText("Eligibility will be reviewed by the study team.") },
+  { key: "ai_participation", title: uiText("What is participation like?"), fallback: uiText("The study team will explain what participation involves.") },
+  { key: "ai_leadership", title: uiText("Who is running the study?"), fallback: uiText("This study is being run by the research team listed on ClinicalTrials.gov.") },
+  { key: "ai_locations", title: uiText("Where is the study taking place?"), fallback: uiText("Study locations will be provided by the research team.") },
 ];
 
 export default function TrialDetailQuestions({ trial }) {
   const [openIndex, setOpenIndex] = useState(null);
+  const t = useUiText();
   if (!trial) return null;
 
   const hidden = new Set(trial.hidden_questions || []);
 
   // Build default sections (filtered by hidden_questions)
   const defaultSections = DEFAULT_SECTIONS.filter((s) => !hidden.has(s.key)).map((s) => ({
-    title: s.title,
+    title: t(s.title),
     text: trial[`${s.key}_manual`] || trial[s.key],
     isManual: !!trial[`${s.key}_manual`],
-    fallback: s.fallback,
+    fallback: t(s.fallback),
     isCustom: false,
   }));
 
   // Custom questions appended after defaults
   const customQuestions = Array.isArray(trial.custom_questions) ? trial.custom_questions : [];
   const customSections = customQuestions.map((q) => ({
-    title: q.question || "Custom question",
+    title: q.question || t("Custom question"),
     text: q.answer,
     isManual: true,
     isCustom: true,
-    fallback: "Answer pending.",
+    fallback: t("Answer pending."),
   }));
 
   const sections = [...defaultSections, ...customSections];
 
   return (
     <div className="trial-questions">
-      <h2 className="trial-questions__heading">Questions About This Study</h2>
+      <h2 className="trial-questions__heading">{t("Questions About This Study")}</h2>
 
       {sections.map((section, index) => (
         <div

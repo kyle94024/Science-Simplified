@@ -1,5 +1,6 @@
 import Image from "next/image";
 import DraggableCarousel from "@/components/DraggableCarousel/DraggableCarousel";
+import { UiText } from "@/components/UiText/UiText";
 
 function getInitial(name) {
   return name && name.length > 0 ? name[0].toUpperCase() : "?";
@@ -8,9 +9,9 @@ function getInitial(name) {
 export default function ContributorsSection({ content, experts = [] }) {
   return (
     <section className="about-contributors">
-      <h2 className="about-section-title">{content.title}</h2>
+      <h2 className="about-section-title"><UiText text={content.title} /></h2>
       {content.description && (
-        <p className="about-contributors__description">{content.description}</p>
+        <p className="about-contributors__description"><UiText text={content.description} /></p>
       )}
       <div className="about-contributors__container">
         {experts.length > 0 ? (
@@ -46,7 +47,7 @@ export default function ContributorsSection({ content, experts = [] }) {
             ))}
           </DraggableCarousel>
         ) : (
-          <p className="about-contributors__empty">No contributors yet.</p>
+          <p className="about-contributors__empty"><UiText text="No contributors yet." /></p>
         )}
       </div>
     </section>

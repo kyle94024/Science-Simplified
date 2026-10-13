@@ -5,10 +5,12 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import useSearchStore from "@/store/useSearchStore";
+import { useUiText } from "@/hooks/useUiText";
 
 const SearchArticles = ({ mode = "articles" }) => {
     const router = useRouter();
     const { searchQuery, setSearchQuery } = useSearchStore();
+    const t = useUiText();
 
     const handleChange = (event) => {
         setSearchQuery(event.target.value);
@@ -29,7 +31,7 @@ const SearchArticles = ({ mode = "articles" }) => {
                 <Search className="search-articles__icon" />
                 <Input
                     type="text"
-                    placeholder="Search for articles"
+                    placeholder={t("Search for articles")}
                     className="search-articles__input"
                     value={searchQuery}
                     onChange={handleChange}

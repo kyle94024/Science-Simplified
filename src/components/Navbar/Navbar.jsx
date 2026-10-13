@@ -10,6 +10,7 @@ import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExt
 import useAuthStore from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
 import LanguageSelect from "@/components/LanguageSelect/LanguageSelect";
+import { useUiText } from "@/hooks/useUiText";
 
 function Badge({ count, dot = false }) {
     if (!count || count <= 0) return null;
@@ -27,6 +28,7 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [counts, setCounts] = useState({ assignedArticles: 0, assignedTrials: 0, total: 0 });
     const pathname = usePathname();
+    const t = useUiText();
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 10);
@@ -116,10 +118,10 @@ export default function Navbar() {
         articlesExternalTakeover && !isAdmin && role !== "editor";
 
     const navItems = [
-        { href: "/", label: "Home" },
+        { href: "/", label: t("Home") },
         articlesExternal
-            ? { href: articlesExternalUrl, label: "Articles", external: true }
-            : { href: "/articles", label: "Articles" },
+            ? { href: articlesExternalUrl, label: t("Articles"), external: true }
+            : { href: "/articles", label: t("Articles") },
         isMyositis
             ? {
                   label: "Clinical Trials",
@@ -134,9 +136,9 @@ export default function Navbar() {
                       },
                   ],
               }
-            : { href: "/clinical-trials", label: "Clinical Trials" },
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact Us" },
+            : { href: "/clinical-trials", label: t("Clinical Trials") },
+        { href: "/about", label: t("About") },
+        { href: "/contact", label: t("Contact Us") },
     ].filter((item) => !(tenant.hideClinicalTrials && item.href === "/clinical-trials"));
 
     return (
@@ -337,14 +339,14 @@ export default function Navbar() {
                     {/* Profile dropdown */}
                     {user && (
                         <li className="dropdown">
-                            <span>Profile ▾</span>
+                            <span>{t("Profile")} ▾</span>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link href="/profile">View Profile</Link>
+                                    <Link href="/profile">{t("View Profile")}</Link>
                                 </li>
                                 <li>
                                     <Link href="/favorited-articles">
-                                        Favorited Articles
+                                        {t("Favorited Articles")}
                                     </Link>
                                 </li>
                                 <li>
@@ -352,7 +354,7 @@ export default function Navbar() {
                                         onClick={logout}
                                         className="logout-btn"
                                     >
-                                        Logout
+                                        {t("Logout")}
                                     </button>
                                 </li>
                             </ul>
@@ -369,10 +371,10 @@ export default function Navbar() {
                         {!user && (
                             <div className="auth-buttons">
                                 <Link href="/login" className="btn">
-                                    Login
+                                    {t("Login")}
                                 </Link>
                                 <Link href="/signup" className="btn btn-primary">
-                                    Sign Up
+                                    {t("Sign Up")}
                                 </Link>
                             </div>
                         )}
@@ -424,18 +426,18 @@ export default function Navbar() {
                             onClick={logout}
                             className="btn btn-outlined mt-2"
                         >
-                            Logout
+                            {t("Logout")}
                         </button>
                     ) : (
                         <>
                             <Link href="/login" className="btn mt-2">
-                                Login
+                                {t("Login")}
                             </Link>
                             <Link
                                 href="/signup"
                                 className="btn btn-primary mt-2"
                             >
-                                Sign Up
+                                {t("Sign Up")}
                             </Link>
                         </>
                     )}

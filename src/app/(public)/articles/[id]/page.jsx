@@ -17,11 +17,16 @@ import { HeartFilledIcon } from "@radix-ui/react-icons";
 import { SUPPORTED_LANGUAGES, TRANSLATION_WARNINGS, TRANSLATION_LOADING_MESSAGES } from "@/lib/translationWarnings";
 import { tenant } from "@/lib/config";
 import { useArticleLanguage } from "@/hooks/useArticleLanguage";
+import { useUiText } from "@/hooks/useUiText";
+import { formatPublicationDate } from "@/lib/publicationDate";
+import { UiText } from "@/components/UiText/UiText";
+import { uiText } from "@/lib/uiText";
 
 import { format } from "date-fns";
 
 const ArticlePage = ({ params }) => {
     const router = useRouter();
+    const t = useUiText();
     const { id } = params;
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -64,7 +69,7 @@ const ArticlePage = ({ params }) => {
     // Toggle favorite/unfavorite with optimistic update
     const toggleFavoriteArticle = async () => {
         if (!userId) {
-            toast.info("Please log in to favorite articles.");
+            toast.info(t("Please log in to favorite articles."));
             return;
         }
 
@@ -98,7 +103,7 @@ const ArticlePage = ({ params }) => {
             const updatedArticle = await response.json();
             setArticle(updatedArticle);
 
-                toast.success(prevIsFavorited ? "Article unfavorited!" : "Article favorited!");
+                toast.success(prevIsFavorited ? t("Article unfavorited!") : t("Article favorited!"));
         } catch (e) {
             // Revert optimistic update on error
             setIsFavorited(prevIsFavorited);
@@ -106,7 +111,7 @@ const ArticlePage = ({ params }) => {
                 ...prev,
                 favorite_count: prevFavoriteCount,
             }));
-            toast.error(e.message || "Action failed");
+            toast.error(t(e.message) || t("Action failed"));
         } finally {
             setFavoriting(false);
         }
@@ -116,14 +121,16 @@ const ArticlePage = ({ params }) => {
         const fetchArticle = async () => {
             try {
                 const response = await fetch(`/api/articles/${id}`);
-                if (!response.ok) throw new Error("Error fetching article");
+                if (!response.ok) throw new Error(uiText("Error fetching article"));
 
                 const data = await response.json();
                 // Ensure favorite_count is a number
                 setArticle({ ...data, favorite_count: Number(data.favorite_count) });
             } catch (err) {
-                setError(err.message);
-                toast.error(err.message);
+                setError(err.message); // English; translated where it's shown
+                // A `t` captured here can predate the reader's language loading (the
+                // first render is always English); <UiText> uses the one on screen.
+                toast.error(<UiText text={err.message} />);
             } finally {
                 setLoading(false);
             }
@@ -232,7 +239,8 @@ const ArticlePage = ({ params }) => {
             if (request !== translationRequest.current) return;
             console.error("Translation error:", e);
             failedLanguages.current.add(langCode);
-            toast.error("This translation isn't available right now. Showing the original English.");
+            // <UiText>, not t: this callback is created once per article (see fetchArticle).
+            toast.error(<UiText text="This translation isn't available right now. Showing the original English." />);
             selectedLanguageRef.current = null;
             setSelectedLanguage(null);
             setTranslation(null);
@@ -344,7 +352,7 @@ const ArticlePage = ({ params }) => {
                             <SectionLoader />
                         </div>
                     ) : error ? (
-                        <div className="article-page__error">{error}</div>
+                        <div className="article-page__error">{t(error)}</div>
                     ) : (
                         <article className="article-page__article">
                             <div className="flex flex-col gap-16">
@@ -363,7 +371,7 @@ const ArticlePage = ({ params }) => {
                                                 <h3 className="body-lg w-700">
                                                     {tenant.shortName === "HS"
                                                         ? "Summary Prepared or Reviewed By:"
-                                                        : "Summary Prepared By:"}
+                                                        : t("Summary Prepared By:")}
                                                 </h3>
                                                 {article.photo && (
                                                     <div className="article-page__photo">
@@ -408,7 +416,7 @@ const ArticlePage = ({ params }) => {
                                                         onClick={
                                                             toggleFavoriteArticle
                                                         }
-                                                        aria-label="Unfavorite article"
+                                                        aria-label={t("Unfavorite article")}
                                                     />
                                                 ) : (
                                                     <Heart
@@ -416,12 +424,12 @@ const ArticlePage = ({ params }) => {
                                                         onClick={
                                                             toggleFavoriteArticle
                                                         }
-                                                        aria-label="Favorite article"
+                                                        aria-label={t("Favorite article")}
                                                     />
                                                 ))}
                                             {user && (
                                                 <span className="text-gray-600 text-2xl whitespace-nowrap">
-                                                    {isFavorited ? "Saved to favorites" : "Save to favorites"}
+                                                    {isFavorited ? t("Saved to favorites") : t("Save to favorites")}
                                                 </span>
                                             )}
 
@@ -439,16 +447,16 @@ const ArticlePage = ({ params }) => {
                                     </div>
                                     <div className="flex items-center justify-start w-full gap-2 mb-4">
                                         <h3 className="text-xl font-semibold text-gray-500 w-700">
-                                            Original Paper Published:
+                                            {t("Original Paper Published:")}
                                         </h3>
                                         <p className="text-2xl font-bold text-gray-600">
-                                            {article.publication_date || 'N/A'}{article.source_publication ? `, ${article.source_publication}` : ''}
+                                            {formatPublicationDate(article.publication_date, t.lang) || t("N/A")}{article.source_publication ? `, ${article.source_publication}` : ''}
                                         </p>
                                     </div>
                                     {article.authors && article.authors.length > 0 && (
                                         <div className="flex items-start justify-start w-full gap-2 mb-8">
                                             <h3 className="text-xl font-semibold text-gray-500 w-700 whitespace-nowrap pt-1">
-                                                Original Paper Authors:
+                                                {t("Original Paper Authors:")}
                                             </h3>
                                             <div className="flex-1">
                                                 {article.authors.length <= 3 ? (
@@ -468,7 +476,7 @@ const ArticlePage = ({ params }) => {
                                                         <button
                                                             onClick={() => setAuthorsExpanded(!authorsExpanded)}
                                                             className="p-1 hover:bg-gray-100 rounded transition-transform duration-200"
-                                                            aria-label={authorsExpanded ? "Collapse authors" : "Expand authors"}
+                                                            aria-label={authorsExpanded ? t("Collapse authors") : t("Expand authors")}
                                                         >
                                                             <ChevronDown
                                                                 className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${authorsExpanded ? 'rotate-180' : ''}`}
@@ -493,7 +501,7 @@ const ArticlePage = ({ params }) => {
                                         />
                                         {article.image_credit && (
                                             <p className="article-page__image-credit">
-                                                Image Credit: {article.image_credit}
+                                                {t("Image Credit: {credit}", { credit: article.image_credit })}
                                             </p>
                                         )}
                                     </div>
@@ -520,7 +528,7 @@ const ArticlePage = ({ params }) => {
                             {article.audio_url ? (
                                 <AudioPlayer
                                     audioUrl={article.audio_url}
-                                    title={article.title}
+                                    title={activeTranslation ? activeTranslation.translated_title : article.title}
                                 />
                             ) : isAdmin && audioGenerating ? (
                                 <div className="article-page__audio-generating">
@@ -561,7 +569,7 @@ const ArticlePage = ({ params }) => {
 
                             <div className="article-page__summary">
                                 <h2 className="article-page__summary-title w-700">
-                                    Summary
+                                    {t("Summary")}
                                 </h2>
                                 <div
                                     lang={activeTranslation ? selectedLanguage : undefined}
@@ -595,7 +603,7 @@ const ArticlePage = ({ params }) => {
                             <div className="article-page__translation-selector">
                                 <div className="article-page__translation-selector-header">
                                     <Globe className="w-7 h-7" />
-                                    <h3>Read in another language</h3>
+                                    <h3>{t("Read in another language")}</h3>
                                 </div>
                                 <div className="article-page__language-buttons">
                                     {selectedLanguage && (
@@ -633,7 +641,7 @@ const ArticlePage = ({ params }) => {
                                         rel="noopener noreferrer"
                                     >
                                         <ExternalLink className="w-7 h-7" />
-                                        Read Original Paper
+                                        {t("Read Original Paper")}
                                     </Link>
                                 )}
                                 {isAdmin && (

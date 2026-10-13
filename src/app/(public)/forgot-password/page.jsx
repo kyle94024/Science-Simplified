@@ -7,11 +7,13 @@ import Footer from "@/components/Footer/Footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { tenant } from "@/lib/config";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const t = useUiText();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,11 +22,11 @@ export default function ForgotPasswordPage() {
       const res = await requestPasswordReset(email);
 
       //  show reset link directly for testing
-      alert("Reset link sent! Check your email.");
+      alert(t("Reset link sent! Check your email."));
     //   console.log("RESET LINK:", res.resetLink);
 
     } catch (err) {
-      alert(err.message);
+      alert(t(err.message));
     } finally {
       setLoading(false);
     }
@@ -36,15 +38,15 @@ export default function ForgotPasswordPage() {
 
       <div className="login-page__body">
         <div className="login-form">
-          <h1 className="login-form__title">Forgot Password</h1>
+          <h1 className="login-form__title">{t("Forgot Password")}</h1>
 
           <form className="login-form__form" onSubmit={handleSubmit}>
             <div className="login-form__input-group">
-              <label className="login-form__label">Email</label>
+              <label className="login-form__label">{t("Email")}</label>
               <input
                 type="email"
                 className="login-form__input"
-                placeholder="Enter your email"
+                placeholder={t("Enter your email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -56,14 +58,14 @@ export default function ForgotPasswordPage() {
               className="login-form__submit"
               disabled={loading}
             >
-              {loading ? "Sending..." : "Send Reset Link"}
+              {loading ? t("Sending...") : t("Send Reset Link")}
             </Button>
           </form>
 
           <p className="login-form__signup">
-            Remember your password?{" "}
+            {t("Remember your password?")}{" "}
             <a href="/login" className="login-form__signup-link">
-              Back to login
+              {t("Back to login")}
             </a>
           </p>
         </div>

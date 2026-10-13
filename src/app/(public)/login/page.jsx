@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Footer from "@/components/Footer/Footer";
 import { Button } from "@/components/ui/button";
 import { tenant } from "@/lib/config";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function LoginForm() {
     const [email, setEmail] = useState("");
@@ -19,17 +20,18 @@ export default function LoginForm() {
     const [isLoading, setIsLoading] = useState(false);
     const { login, error } = useAuth();
     const router = useRouter();
+    const t = useUiText();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
             await login({ email, password });
-            toast.success("Login successful!");
+            toast.success(t("Login successful!"));
             router.push("/");
         } catch (err) {
             console.error("Login failed", err);
-            toast.error(error || "Login failed!");
+            toast.error(t(error) || t("Login failed!"));
         } finally {
             setIsLoading(false);
         }
@@ -45,23 +47,23 @@ export default function LoginForm() {
             <Navbar />
             <div className="login-page__body">
                 <div className="login-form">
-                    <h1 className="login-form__title">Login to your account</h1>
+                    <h1 className="login-form__title">{t("Login to your account")}</h1>
                     <form className="login-form__form" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="login-form__error">{error}</div>
+                            <div className="login-form__error">{t(error)}</div>
                         )}
                         <div className="login-form__input-group">
                             <label
                                 htmlFor="email"
                                 className="login-form__label"
                             >
-                                Email
+                                {t("Email")}
                             </label>
                             <input
                                 type="email"
                                 id="email"
                                 className="login-form__input"
-                                placeholder="Enter Email"
+                                placeholder={t("Enter Email")}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -72,14 +74,14 @@ export default function LoginForm() {
                                 htmlFor="password"
                                 className="login-form__label"
                             >
-                                Password
+                                {t("Password")}
                             </label>
                             <div className="login-form__password-input">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
                                     className="login-form__input"
-                                    placeholder="Password"
+                                    placeholder={t("Password")}
                                     value={password}
                                     onChange={(e) =>
                                         setPassword(e.target.value)
@@ -101,7 +103,7 @@ export default function LoginForm() {
                             href="/forgot-password"
                             className="login-form__forgot-password"
                         >
-                            Forgot password?
+                            {t("Forgot password?")}
                         </a>
                         <Button
                             type="submit"
@@ -111,17 +113,17 @@ export default function LoginForm() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                                    Please wait
+                                    {t("Please wait")}
                                 </>
                             ) : (
-                                "Login"
+                                t("Login")
                             )}
                         </Button>
                     </form>
                     <p className="login-form__signup">
-                        Don&apos;t have an account?{" "}
+                        {t("Don't have an account?")}{" "}
                         <a href="/signup" className="login-form__signup-link">
-                            Sign up here
+                            {t("Sign up here")}
                         </a>
                         
                     </p>

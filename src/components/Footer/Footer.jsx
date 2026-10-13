@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react"; // Using default icons as filled versions may not exist
@@ -5,12 +6,14 @@ import "./Footer.scss";
 import Image from "next/image";
 import { tenant } from "@/lib/config";
 import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
+import { useUiText } from "@/hooks/useUiText";
 
 const brandlogo = `/assets/${tenant.pathName}/${tenant.logoWithText}`;
 const isScleroderma = tenant.shortName === "Scleroderma";
 const useWordmark = isScleroderma;
 
 const Footer = () => {
+    const t = useUiText();
     return (
         <footer className="footer padding">
             <div className="boxed">
@@ -33,7 +36,7 @@ const Footer = () => {
                             />
                         )}
                         <p className="footer__description">
-                            {tenant.text_footerDescription}
+                            {t(tenant.text_footerDescription)}
                         </p>
                         {/* <div className="footer__social">
                             <Link href="#" className="footer__social-link">
@@ -53,11 +56,11 @@ const Footer = () => {
 
                     <div className="footer__links">
                         <div className="footer__links-column">
-                            <h3 className="footer__links-title">Main Links</h3>
+                            <h3 className="footer__links-title">{t("Main Links")}</h3>
                             <ul className="footer__links-list">
                                 <li className="footer__links-item">
                                     <Link href="/" className="footer__link">
-                                        Home
+                                        {t("Home")}
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
@@ -71,14 +74,14 @@ const Footer = () => {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            Articles
+                                            {t("Articles")}
                                         </a>
                                     ) : (
                                         <Link
                                             href="/articles"
                                             className="footer__link"
                                         >
-                                            Articles
+                                            {t("Articles")}
                                         </Link>
                                     )}
                                 </li>
@@ -87,7 +90,7 @@ const Footer = () => {
                                         href="/contact"
                                         className="footer__link"
                                     >
-                                        Contact Us
+                                        {t("Contact Us")}
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
@@ -95,20 +98,20 @@ const Footer = () => {
                                         href="/about"
                                         className="footer__link"
                                     >
-                                        About Us
+                                        {t("About Us")}
                                     </Link>
                                 </li>
                             </ul>
                         </div>
                         <div className="footer__links-column">
-                            <h3 className="footer__links-title">Support</h3>
+                            <h3 className="footer__links-title">{t("Support")}</h3>
                             <ul className="footer__links-list">
                                 <li className="footer__links-item">
                                     <Link
                                         href="https://www.scisimplified.org/terms-of-use"
                                         className="footer__link"
                                     >
-                                        Terms of Use
+                                        {t("Terms of Use")}
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
@@ -116,12 +119,12 @@ const Footer = () => {
                                         href="https://www.scisimplified.org/privacy-policy"
                                         className="footer__link"
                                     >
-                                        Privacy Policy
+                                        {t("Privacy Policy")}
                                     </Link>
                                 </li>
                                 <li className="footer__links-item">
                                     <Link href="/faq" className="footer__link">
-                                        FAQ
+                                        {t("FAQ")}
                                     </Link>
                                 </li>
                             </ul>

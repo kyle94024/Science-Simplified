@@ -15,6 +15,7 @@ import {
 import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton/ArticleCardSkeleton";
 import { SearchX, Unplug, ChevronLeft, ChevronRight } from "lucide-react";
 import { tenant } from "@/lib/config"; // ✅ import tenant to check NEXT_PUBLIC_SITE_KEY
+import { useUiText } from "@/hooks/useUiText";
 
 export default function ArticlesListPaginated({
   articles = [],
@@ -26,6 +27,7 @@ export default function ArticlesListPaginated({
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const isHS = tenant.shortName === "HS"; // ✅ key flag
+  const t = useUiText();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -123,7 +125,7 @@ export default function ArticlesListPaginated({
     return (
       <div className={`article-list__error ${isHS ? "hs-mode" : ""}`}>
         <Unplug className="article-list__error__icon" />
-        <p className="body-large">Something went wrong. Please try again later.</p>
+        <p className="body-large">{t("Something went wrong. Please try again later.")}</p>
       </div>
     );
   }
@@ -132,7 +134,7 @@ export default function ArticlesListPaginated({
     return (
       <div className={`article-list__empty-state ${isHS ? "hs-mode" : ""}`}>
         <SearchX className="article-list__empty-icon" />
-        <p className="body-large">No articles found. Try a different search!</p>
+        <p className="body-large">{t("No articles found. Try a different search!")}</p>
       </div>
     );
   }
@@ -143,7 +145,7 @@ export default function ArticlesListPaginated({
       <div className="article-list__items">
         {selectedArticles.map((article) => {
           const baseName =
-            article.name || article.publisher_name || "Anonymous";
+            article.name || article.publisher_name || t("Anonymous");
           // Passthrough today (HSF partnership reinstated) — see articleAuthor.js.
           const credit = resolveArticleCredit(article, baseName);
           const authorName = credit.name;

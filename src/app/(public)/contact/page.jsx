@@ -14,6 +14,7 @@ import Loader from "@/app/loading";
 import useAuthStore from "@/store/useAuthStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function ContactPage() {
     const [articleLink, setArticleLink] = useState("");
@@ -25,6 +26,7 @@ export default function ContactPage() {
     const [sendBugAnonymously, setSendBugAnonymously] = useState(false);
     const [isArticleLoading, setIsArticleLoading] = useState(false);
     const [isBugLoading, setIsBugLoading] = useState(false);
+    const t = useUiText();
 
     const handleArticleSubmit = async (e) => {
         e.preventDefault();
@@ -50,13 +52,13 @@ export default function ContactPage() {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success("Article request submitted successfully!");
+                toast.success(t("Article request submitted successfully!"));
             } else {
-                toast.error(data.error || "Failed to submit article request.");
+                toast.error(t(data.error) || t("Failed to submit article request."));
             }
         } catch (error) {
             console.error("Error submitting article request:", error);
-            toast.error("An error occurred while submitting the request.");
+            toast.error(t("An error occurred while submitting the request."));
         } finally {
             setArticleLink("");
             setSendArticleAnonymously(false);
@@ -91,14 +93,14 @@ export default function ContactPage() {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success("Bug report submitted successfully!");
+                toast.success(t("Bug report submitted successfully!"));
                 // Optionally, you can add further processing with `data`
             } else {
-                toast.error(data.error || "Failed to submit bug report.");
+                toast.error(t(data.error) || t("Failed to submit bug report."));
             }
         } catch (error) {
             console.error("Error submitting bug report:", error);
-            toast.error("An error occurred while submitting the report.");
+            toast.error(t("An error occurred while submitting the report."));
         } finally {
             setBugName("");
             setBugEmail("");
@@ -116,10 +118,9 @@ export default function ContactPage() {
                 <main className="contact-page__content padding">
                     <div className="contact-page__container boxed">
                         <section className="contact-page__hero">
-                            <h1 className="contact-page__title">Contact Us</h1>
+                            <h1 className="contact-page__title">{t("Contact Us")}</h1>
                             <p className="contact-page__subtitle">
-                                We&apos;re here to help and listen to your
-                                feedback
+                                {t("We're here to help and listen to your feedback")}
                             </p>
                         </section>
 
@@ -127,31 +128,29 @@ export default function ContactPage() {
                             <div className="contact-page__forms__set">
                                 <div className="contact-page__email-section contact-page__section">
                                     <h2 className="contact-page__section-title">
-                                        Email Us
+                                        {t("Email Us")}
                                     </h2>
                                     <p className="contact-page__section-description">
-                                        Get in touch via email
+                                        {t("Get in touch via email")}
                                     </p>
                                     <p className="contact-page__section-description">
-                                        Please leave a message with your
-                                        inquiry, and we&apos;ll get back to you
-                                        as soon as possible.
+                                        {t("Please leave a message with your inquiry, and we'll get back to you as soon as possible.")}
                                     </p>
                                     <a
                                         href="mailto:kyle94024@gmail.com"
                                         className="btn btn-primary"
                                     >
                                         <Mail className="contact-page__email-icon" />
-                                        <span>Send us an Email</span>
+                                        <span>{t("Send us an Email")}</span>
                                     </a>
                                 </div>
 
                                 <div className="contact-page__article-section contact-page__section">
                                     <h2 className="contact-page__section-title">
-                                        Request an Article
+                                        {t("Request an Article")}
                                     </h2>
                                     <p className="contact-page__section-description">
-                                        Please submit an article link
+                                        {t("Please submit an article link")}
                                     </p>
                                     <form
                                         onSubmit={handleArticleSubmit}
@@ -162,13 +161,13 @@ export default function ContactPage() {
                                                 htmlFor="articleLink"
                                                 className="contact-page__label"
                                             >
-                                                Article Link
+                                                {t("Article Link")}
                                             </Label>
                                             <Input
                                                 id="articleLink"
                                                 type="url"
                                                 className="contact-page__input"
-                                                placeholder="Enter article link"
+                                                placeholder={t("Enter article link")}
                                                 value={articleLink}
                                                 onChange={(e) =>
                                                     setArticleLink(
@@ -194,7 +193,7 @@ export default function ContactPage() {
                                                 />
                                                 <span className="text">
                                                     {" "}
-                                                    Send request anonymously
+                                                    {t("Send request anonymously")}
                                                 </span>
                                             </Label>
                                         </div>
@@ -206,12 +205,12 @@ export default function ContactPage() {
                                             {isArticleLoading ? (
                                                 <>
                                                     <Loader2 className="contact-page__button-icon animate-spin" />
-                                                    Please wait
+                                                    {t("Please wait")}
                                                 </>
                                             ) : (
                                                 <>
                                                     <Send className="contact-page__button-icon" />
-                                                    Submit Request
+                                                    {t("Submit Request")}
                                                 </>
                                             )}
                                         </Button>
@@ -221,10 +220,10 @@ export default function ContactPage() {
 
                             <div className="contact-page__bug-section contact-page__section">
                                 <h2 className="contact-page__section-title">
-                                    Report a Bug
+                                    {t("Report a Bug")}
                                 </h2>
                                 <p className="contact-page__section-description">
-                                    Help us improve by reporting issues
+                                    {t("Help us improve by reporting issues")}
                                 </p>
                                 <form
                                     onSubmit={handleBugSubmit}
@@ -235,13 +234,13 @@ export default function ContactPage() {
                                             htmlFor="bugName"
                                             className="contact-page__label"
                                         >
-                                            Your Name
+                                            {t("Your Name")}
                                         </Label>
                                         <Input
                                             id="bugName"
                                             type="text"
                                             className="contact-page__input"
-                                            placeholder="Your Name"
+                                            placeholder={t("Your Name")}
                                             value={bugName}
                                             onChange={(e) =>
                                                 setBugName(e.target.value)
@@ -255,13 +254,13 @@ export default function ContactPage() {
                                             htmlFor="bugEmail"
                                             className="contact-page__label"
                                         >
-                                            Your Email
+                                            {t("Your Email")}
                                         </Label>
                                         <Input
                                             id="bugEmail"
                                             type="email"
                                             className="contact-page__input"
-                                            placeholder="Your Email"
+                                            placeholder={t("Your Email")}
                                             value={bugEmail}
                                             onChange={(e) =>
                                                 setBugEmail(e.target.value)
@@ -275,12 +274,12 @@ export default function ContactPage() {
                                             htmlFor="bugDescription"
                                             className="contact-page__label"
                                         >
-                                            Bug Description
+                                            {t("Bug Description")}
                                         </Label>
                                         <Textarea
                                             id="bugDescription"
                                             className="contact-page__input contact-page__textarea"
-                                            placeholder="Describe the bug"
+                                            placeholder={t("Describe the bug")}
                                             value={bugDescription}
                                             onChange={(e) =>
                                                 setBugDescription(
@@ -308,7 +307,7 @@ export default function ContactPage() {
                                             />
                                             <span className="text">
                                                 {" "}
-                                                Send report anonymously
+                                                {t("Send report anonymously")}
                                             </span>
                                         </Label>
                                     </div>
@@ -320,12 +319,12 @@ export default function ContactPage() {
                                         {isBugLoading ? (
                                             <>
                                                 <Loader2 className="contact-page__button-icon animate-spin" />
-                                                Please wait
+                                                {t("Please wait")}
                                             </>
                                         ) : (
                                             <>
                                                 <Bug className="contact-page__button-icon" />
-                                                Report Bug
+                                                {t("Report Bug")}
                                             </>
                                         )}
                                     </Button>

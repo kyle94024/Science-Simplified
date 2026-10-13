@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Footer from "@/components/Footer/Footer";
 import { Button } from "@/components/ui/button"; // Assuming you are using the same Button component as in LoginForm
 import { tenant } from "@/lib/config";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function CreateAccountForm() {
     const [formData, setFormData] = useState({
@@ -22,6 +23,7 @@ export default function CreateAccountForm() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // Add isLoading state
     const router = useRouter();
+    const t = useUiText();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,7 +37,7 @@ export default function CreateAccountForm() {
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match.");
+            toast.error(t("Passwords do not match."));
             return;
         }
 
@@ -53,16 +55,16 @@ export default function CreateAccountForm() {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success(data.message);
+                toast.success(t(data.message));
                 setTimeout(() => {
                     router.push("/login"); // Redirect to login page
                 }, 2000);
             } else {
-                toast.error(data.message);
+                toast.error(t(data.message));
             }
         } catch (error) {
             console.error("Signup error:", error);
-            toast.error("An error occurred while creating your account.");
+            toast.error(t("An error occurred while creating your account."));
         } finally {
             setIsLoading(false); // Set loading to false after request completes
         }
@@ -87,7 +89,7 @@ export default function CreateAccountForm() {
             <ToastContainer />
             <div className="signup-page__body">
                 <div className="create-account">
-                    <h1 className="create-account__title">Create Account</h1>
+                    <h1 className="create-account__title">{t("Create Account")}</h1>
                     <form
                         className="create-account__form"
                         onSubmit={handleSubmit}
@@ -98,14 +100,14 @@ export default function CreateAccountForm() {
                                     htmlFor="firstName"
                                     className="create-account__label"
                                 >
-                                    First Name
+                                    {t("First Name")}
                                 </label>
                                 <input
                                     type="text"
                                     id="firstName"
                                     name="firstName"
                                     className="create-account__input"
-                                    placeholder="First Name"
+                                    placeholder={t("First Name")}
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     required
@@ -116,14 +118,14 @@ export default function CreateAccountForm() {
                                     htmlFor="lastName"
                                     className="create-account__label"
                                 >
-                                    Last Name
+                                    {t("Last Name")}
                                 </label>
                                 <input
                                     type="text"
                                     id="lastName"
                                     name="lastName"
                                     className="create-account__input"
-                                    placeholder="Last Name"
+                                    placeholder={t("Last Name")}
                                     value={formData.lastName}
                                     onChange={handleChange}
                                     required
@@ -135,14 +137,14 @@ export default function CreateAccountForm() {
                                 htmlFor="email"
                                 className="create-account__label"
                             >
-                                Email
+                                {t("Email")}
                             </label>
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 className="create-account__input"
-                                placeholder="Enter Email"
+                                placeholder={t("Enter Email")}
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
@@ -153,7 +155,7 @@ export default function CreateAccountForm() {
                                 htmlFor="password"
                                 className="create-account__label"
                             >
-                                Password
+                                {t("Password")}
                             </label>
                             <div className="create-account__password-input">
                                 <input
@@ -161,7 +163,7 @@ export default function CreateAccountForm() {
                                     id="password"
                                     name="password"
                                     className="create-account__input"
-                                    placeholder="Password"
+                                    placeholder={t("Password")}
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
@@ -182,7 +184,7 @@ export default function CreateAccountForm() {
                                 htmlFor="confirmPassword"
                                 className="create-account__label"
                             >
-                                Confirm Password
+                                {t("Confirm Password")}
                             </label>
                             <div className="create-account__password-input">
                                 <input
@@ -194,7 +196,7 @@ export default function CreateAccountForm() {
                                     id="confirmPassword"
                                     name="confirmPassword"
                                     className="create-account__input"
-                                    placeholder="Confirm Password"
+                                    placeholder={t("Confirm Password")}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     required
@@ -213,7 +215,10 @@ export default function CreateAccountForm() {
                             </div>
                         </div>
                         <p className="create-account__terms">
-                            By clicking Create Account, you agree to the <a href="https://www.scisimplified.org/terms-of-use" className="create-account__terms-link" target="_blank" rel="noopener noreferrer">Terms of Use</a> and acknowledge the <a href="https://www.scisimplified.org/privacy-policy" className="create-account__terms-link" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                            {t.rich("By clicking Create Account, you agree to the {terms} and acknowledge the {privacy}.", {
+                                terms: <a href="https://www.scisimplified.org/terms-of-use" className="create-account__terms-link" target="_blank" rel="noopener noreferrer">{t("Terms of Use")}</a>,
+                                privacy: <a href="https://www.scisimplified.org/privacy-policy" className="create-account__terms-link" target="_blank" rel="noopener noreferrer">{t("Privacy Policy")}</a>,
+                            })}
                         </p>
                         <Button
                             type="submit"
@@ -223,17 +228,17 @@ export default function CreateAccountForm() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                                    Creating Account...
+                                    {t("Creating Account...")}
                                 </>
                             ) : (
-                                "Create Account"
+                                t("Create Account")
                             )}
                         </Button>
                     </form>
                     <p className="create-account__login">
-                        Already have an account?{" "}
+                        {t("Already have an account?")}{" "}
                         <a href="/login" className="create-account__login-link">
-                            Login Here
+                            {t("Login Here")}
                         </a>
                     </p>
                 </div>

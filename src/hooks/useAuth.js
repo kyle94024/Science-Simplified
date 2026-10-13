@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
+import { uiText } from "@/lib/uiText";
 
 export function useAuth() {
     const router = useRouter();
@@ -79,7 +80,8 @@ const requestPasswordReset = async (email) => {
 
         if (!response.ok) {
             const err = await response.json();
-            throw new Error(err.message || "Failed to send reset link");
+            // Shown by the forgot-password page, which translates it: t(err.message)
+            throw new Error(err.message || uiText("Failed to send reset link"));
         }
 
         return await response.json();

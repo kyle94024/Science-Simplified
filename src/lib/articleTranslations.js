@@ -180,15 +180,27 @@ async function release(articleId, lang) {
     ).catch(() => {});
 }
 
-/** Translate title, summary and body; validate the body's structure (one retry). */
+/**
+ * Translate title, summary and body. Each must come back actually translated
+ * (the model occasionally echoes the English) and the body must keep the
+ * English structure; each gets one retry, then nothing is stored.
+ */
 async function generateTranslation(article, lang) {
     const { name } = SUPPORTED_LANGUAGES.find((l) => l.code === lang);
+    const where = `article ${article.id} ${lang}`;
+    // Summaries are plain text or HTML; plain text goes through the plain-text
+    // prompt (the HTML one sometimes returns plain text untranslated).
+    const summaryIsHtml = /<[a-z][^>]*>/i.test(article.summary ?? "");
     const [title, summary] = await Promise.all([
-        translatePlainText(article.title, lang, name),
-        article.summary ? translateHtmlContent(article.summary, lang, name) : Promise.resolve(null),
+        translateUntilChanged(article.title, () => translatePlainText(article.title, lang, name), `${where} title`),
+        article.summary
+            ? translateUntilChanged(
+                  article.summary,
+                  () => (summaryIsHtml ? translateHtmlContent : translatePlainText)(article.summary, lang, name),
+                  `${where} summary`
+              )
+            : Promise.resolve(null),
     ]);
-    if (!title?.trim()) throw new Error("empty translated title");
-    if (article.summary && !summary?.trim()) throw new Error("empty translated summary");
 
     // Same allowlist as every other rich-text write; pages render these as HTML.
     // Validation compares what readers will actually see — both sides cleaned —
@@ -199,18 +211,37 @@ async function generateTranslation(article, lang) {
         let problem = null;
         for (let attempt = 1; attempt <= 2; attempt++) {
             body = sanitizeRichText(stripFences(await translateHtmlContent(article.innertext, lang, name)));
-            problem = structureProblem(english, body, lang);
+            problem = untranslated(english, body) ? "came back in English" : structureProblem(english, body, lang);
             if (!problem) break;
-            console.warn(`[translations] article ${article.id} ${lang} attempt ${attempt}: ${problem}`);
+            console.warn(`[translations] ${where} attempt ${attempt}: ${problem}`);
         }
         if (problem) throw new Error(`translation failed validation: ${problem}`);
     }
 
     return {
-        translated_title: stripFences(title).trim(),
-        translated_summary: summary == null ? null : sanitizeRichText(stripFences(summary)),
+        translated_title: title.trim(),
+        translated_summary: summary == null ? null : sanitizeRichText(summary),
         translated_innertext: body,
     };
+}
+
+/** Run `translate` (one retry) until it returns something other than the English. */
+async function translateUntilChanged(english, translate, what) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+        const out = stripFences(await translate());
+        if (!out) throw new Error(`empty translation (${what})`);
+        if (!untranslated(english, out)) return out;
+        console.warn(`[translations] ${what} attempt ${attempt}: came back in English`);
+    }
+    throw new Error(`translation came back in English (${what})`);
+}
+
+/** True when the model handed back the English text instead of a translation. */
+export function untranslated(englishHtml, translatedHtml) {
+    const text = (html) => String(html ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+    const english = text(englishHtml);
+    // Very short text (an acronym, "NF1") can legitimately read the same.
+    return english.length >= 20 && english === text(translatedHtml);
 }
 
 function stripFences(text) {

@@ -12,38 +12,45 @@ import { Suspense } from "react";
 
 import Loader from "@/app/loading";
 import { tenant } from "@/lib/config";
+import { useUiText } from "@/hooks/useUiText";
+import { uiText } from "@/lib/uiText";
 
+// Placeholders: {name} the site's name, {shortName} the condition's short name,
+// {disease} the condition (translated where the language has a name for it).
 const faqsData = [
     {
-        question: `What is ${tenant.name}?`,
-        answer: `${tenant.name} is a platform dedicated to providing accessible, up-to-date, and comprehensive information about ${tenant.disease} (${tenant.shortName}) for patients, families, and caregivers.`,
+        question: uiText("What is {name}?"),
+        answer: uiText("{name} is a platform dedicated to providing accessible, up-to-date, and comprehensive information about {disease} ({shortName}) for patients, families, and caregivers."),
     },
     {
-        question: `Who is ${tenant.name} for?`,
-        answer: `Our website is designed for individuals affected by ${tenant.shortName}, including patients, families, and caregivers, to help them access information and resources that aid in understanding and managing ${tenant.shortName}.`,
+        question: uiText("Who is {name} for?"),
+        answer: uiText("Our website is designed for individuals affected by {shortName}, including patients, families, and caregivers, to help them access information and resources that aid in understanding and managing {shortName}."),
     },
     {
-        question: `What type of information does ${tenant.name} provide?`,
-        answer: `We offer simplified articles and resources on ${tenant.disease}, all reviewed by ${tenant.shortName} experts, to ensure accuracy and accessibility for all users.`,
+        question: uiText("What type of information does {name} provide?"),
+        answer: uiText("We offer simplified articles and resources on {disease}, all reviewed by {shortName} experts, to ensure accuracy and accessibility for all users."),
     },
     {
-        question: `Who reviews the information on ${tenant.name}?`,
-        answer: `All articles on our website are reviewed by ${tenant.shortName} experts, ensuring that the information provided is accurate, reliable, and up-to-date. Please note that clinical trial summaries have not yet been verified by a researcher on the original study team.`,
+        question: uiText("Who reviews the information on {name}?"),
+        answer: uiText("All articles on our website are reviewed by {shortName} experts, ensuring that the information provided is accurate, reliable, and up-to-date. Please note that clinical trial summaries have not yet been verified by a researcher on the original study team."),
     },
     {
-        question: `How can ${tenant.name} help those living with ${tenant.shortName}?`,
-        answer: `We empower those affected by ${tenant.shortName} with knowledge, offering educational articles and a supportive community to help navigate their journey with ${tenant.disease}.`,
+        question: uiText("How can {name} help those living with {shortName}?"),
+        answer: uiText("We empower those affected by {shortName} with knowledge, offering educational articles and a supportive community to help navigate their journey with {disease}."),
     },
 ];
 
 const FAQs = () => {
+    const t = useUiText();
+    const vars = { name: tenant.name, shortName: tenant.shortName, disease: t(tenant.disease) };
+
     return (
         <Suspense fallback={<Loader />}>
             <div className="faq">
                 <Navbar />
                 <main className="faq__content padding">
                     <h2 className="heading-secondary text-center">
-                        Frequently Asked Questions
+                        {t("Frequently Asked Questions")}
                     </h2>
 
                     <div className="faq__container boxed">
@@ -59,10 +66,10 @@ const FAQs = () => {
                                     className="faq__item"
                                 >
                                     <AccordionTrigger className="faq__question">
-                                        {faq.question}
+                                        {t(faq.question, vars)}
                                     </AccordionTrigger>
                                     <AccordionContent className="faq__answer">
-                                        {faq.answer}
+                                        {t(faq.answer, vars)}
                                     </AccordionContent>
                                 </AccordionItem>
                             ))}

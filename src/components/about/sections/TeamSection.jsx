@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { tenant } from "@/lib/config";
+import { UiText } from "@/components/UiText/UiText";
+import { uiText } from "@/lib/uiText";
 
 // Placeholder rows ("Expert Advisor Placeholder", "Placeholder Bio", the
 // expert-placeholder.png image) ship in several tenants' defaults and in the
@@ -39,15 +41,15 @@ export default function TeamSection({ content }) {
   members = members.map(withFounderHeadshot);
   // Secondary heading under the section title. Defaults to "Core Team";
   // an explicit content.subtitle (including "") from the CMS overrides it.
-  const subtitle = content.subtitle ?? "Core Team";
+  const subtitle = content.subtitle ?? uiText("Core Team");
 
   return (
     <section className="about-team">
-      <h2 className="about-section-title">{content.title}</h2>
+      <h2 className="about-section-title"><UiText text={content.title} /></h2>
       {content.description && (
-        <p className="about-team__description">{content.description}</p>
+        <p className="about-team__description"><UiText text={content.description} /></p>
       )}
-      {subtitle && <h3 className="about-team__subtitle">{subtitle}</h3>}
+      {subtitle && <h3 className="about-team__subtitle"><UiText text={subtitle} /></h3>}
       <div className="about-team__grid">
         {members.map((member) => (
           <div key={member.id || member.name} className="about-team__member">
@@ -69,10 +71,10 @@ export default function TeamSection({ content }) {
             <div className="about-team__member-info">
               <h4 className="about-team__member-name">{member.name}</h4>
               {member.title && (
-                <p className="about-team__member-title">{member.title}</p>
+                <p className="about-team__member-title"><UiText text={member.title} /></p>
               )}
               {member.bio && (
-                <p className="about-team__member-bio">{member.bio}</p>
+                <p className="about-team__member-bio"><UiText text={member.bio} /></p>
               )}
             </div>
           </div>

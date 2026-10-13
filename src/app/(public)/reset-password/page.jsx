@@ -7,11 +7,13 @@ import Footer from "@/components/Footer/Footer";
 import { Button } from "@/components/ui/button";
 import { tenant } from "@/lib/config";
 import { useRouter } from "next/navigation";
+import { useUiText } from "@/hooks/useUiText";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const t = useUiText();
 
   useEffect(() => {
     document.documentElement.style.setProperty(
@@ -30,7 +32,7 @@ export default function ResetPasswordPage() {
     const token = new URLSearchParams(window.location.search).get("token");
 
     if (!token) {
-      alert("Invalid or missing reset token");
+      alert(t("Invalid or missing reset token"));
       return;
     }
 
@@ -53,13 +55,13 @@ export default function ResetPasswordPage() {
       if (!res.ok) throw new Error(data.message);
 
       //  SUCCESS FLOW
-      alert("Password reset successful!");
+      alert(t("Password reset successful!"));
 
       //  redirect to login
       router.push("/login");
 
     } catch (err) {
-      alert(err.message || "Something went wrong");
+      alert(t(err.message) || t("Something went wrong"));
     } finally {
       setLoading(false);
     }
@@ -71,17 +73,17 @@ export default function ResetPasswordPage() {
 
       <div className="login-page__body">
         <div className="login-form">
-          <h1 className="login-form__title">Reset Password</h1>
+          <h1 className="login-form__title">{t("Reset Password")}</h1>
 
           <form className="login-form__form" onSubmit={handleReset}>
             <div className="login-form__input-group">
               <label className="login-form__label">
-                New Password
+                {t("New Password")}
               </label>
               <input
                 type="password"
                 className="login-form__input"
-                placeholder="Enter new password"
+                placeholder={t("Enter new password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -93,15 +95,18 @@ export default function ResetPasswordPage() {
               className="login-form__submit"
               disabled={loading}
             >
-              {loading ? "Updating..." : "Reset Password"}
+              {loading ? t("Updating...") : t("Reset Password")}
             </Button>
           </form>
 
           <p className="login-form__signup">
-            Back to{" "}
-            <a href="/login" className="login-form__signup-link">
-              Login
-            </a>
+            {t.rich("Back to {link}", {
+              link: (
+                <a href="/login" className="login-form__signup-link">
+                  {t("Login")}
+                </a>
+              ),
+            })}
           </p>
         </div>
       </div>

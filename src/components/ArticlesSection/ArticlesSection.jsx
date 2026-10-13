@@ -1,9 +1,11 @@
+"use client";
 import "./ArticlesSection.scss";
 import Link from "next/link";
 import ArticleCard from "../ArticleCard/ArticleCard";
 import { ArticleCardSkeleton } from "../ArticleCardSkeleton/ArticleCardSkeleton";
 import { Unplug, ArrowRight } from "lucide-react";
 import { resolveArticleCredit } from "@/lib/articleAuthor";
+import { useUiText } from "@/hooks/useUiText";
 
 const ArticlesSection = ({
     articles,
@@ -14,6 +16,7 @@ const ArticlesSection = ({
     moreHref,
     showMore = false,
 }) => {
+    const t = useUiText();
     return (
         <section className="articles-section padding">
             <div className="boxed">
@@ -21,7 +24,7 @@ const ArticlesSection = ({
                     <h2 className="heading-tertiary">{sectionTitle}</h2>
                     {viewAllHref && (
                         <Link href={viewAllHref} className="articles-section__view-all">
-                            Read more <ArrowRight size={16} />
+                            {t("Read more")} <ArrowRight size={16} />
                         </Link>
                     )}
                 </div>
@@ -36,20 +39,20 @@ const ArticlesSection = ({
                     <div className="articles-section__error">
                         <Unplug className="articles-section__error__icon" />
                         <p className="body-large">
-                            Something went wrong. Please try again later.
+                            {t("Something went wrong. Please try again later.")}
                         </p>
                     </div>
                 ) : (
                     <div className="articles-section__list">
                         {articles.map((article) => {
                             // Default to "Anonymous" if no name is found
-                            let authorName = "Anonymous";
+                            let authorName = t("Anonymous");
 
                             // Check if `certifiedby` is available and has a name
                             if (article.certifiedby) {
                                 try {
                                     // Use the name from `certifiedby` if available
-                                    authorName = article.name || "Anonymous";
+                                    authorName = article.name || t("Anonymous");
                                 } catch (err) {
                                     console.error(
                                         "Error parsing certifiedby:",
@@ -86,7 +89,7 @@ const ArticlesSection = ({
                     (the caller decides; see RecentArticlesSection). */}
                 {showMore && moreHref && !loading && !error && (
                     <Link href={moreHref} className="articles-section__more">
-                        More Articles <ArrowRight size={18} />
+                        {t("More Articles")} <ArrowRight size={18} />
                     </Link>
                 )}
             </div>

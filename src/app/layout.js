@@ -3,6 +3,8 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer/Footer";
 import ThemeProvider from "@/components/ThemeProvider/ThemeProvider";
+import LanguageBoot from "@/components/LanguageBoot/LanguageBoot";
+import { languageBootScript, languageBootStyle } from "@/lib/uiText/boot";
 
 import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
@@ -20,9 +22,20 @@ export const metadata = {
         `${tenant.name} - Get simplified information about ${tenant.diseaseLower || tenant.disease}`,
 };
 
+// Tenants with the site-wide language picker (NF): the reader's saved language
+// is applied before the first paint — see src/lib/uiText/boot.js.
+const languagePicker = !!tenant.articleTranslations;
+
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        // The boot script may set lang (and a class) on <html> before hydration.
+        <html lang="en" suppressHydrationWarning={languagePicker || undefined}>
+            {languagePicker && (
+                <head>
+                    <script dangerouslySetInnerHTML={{ __html: languageBootScript }} />
+                    <style dangerouslySetInnerHTML={{ __html: languageBootStyle }} />
+                </head>
+            )}
             <body className={`${outfitFont.variable} antialiased`}>
 
                 <Analytics />
@@ -39,6 +52,8 @@ export default function RootLayout({ children }) {
 
                     {children}
                 </ThemeProvider>
+
+                {languagePicker && <LanguageBoot />}
             </body>
         </html>
     );

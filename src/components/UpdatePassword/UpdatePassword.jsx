@@ -15,6 +15,7 @@ import { Eye, EyeOff } from "lucide-react";
 import useAuthStore from "@/store/useAuthStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUiText } from "@/hooks/useUiText";
 
 const UpdatePassword = ({ isEditing }) => {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -30,6 +31,7 @@ const UpdatePassword = ({ isEditing }) => {
     const [open, setOpen] = useState(false);
 
     const { user } = useAuthStore();
+    const t = useUiText();
 
     const resetFields = () => {
         setCurrentPassword("");
@@ -55,15 +57,15 @@ const UpdatePassword = ({ isEditing }) => {
 
     const handleSubmit = async () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
-            setError("Please fill in all fields.");
+            setError(t("Please fill in all fields."));
             return;
         }
         if (newPassword.length < 8) {
-            setError("New password must be at least 8 characters.");
+            setError(t("New password must be at least 8 characters."));
             return;
         }
         if (newPassword !== confirmPassword) {
-            setError("New passwords do not match.");
+            setError(t("New passwords do not match."));
             return;
         }
 
@@ -82,18 +84,18 @@ const UpdatePassword = ({ isEditing }) => {
 
             if (!response.ok) {
                 const data = await response.json();
-                setError(data.message || "An error occurred.");
+                setError(t(data.message) || t("An error occurred."));
                 return;
             }
 
             // Success: clear the fields and close the dialog so it's obvious the
             // change went through (in addition to the toast).
-            toast.success("Password updated successfully!");
+            toast.success(t("Password updated successfully!"));
             resetFields();
             setOpen(false);
         } catch (err) {
-            setError("An error occurred. Please try again.");
-            toast.error("An error occurred. Please try again.");
+            setError(t("An error occurred. Please try again."));
+            toast.error(t("An error occurred. Please try again."));
         } finally {
             setIsLoading(false);
         }
@@ -107,13 +109,13 @@ const UpdatePassword = ({ isEditing }) => {
                         disabled={!isEditing}
                         className="btn btn-primary-red"
                     >
-                        Change Password
+                        {t("Change Password")}
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="update-password__dialog">
                     <DialogHeader>
                         <DialogTitle className="update-password__title">
-                            Change Password
+                            {t("Change Password")}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="update-password__form">
@@ -127,7 +129,7 @@ const UpdatePassword = ({ isEditing }) => {
                                 htmlFor="currentPassword"
                                 className="update-password__label"
                             >
-                                Current Password
+                                {t("Current Password")}
                             </label>
                             <div className="update-password__password-input">
                                 <input
@@ -138,7 +140,7 @@ const UpdatePassword = ({ isEditing }) => {
                                     }
                                     id="currentPassword"
                                     className="update-password__input"
-                                    placeholder="Current Password"
+                                    placeholder={t("Current Password")}
                                     value={currentPassword}
                                     onChange={(e) =>
                                         setCurrentPassword(e.target.value)
@@ -165,7 +167,7 @@ const UpdatePassword = ({ isEditing }) => {
                                 htmlFor="newPassword"
                                 className="update-password__label"
                             >
-                                New Password
+                                {t("New Password")}
                             </label>
                             <div className="update-password__password-input">
                                 <input
@@ -174,7 +176,7 @@ const UpdatePassword = ({ isEditing }) => {
                                     }
                                     id="newPassword"
                                     className="update-password__input"
-                                    placeholder="New Password"
+                                    placeholder={t("New Password")}
                                     value={newPassword}
                                     onChange={(e) =>
                                         setNewPassword(e.target.value)
@@ -197,7 +199,7 @@ const UpdatePassword = ({ isEditing }) => {
                                 htmlFor="confirmPassword"
                                 className="update-password__label"
                             >
-                                Confirm New Password
+                                {t("Confirm New Password")}
                             </label>
                             <div className="update-password__password-input">
                                 <input
@@ -208,7 +210,7 @@ const UpdatePassword = ({ isEditing }) => {
                                     }
                                     id="confirmPassword"
                                     className="update-password__input"
-                                    placeholder="Confirm New Password"
+                                    placeholder={t("Confirm New Password")}
                                     value={confirmPassword}
                                     onChange={(e) =>
                                         setConfirmPassword(e.target.value)
@@ -237,7 +239,7 @@ const UpdatePassword = ({ isEditing }) => {
                             onClick={handleSubmit}
                             disabled={isLoading}
                         >
-                            {isLoading ? "Updating..." : "Update Password"}
+                            {isLoading ? t("Updating...") : t("Update Password")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

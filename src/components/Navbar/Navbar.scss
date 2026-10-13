@@ -564,6 +564,14 @@ header {
         }
     }
 
+    // Translated interface text (NF's language picker) runs longer than
+    // English: use the spare right padding so the menu stays on one line at
+    // the widths where English does. English pages are unaffected.
+    html:not([lang="en"]) & .nav-links {
+        padding-right: 0;
+        gap: 2.2rem;
+    }
+
     .navbar-actions {
         display: flex;
         align-items: center;
@@ -625,6 +633,13 @@ header {
         }
     }
 
+    // The menu's link colour above would otherwise turn the dark Sign Up
+    // button's text dark too (unreadable).
+    .mobile-menu a.btn-primary,
+    .mobile-menu button.btn-primary {
+        color: #fff;
+    }
+
     @media (max-width: 768px) {
         .nav-links {
             display: none;
@@ -634,6 +649,23 @@ header {
         }
         .mobile-menu {
             display: flex;
+        }
+    }
+
+    // Translated interface text is longer than English, so below ~1150px the
+    // full menu would push the row wider than the screen: use the compact
+    // menu there. English keeps the 768px breakpoint.
+    @media (min-width: 769px) and (max-width: 1150px) {
+        html:not([lang="en"]) & {
+            .nav-links {
+                display: none;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .mobile-menu {
+                display: flex;
+            }
         }
     }
 }
@@ -673,5 +705,13 @@ header {
         justify-content: center;
         margin-left: 0.15rem;
         flex-shrink: 0;
+    }
+
+    /* Translated interface text (NF's language picker): the login / sign-up
+       labels are longer than English and would push the menu button off
+       screen. They're in the menu as well, so the header drops them.
+       English is unchanged. */
+    html:not([lang="en"]) .navbar .auth-buttons {
+        display: none;
     }
 }

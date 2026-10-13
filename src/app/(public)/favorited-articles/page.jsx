@@ -8,12 +8,16 @@ import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton/ArticleCar
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "@/store/useAuthStore";
+import { useUiText } from "@/hooks/useUiText";
+import { UiText } from "@/components/UiText/UiText";
+import { uiText } from "@/lib/uiText";
 import "./FavoritedArticles.scss";
 
 const FavoritedArticles = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const t = useUiText();
 
     const { user } = useAuthStore();
     const { userId } = user || {};
@@ -32,7 +36,9 @@ const FavoritedArticles = () => {
         } catch (error) {
             console.error("Error fetching favorited articles:", error);
             setError(true);
-            toast.error(error.message || "Failed to fetch favorited articles");
+            // Called from the effect below, whose `t` can predate the reader's
+            // language loading; <UiText> uses the one on screen.
+            toast.error(<UiText text={error.message || uiText("Failed to fetch favorited articles")} />);
         } finally {
             setLoading(false);
         }
@@ -46,7 +52,7 @@ const FavoritedArticles = () => {
         } else {
             setLoading(false);
             setError(true);
-            toast.info("Please log in to view favorited articles.");
+            toast.info(<UiText text="Please log in to view favorited articles." />);
         }
     }, [userId]);
 
@@ -57,7 +63,7 @@ const FavoritedArticles = () => {
             <div className="favorited-articles__content padding">
                 <div className="boxed">
                     <h1 className="favorited-articles__title heading-tertiary">
-                        Your Favorited Articles
+                        {t("Your Favorited Articles")}
                     </h1>
                     {loading ? (
                         <div className="favorited-articles__loading">
@@ -70,15 +76,15 @@ const FavoritedArticles = () => {
                             <Unplug className="favorited-articles__error__icon" />
                             <p className="body-large">
                                 {userId
-                                    ? "Something went wrong. Please try again later."
-                                    : "Please log in to view your favorited articles."}
+                                    ? t("Something went wrong. Please try again later.")
+                                    : t("Please log in to view your favorited articles.")}
                             </p>
                         </div>
                     ) : articles.length === 0 ? (
                         <div className="favorited-articles__error">
                             <Unplug className="favorited-articles__error__icon" />
                             <p className="body-large">
-                                You haven’t favorited any articles yet.
+                                {t("You haven’t favorited any articles yet.")}
                             </p>
                         </div>
                     ) : (

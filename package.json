@@ -11,7 +11,8 @@
     "roundtrip:selftest": "node --no-warnings scripts/richtext-roundtrip.mjs --selftest",
     "token-study": "node scripts/token-study/run.mjs",
     "simplify-eval": "node scripts/simplify-eval/run.mjs",
-    "translations:backfill": "node scripts/translations/backfill.mjs"
+    "translations:backfill": "node scripts/translations/backfill.mjs",
+    "ui-text:check": "node scripts/ui-text/check.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

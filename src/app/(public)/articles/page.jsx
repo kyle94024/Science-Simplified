@@ -14,6 +14,7 @@ import useAuthStore from "@/store/useAuthStore";
 import { tenant } from "@/lib/config";
 import { useArticleLanguage } from "@/hooks/useArticleLanguage";
 import { useTranslationOverlay, applyTranslationOverlay } from "@/hooks/useTranslationOverlay";
+import { useUiText } from "@/hooks/useUiText";
 import {
     Select,
     SelectContent,
@@ -29,6 +30,7 @@ const ArticleSearchPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [sortBy, setSortBy] = useState("recent");
+    const t = useUiText();
 
     // Reader's language (NF): cards switch to stored translations where they exist,
     // and search also matches the translated text.
@@ -177,20 +179,20 @@ const sortArticles = (articlesToSort) => {
                         <div className="article-search-page__sort-controls mb-8">
                             <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger className="article-search-page__select">
-                                    <SelectValue placeholder="Sort by..." />
+                                    <SelectValue placeholder={t("Sort by...")} />
                                 </SelectTrigger>
                                 <SelectContent className="article-search-page__select-content">
                                     <SelectItem
                                         className="article-search-page__select-item"
                                         value="recent"
                                     >
-                                        Recently Added
+                                        {t("Recently Added")}
                                     </SelectItem>
                                     <SelectItem
                                         className="article-search-page__select-item"
                                         value="publication"
                                     >
-                                        Publication Date
+                                        {t("Publication Date")}
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
@@ -208,7 +210,7 @@ const sortArticles = (articlesToSort) => {
                         <div className="article-search-page__error">
                             <Unplug className="article-search-page__error__icon" />
                             <p className="body-large">
-                                Something went wrong. Please try again later.
+                                {t("Something went wrong. Please try again later.")}
                             </p>
                         </div>
                     ) : (

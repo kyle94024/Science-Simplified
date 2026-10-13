@@ -19,6 +19,7 @@ import FeaturedArticlesSection from "@/components/FeaturedArticlesSection/Featur
 import ExternalArticlesNotice from "@/components/ExternalArticlesNotice/ExternalArticlesNotice";
 import { articlesExternalUrl, articlesExternalTakeover } from "@/lib/articlesExternal";
 import Footer from "@/components/Footer/Footer";
+import { useUiText } from "@/hooks/useUiText";
 
 // HSF redirect mapping (for HS Foundation external links)
 import { getArticleIdFromHsfId } from "@/lib/hsfRedirects";
@@ -27,6 +28,7 @@ import { getArticleIdFromHsfId } from "@/lib/hsfRedirects";
 function HomeContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const t = useUiText();
 
     const { role, isAdmin } = useAuthStore();
 
@@ -114,15 +116,15 @@ function HomeContent() {
                                     {tenant.shortName === "RUNX1" ? (
                                         <><em>RUNX1</em>-FPD</>
                                     ) : (
-                                        tenant.disease
+                                        t(tenant.disease)
                                     )}
                                 </h1>
                                 <h2 className="heading-tertiary w-400 color-green">
-                                    Science made simple
+                                    {t("Science made simple")}
                                 </h2>
                             </div>
                             <p className="body-large animate-stagger-2">
-                                {tenant.text_homeTitleDescription}{" "}
+                                {t(tenant.text_homeTitleDescription)}{" "}
                                 {/* <span className="w-700 color-green-dark">
                                     Powered by Innovation.
                                 </span> */}
@@ -175,8 +177,9 @@ function HomeContent() {
 
 // Wrapper component with Suspense boundary for useSearchParams
 export default function Home() {
+    const t = useUiText();
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>{t("Loading...")}</div>}>
             <HomeContent />
         </Suspense>
     );
