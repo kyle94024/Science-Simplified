@@ -28,7 +28,8 @@ function isBadAIText(text) {
 /* ---------------- RENDER ---------------- */
 
 function renderContent(text, fallback, isManual = false) {
-  if (!isManual && isBadAIText(text)) {
+  // A custom question can be saved before it has an answer.
+  if (!text || (!isManual && isBadAIText(text))) {
     return <p className="trial-paragraph">{fallback}</p>;
   }
 
