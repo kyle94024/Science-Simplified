@@ -121,6 +121,8 @@ treat them as hints.
 |---|---|---|
 | **EB, HS, Scleroderma** (any tenant with `hideClinicalTrials: true`) | Feature disabled: Clinical Trials nav item hidden (desktop + mobile) and `/clinical-trials` redirects home with fetches skipped. To disable for another tenant, set `hideClinicalTrials: true` in its `sites.js` block — no code change. | `src/lib/sites.js` (`hideClinicalTrials` flag); `src/components/Navbar/Navbar.jsx` (navItems filter); `src/app/(public)/clinical-trials/page.jsx` (`trialsDisabled`) |
 | HS | RSS feed excludes article IDs that came from HSF redirect mapping | `src/app/rss/route.js` (~L8, L32) |
+| **NF** (any tenant listed in `TOPICS`) | **Topic chips** above the trial list (NF1, NF2-SWN, Schwannomatosis, Plexiform/Cutaneous neurofibromas, MPNST, Optic pathway glioma) with live counts; each runs the same keyword + synonym matching as the search box. Topics with no trials are hidden. Other tenants show no chips until they get a list. | `src/app/(public)/clinical-trials/page.jsx` (`TOPICS`); synonyms in `src/lib/clinicalTrials/searchVocabulary.js` |
+| All tenants with trials | Trial cards and trial pages show the study's **official short name** (registry acronym, or a name in parentheses at the end of its title, e.g. STARFISH) and **who leads it** (named investigator + institution, else the lead sponsor; company staff aren't shown). Search also matches sponsor, investigator and institution names. | `src/lib/clinicalTrials/display.js`; labels in `src/lib/clinicalTrials/labels.js` |
 
 ### AI summarization prompt (`src/utils/apiHelpers.js`)
 

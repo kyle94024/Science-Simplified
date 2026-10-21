@@ -1,6 +1,6 @@
 "use client";
 import "./TrialsListPaginated.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TrialCard from "@/components/TrialCard/TrialCard";
 import {
   Pagination,
@@ -16,13 +16,20 @@ import { useUiText } from "@/hooks/useUiText";
 
 export default function TrialsListPaginated({
   trials = [],
-  trialsPerPage = 6,
+  trialsPerPage = 10,
   loading = false,
   error = false,
+  // Changes whenever the search or filters do — the list starts again at page 1.
+  resetKey = "",
 }) {
   const t = useUiText();
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const topRef = useRef(null);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [resetKey]);
 
   /* ---------- RESPONSIVE ---------- */
   useEffect(() => {
@@ -46,7 +53,9 @@ export default function TrialsListPaginated({
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Back to the top of this list (not the page header), clear of the navbar.
+      const top = topRef.current ? topRef.current.getBoundingClientRect().top + window.scrollY - 120 : 0;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     }
   };
 
@@ -118,7 +127,7 @@ export default function TrialsListPaginated({
 
   /* ---------- MAIN ---------- */
   return (
-    <div className="trial-list">
+    <div className="trial-list" ref={topRef}>
       <div className="trial-list__items">
         {selectedTrials.map((trial) => (
           <TrialCard key={trial.nct_id} trial={trial} />

@@ -99,9 +99,12 @@ export function synonymGroupsFor(tenantKey) {
  */
 export function trialSearchText(trial) {
     if (!trial) return "";
-    const id = trial.raw_data?.protocolSection?.identificationModule || {};
-    const cm = trial.raw_data?.protocolSection?.conditionsModule || {};
+    const ps = trial.raw_data?.protocolSection || {};
+    const id = ps.identificationModule || {};
+    const cm = ps.conditionsModule || {};
     const list = (v) => (Array.isArray(v) ? v.join(" ") : v || "");
+    // Who runs it, so "Plotkin" or "AstraZeneca" finds their trials.
+    const officials = (Array.isArray(trial.officials) ? trial.officials : ps.contactsLocationsModule?.overallOfficials) || [];
     return normalize(
         [
             trial.short_title_manual || trial.short_title,
@@ -111,6 +114,8 @@ export function trialSearchText(trial) {
             list(trial.conditions ?? cm.conditions),
             list(trial.keywords ?? cm.keywords),
             trial.ai_summary_manual || trial.ai_summary,
+            trial.lead_sponsor || ps.sponsorCollaboratorsModule?.leadSponsor?.name,
+            ...officials.map((o) => `${o?.name || ""} ${o?.affiliation || ""}`),
             trial.nct_id,
         ]
             .filter(Boolean)

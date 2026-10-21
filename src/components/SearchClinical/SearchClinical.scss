@@ -1,45 +1,77 @@
-.search-articles {
+// Search box on the clinical trials page.
+.trial-search {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-
-    margin-top: 3rem;
-
-    &__bar {
-        position: relative;
-        flex-grow: 1;
-    }
 
     &__icon {
         position: absolute;
-        left: 1.6rem; // Increased from 1rem
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-        font-size: 1.6rem; // Added to scale up the icon
+        left: 1.8rem;
+        color: #94a3b8;
+        pointer-events: none;
     }
 
     &__input {
         width: 100%;
-        padding: 1.2rem 1.6rem 1.2rem 5rem; // Adjusted padding
-        border-radius: 9999px;
-        border: 1px solid #e5e7eb;
-        font-size: 1.6rem; // Added to scale up the text
+        height: 5.4rem;
+        padding: 0 5.2rem 0 5.2rem;
+        border-radius: 14px;
+        border: 1px solid #d7e0e4;
+        background: #f8fbfb;
+        font-size: 1.7rem;
+        color: #0f172a;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 
-        height: 5rem;
+        &::placeholder {
+            color: #8a99a8;
+        }
+
+        &:focus {
+            outline: none;
+            background: #fff;
+            border-color: var(--color-primary, #4cb19f);
+            box-shadow: 0 0 0 4px rgba(76, 177, 159, 0.15);
+        }
+
+        // Our own clear button replaces the browser's.
+        &::-webkit-search-cancel-button,
+        &::-webkit-search-decoration {
+            -webkit-appearance: none;
+            appearance: none;
+        }
     }
 
-    &__button {
-        border-radius: 100%;
-        background-color: #111827;
-        color: white;
+    &__clear {
+        position: absolute;
+        right: 1.2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.2rem;
+        height: 3.2rem;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+        color: #64748b;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
 
-        width: 5rem;
-        height: 5rem;
-
-        &-icon {
-            width: 2.4rem; // Increased from 1.5rem
-            height: 2.4rem; // Increased from 1.5rem
+        &:hover,
+        &:focus-visible {
+            background: #eef3f5;
+            color: #0f172a;
         }
+    }
+}
+
+@media (max-width: 640px) {
+    .trial-search__input {
+        height: 5rem;
+        font-size: 1.55rem;
+        padding: 0 4.6rem 0 4.8rem;
+    }
+
+    .trial-search__icon {
+        left: 1.5rem;
     }
 }

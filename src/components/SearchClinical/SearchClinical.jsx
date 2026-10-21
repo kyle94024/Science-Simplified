@@ -1,17 +1,18 @@
 "use client";
 import "./SearchClinical.scss";
-import { ArrowRight, Search } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
+import { Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import useSearchStore from "@/store/useSearchStore";
 import { useUiText } from "@/hooks/useUiText";
 
 const SEMANTIC_THRESHOLD = 20; // chars
 
+/**
+ * Search box for the clinical trials page. Typing filters the list as you go
+ * (keyword matching happens on the page); descriptions of SEMANTIC_THRESHOLD+
+ * characters also fetch the closest matches by meaning.
+ */
 const SearchClinical = ({ placeholder }) => {
-    const router = useRouter();
     const t = useUiText();
     const {
         searchQuery,
@@ -22,16 +23,12 @@ const SearchClinical = ({ placeholder }) => {
     } = useSearchStore();
     const debounceRef = useRef(null);
     const abortRef = useRef(null);
+    const inputRef = useRef(null);
+    const label = placeholder ?? t("Search for clinical trials");
 
-    const handleChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        if (searchQuery) {
-            router.push(`/clinical-trials`);
-        }
+    const clear = () => {
+        setSearchQuery("");
+        inputRef.current?.focus();
     };
 
     // Debounced semantic search trigger for long queries
@@ -78,20 +75,31 @@ const SearchClinical = ({ placeholder }) => {
     }, [searchQuery, setSemanticResults, setSemanticLoading, clearSemantic]);
 
     return (
-        <form onSubmit={handleSearchSubmit} className="search-articles">
-            <div className="search-articles__bar">
-                <Search className="search-articles__icon" />
-                <Input
-                    type="text"
-                    placeholder={placeholder ?? t("Search for clinical trials")}
-                    className="search-articles__input"
-                    value={searchQuery}
-                    onChange={handleChange}
-                />
-            </div>
-            <Button className="search-articles__button" type="submit">
-                <ArrowRight className="search-articles__button-icon" />
-            </Button>
+        // Results update as you type, so submitting (Enter) has nothing left to do.
+        <form role="search" className="trial-search" onSubmit={(e) => e.preventDefault()}>
+            <Search className="trial-search__icon" size={20} aria-hidden="true" />
+            <input
+                ref={inputRef}
+                type="search"
+                className="trial-search__input"
+                placeholder={label}
+                aria-label={label}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Escape" && searchQuery) {
+                        e.preventDefault();
+                        clear();
+                    }
+                }}
+                autoComplete="off"
+                spellCheck={false}
+            />
+            {searchQuery && (
+                <button type="button" className="trial-search__clear" onClick={clear} aria-label={t("Clear search")}>
+                    <X size={18} aria-hidden="true" />
+                </button>
+            )}
         </form>
     );
 };

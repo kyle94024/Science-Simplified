@@ -4,14 +4,15 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
-import { Unplug, BadgeCheck, Sparkles } from "lucide-react";
-import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton/ArticleCardSkeleton";
+import { Unplug, BadgeCheck, Sparkles, X } from "lucide-react";
+import { TrialCardSkeleton } from "@/components/TrialCard/TrialCard";
 import SearchClinical from "@/components/SearchClinical/SearchClinical";
 import TrialsListPaginated from "@/components/TrialsListPaginated/TrialsListPaginated";
 import useSearchStore from "@/store/useSearchStore";
 import { tenant } from "@/lib/config";
 import { matchesQuery } from "@/lib/clinicalTrials/searchVocabulary";
 import { useUiText } from "@/hooks/useUiText";
+import { uiText } from "@/lib/uiText";
 import "./ClinicalTrialsPage.scss";
 
 const CONTINENT_MAP = {
@@ -30,13 +31,28 @@ const CONTINENT_MAP = {
   australia: "australia",
 };
 
+// Quick topics above the list, per tenant (TENANT_CONFIG key). Each runs
+// through the same keyword matching as the search box, synonyms included
+// (src/lib/clinicalTrials/searchVocabulary.js). Topics with no trials are hidden.
+const TOPICS = {
+  NF: [
+    { label: uiText("NF1"), query: "nf1" },
+    { label: uiText("NF2-SWN"), query: "nf2-swn" },
+    { label: uiText("Schwannomatosis"), query: "schwannomatosis" },
+    { label: uiText("Plexiform neurofibromas"), query: "plexiform neurofibroma" },
+    { label: uiText("Cutaneous neurofibromas"), query: "cutaneous neurofibroma" },
+    { label: uiText("MPNST"), query: "mpnst" },
+    { label: uiText("Optic pathway glioma"), query: "optic pathway glioma" },
+  ],
+};
+
 const ClinicalTrialsPage = () => {
   const router = useRouter();
   const t = useUiText();
   // Tenants with tenant.hideClinicalTrials don't use the feature — send visitors home.
   const trialsDisabled = !!tenant.hideClinicalTrials;
 
-  const { searchQuery, semanticResults = [], semanticLoading } = useSearchStore();
+  const { searchQuery, setSearchQuery, semanticResults = [], semanticLoading, clearSemantic } = useSearchStore();
   // Public page lists recruiting trials only — the "Completed Studies" tab was removed.
   const tab = "recruiting";
   const [recruitingTrials, setRecruitingTrials] = useState([]);
@@ -46,6 +62,7 @@ const ClinicalTrialsPage = () => {
   const [error, setError] = useState(false);
 
   // FILTER STATES
+  const [topic, setTopic] = useState(null);
   const [ageFilter, setAgeFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("all");
   const [trialTypeFilter, setTrialTypeFilter] = useState("all");
@@ -98,12 +115,15 @@ const ClinicalTrialsPage = () => {
   // are already trimmed to genuine matches server-side; they extend, never
   // replace, the keyword matches.
   const semanticActive = searching && semanticResults.length > 0;
+  const filtersActive = ageFilter !== "all" || locationFilter !== "all" || trialTypeFilter !== "all";
+  const anyActive = searching || !!topic || filtersActive;
 
-  const filteredTrials = useMemo(() => {
+  // Search + filters, before the topic chips — what the topic counts are taken from.
+  const contextTrials = useMemo(() => {
     // 1. Keyword matches first — on the trial's own vocabulary (official title,
-    //    acronym, conditions, keywords, plus known synonyms such as NF2-SWN), not
-    //    just the patient-friendly rewrite. Then any semantic matches the
-    //    keywords didn't catch, in relevance order.
+    //    acronym, conditions, keywords, who runs it, plus known synonyms such as
+    //    NF2-SWN), not just the patient-friendly rewrite. Then any semantic
+    //    matches the keywords didn't catch, in relevance order.
     let candidates = baseTrials;
     if (searching) {
       const keywordMatches = baseTrials.filter((trial) => matchesQuery(trial, searchQuery, tenantKey));
@@ -138,100 +158,167 @@ const ClinicalTrialsPage = () => {
     });
   }, [baseTrials, searching, searchQuery, semanticResults, tenantKey, ageFilter, locationFilter, trialTypeFilter]);
 
+  // 3. Topic chip, if one is picked.
+  const filteredTrials = useMemo(
+    () => (topic ? contextTrials.filter((trial) => matchesQuery(trial, topic, tenantKey)) : contextTrials),
+    [contextTrials, topic, tenantKey]
+  );
+
+  // Topics this tenant has trials for, with how many match the current search/filters.
+  const topics = useMemo(
+    () =>
+      (TOPICS[tenantKey] || [])
+        .filter((tp) => baseTrials.some((trial) => matchesQuery(trial, tp.query, tenantKey)))
+        .map((tp) => ({ ...tp, count: contextTrials.filter((trial) => matchesQuery(trial, tp.query, tenantKey)).length })),
+    [tenantKey, baseTrials, contextTrials]
+  );
+
   // Split into verified/unverified for recruiting tab
   const verifiedTrials = filteredTrials.filter((trial) => trial.verified_by);
   const unverifiedTrials = filteredTrials.filter((trial) => !trial.verified_by);
 
   const isLoading = tab === "recruiting" ? loading : completedLoading;
+  const listKey = [searchQuery, topic, ageFilter, locationFilter, trialTypeFilter, semanticResults.length].join("|");
+
+  const clearAll = () => {
+    setSearchQuery("");
+    clearSemantic();
+    setTopic(null);
+    setAgeFilter("all");
+    setLocationFilter("all");
+    setTrialTypeFilter("all");
+  };
 
   // Feature disabled for this tenant — render nothing while redirecting home.
   if (trialsDisabled) return null;
+
+  const total = baseTrials.length;
+  const countText = anyActive
+    ? t("{count} of {total} recruiting trials", { count: filteredTrials.length, total })
+    : total === 1
+      ? t("1 recruiting trial")
+      : t("{count} recruiting trials", { count: total });
+
+  const filterSelect = (label, value, onChange, options) => (
+    <label className={`trials-filter${value !== "all" ? " trials-filter--set" : ""}`}>
+      <span className="trials-filter__label">{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map(([v, text]) => (
+          <option key={v} value={v}>
+            {text}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 
   return (
     <div className="clinical-trials-page">
       <Navbar />
 
-      <div className="clinical-trials-page__content">
-        <div className="boxed">
+      <main className="clinical-trials-page__content">
+        <div className="clinical-trials-page__inner">
           {/* ---------- HEADER ---------- */}
-          <div className="clinical-trials-page__header">
+          <header className="clinical-trials-page__header">
             <h1 className="clinical-trials-page__title">{t("Clinical Studies & Trials")}</h1>
             <p className="clinical-trials-page__subtitle">
               {tab === "recruiting"
                 ? t("Patient-friendly summaries of currently recruiting clinical research.")
                 : t("Patient-friendly summaries of completed clinical research.")}
             </p>
-            {tab === "recruiting" && unverifiedTrials.length > 0 && (
-              <p className="clinical-trials-page__disclaimer">
-                ⚠️ {t("Trials without a verification badge have not yet been reviewed and verified by an editor.")}
-              </p>
-            )}
-          </div>
+          </header>
 
-          {/* ---------- SEARCH ---------- */}
-          <div className="clinical-trials-page__search">
+          {/* ---------- SEARCH + TOPICS + FILTERS ---------- */}
+          <section className="clinical-trials-page__panel">
             <SearchClinical placeholder={t("Search trials or describe your situation…")} />
-            {semanticActive && (
-              <p className="clinical-trials-page__semantic-hint">
-                <Sparkles size={14} /> {t("Also showing the closest matches for your description, ranked by relevance.")}
-              </p>
+
+            {topics.length > 0 && (
+              <div className="trials-topics" role="group" aria-label={t("Topics")}>
+                <button
+                  type="button"
+                  className="trials-topic"
+                  aria-pressed={!topic}
+                  onClick={() => setTopic(null)}
+                >
+                  {t("All topics")}
+                </button>
+                {topics.map((tp) => (
+                  <button
+                    key={tp.query}
+                    type="button"
+                    className="trials-topic"
+                    aria-pressed={topic === tp.query}
+                    disabled={tp.count === 0 && topic !== tp.query}
+                    onClick={() => setTopic(topic === tp.query ? null : tp.query)}
+                  >
+                    {t(tp.label)}
+                    <span className="trials-topic__count">{tp.count}</span>
+                  </button>
+                ))}
+              </div>
             )}
-            {semanticLoading && (
-              <p className="clinical-trials-page__semantic-hint">
-                <Sparkles size={14} /> {t("Finding best matches…")}
+
+            <div className="clinical-trials-page__filters">
+              {filterSelect(t("Age"), ageFilter, setAgeFilter, [
+                ["all", t("All Ages")],
+                ["children", t("Children")],
+                ["adults", t("Adults")],
+              ])}
+              {filterSelect(t("Location"), locationFilter, setLocationFilter, [
+                ["all", t("All Locations")],
+                ["north_america", t("North America")],
+                ["south_america", t("South America")],
+                ["europe", t("Europe")],
+                ["asia", t("Asia")],
+                ["australia", t("Australia")],
+                ["other", t("Other")],
+              ])}
+              {filterSelect(t("Trial Type"), trialTypeFilter, setTrialTypeFilter, [
+                ["all", t("All Types")],
+                ["interventional", t("Interventional")],
+                ["observational", t("Observational")],
+                ["expanded", t("Expanded Access")],
+              ])}
+            </div>
+          </section>
+
+          {/* ---------- RESULTS BAR ---------- */}
+          {!isLoading && !error && (
+            <div className="clinical-trials-page__results-bar">
+              <p className="clinical-trials-page__count" aria-live="polite">
+                {countText}
+                {semanticLoading ? (
+                  <span className="clinical-trials-page__semantic-hint">
+                    <Sparkles size={14} /> {t("Finding best matches…")}
+                  </span>
+                ) : (
+                  semanticActive && (
+                    <span className="clinical-trials-page__semantic-hint">
+                      <Sparkles size={14} /> {t("Also showing the closest matches for your description, ranked by relevance.")}
+                    </span>
+                  )
+                )}
               </p>
-            )}
-          </div>
-
-          {/* ---------- FILTERS ---------- */}
-          <div className="clinical-trials-page__filters">
-            <div className="filter-group">
-              <label>{t("Age")}</label>
-              <select
-                value={ageFilter}
-                onChange={(e) => setAgeFilter(e.target.value)}
-              >
-                <option value="all">{t("All Ages")}</option>
-                <option value="children">{t("Children")}</option>
-                <option value="adults">{t("Adults")}</option>
-              </select>
+              {anyActive && (
+                <button type="button" className="clinical-trials-page__clear" onClick={clearAll}>
+                  <X size={15} aria-hidden="true" />
+                  {t("Clear all")}
+                </button>
+              )}
             </div>
+          )}
 
-            <div className="filter-group">
-              <label>{t("Location")}</label>
-              <select
-                value={locationFilter}
-                onChange={(e) => setLocationFilter(e.target.value)}
-              >
-                <option value="all">{t("All Locations")}</option>
-                <option value="north_america">{t("North America")}</option>
-                <option value="south_america">{t("South America")}</option>
-                <option value="europe">{t("Europe")}</option>
-                <option value="asia">{t("Asia")}</option>
-                <option value="australia">{t("Australia")}</option>
-                <option value="other">{t("Other")}</option>
-              </select>
-            </div>
-
-            <div className="filter-group">
-              <label>{t("Trial Type")}</label>
-              <select
-                value={trialTypeFilter}
-                onChange={(e) => setTrialTypeFilter(e.target.value)}
-              >
-                <option value="all">{t("All Types")}</option>
-                <option value="interventional">{t("Interventional")}</option>
-                <option value="observational">{t("Observational")}</option>
-                <option value="expanded">{t("Expanded Access")}</option>
-              </select>
-            </div>
-          </div>
+          {tab === "recruiting" && unverifiedTrials.length > 0 && (
+            <p className="clinical-trials-page__disclaimer">
+              ⚠️ {t("Trials without a verification badge have not yet been reviewed and verified by an editor.")}
+            </p>
+          )}
 
           {/* ---------- CONTENT ---------- */}
           {isLoading ? (
-            <div className="clinical-trials-page__grid">
-              {[...Array(6)].map((_, i) => (
-                <ArticleCardSkeleton key={i} />
+            <div className="trial-list__items">
+              {[...Array(4)].map((_, i) => (
+                <TrialCardSkeleton key={i} />
               ))}
             </div>
           ) : error ? (
@@ -241,17 +328,27 @@ const ClinicalTrialsPage = () => {
             </div>
           ) : filteredTrials.length === 0 ? (
             <div className="clinical-trials-page__empty">
-              {searching
-                ? t("No trials match “{query}”. Try another word or acronym, or describe your situation in a sentence.", {
-                    query: searchQuery.trim(),
-                  })
-                : tab === "recruiting"
-                  ? t("No clinical trials found")
-                  : t("No completed studies yet")}
+              <p>
+                {searching
+                  ? t("No trials match “{query}”. Try another word or acronym, or describe your situation in a sentence.", {
+                      query: searchQuery.trim(),
+                    })
+                  : anyActive
+                    ? t("No trials match these filters.")
+                    : tab === "recruiting"
+                      ? t("No clinical trials found")
+                      : t("No completed studies yet")}
+              </p>
+              {anyActive && (
+                <button type="button" className="clinical-trials-page__clear" onClick={clearAll}>
+                  <X size={15} aria-hidden="true" />
+                  {t("Clear all")}
+                </button>
+              )}
             </div>
           ) : searching ? (
             // Search results: one list, best matches first
-            <TrialsListPaginated trials={filteredTrials} trialsPerPage={6} />
+            <TrialsListPaginated trials={filteredTrials} resetKey={listKey} />
           ) : tab === "recruiting" && verifiedTrials.length > 0 ? (
             // Two-section mode: verified at top, then unverified
             <>
@@ -263,7 +360,7 @@ const ClinicalTrialsPage = () => {
                 <p className="clinical-trials-page__section-subtitle">
                   {t("Reviewed and verified by a subject-matter editor.")}
                 </p>
-                <TrialsListPaginated trials={verifiedTrials} trialsPerPage={6} />
+                <TrialsListPaginated trials={verifiedTrials} resetKey={listKey} />
               </div>
               {unverifiedTrials.length > 0 && (
                 <div className="clinical-trials-page__section">
@@ -274,16 +371,16 @@ const ClinicalTrialsPage = () => {
                   <p className="clinical-trials-page__section-subtitle">
                     {t("Not yet reviewed and verified by an editor.")}
                   </p>
-                  <TrialsListPaginated trials={unverifiedTrials} trialsPerPage={6} />
+                  <TrialsListPaginated trials={unverifiedTrials} resetKey={listKey} />
                 </div>
               )}
             </>
           ) : (
             // Single-list mode (completed tab or no verified trials)
-            <TrialsListPaginated trials={filteredTrials} trialsPerPage={6} />
+            <TrialsListPaginated trials={filteredTrials} resetKey={listKey} />
           )}
         </div>
-      </div>
+      </main>
 
       <Footer />
     </div>

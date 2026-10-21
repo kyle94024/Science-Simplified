@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, FileText, Globe, Languages, AlertTriangle, ExternalLink, Pencil } from "lucide-react";
+import { BadgeCheck, FileText, Globe, Languages, AlertTriangle, ExternalLink, MapPin, Pencil } from "lucide-react";
 import "./TrialDetailPage.scss";
 import useAuthStore from "@/store/useAuthStore";
 import { tenant } from "@/lib/config";
@@ -17,7 +17,8 @@ import {
   TRANSLATION_LOADING_MESSAGES,
 } from "@/lib/translationWarnings";
 import { useUiText } from "@/hooks/useUiText";
-import { formatTrialAge } from "@/lib/clinicalTrials/ageLabels";
+import { formatLeadership, trialLeadership, trialShortName } from "@/lib/clinicalTrials/display";
+import { formatAgeRange, studyType, trialPhase, trialStatus } from "@/lib/clinicalTrials/labels";
 
 function getTrialIcon(trial) {
   const protocol = trial.raw_data?.protocolSection;
@@ -91,6 +92,15 @@ export default function TrialDetailPage() {
 
   const isVerified = !!trial.verified_by;
   const isCompleted = trial.archive_reason === "completed";
+  const shortName = trialShortName(trial);
+  const leadBy = formatLeadership(trialLeadership(trial));
+  // The sponsor, when "Led by" names someone else (an academic chair of a company trial).
+  const sponsor = protocol?.sponsorCollaboratorsModule?.leadSponsor?.name;
+  const showSponsor = sponsor && !(leadBy || "").includes(sponsor);
+  const status = !isCompleted ? trialStatus(trial.overall_status) : null;
+  const type = studyType(protocol?.designModule?.studyType);
+  const phase = trialPhase(protocol?.designModule?.phases, t);
+  const ages = formatAgeRange(minAge, maxAge, t);
   const hasFindings = !!trial.findings;
   const dateLocale = t.lang === "en" ? undefined : t.lang;
 
@@ -123,211 +133,262 @@ export default function TrialDetailPage() {
       <Navbar />
 
       <main className="trial-detail padding">
-        <div className="boxed trial-detail__card">
-          {/* ---------- ADMIN EDIT (admins only) ---------- */}
-          {isAdmin && (
-            <Link
-              href={`/admin/clinical-trials/${nctId}?tenant=${tenant.shortName}`}
-              className="trial-detail__admin-edit"
-            >
-              <Pencil size={14} /> Edit this trial
-            </Link>
-          )}
+        {/* Header and body on the left, "Study at a glance" beside them (below the
+            header on narrower screens). */}
+        <div className="trial-detail__layout">
+          <div className="trial-detail__card trial-detail__head">
+            {/* ---------- ADMIN EDIT (admins only) ---------- */}
+            {isAdmin && (
+              <Link
+                href={`/admin/clinical-trials/${nctId}?tenant=${tenant.shortName}`}
+                className="trial-detail__admin-edit"
+              >
+                <Pencil size={14} /> Edit this trial
+              </Link>
+            )}
 
-          {/* ---------- VERIFICATION BANNER ---------- */}
-          {/* Patient-facing: generic "Editor Verified" trust badge only — the
-              verifier's identity is tracked internally (verified_by) and shown
-              on the admin side, but never exposed publicly. */}
-          {isVerified && (
-            <div className="trial-detail__verified-banner">
-              <BadgeCheck size={26} />
-              <div>
-                <strong>{t("Editor Verified")}</strong>
-                <span className="trial-detail__verified-date">
-                  {trial.verified_at
-                    ? ` — ${t("reviewed by a subject-matter editor on {date}", {
-                        date: formatVerifiedDate(trial.verified_at, dateLocale),
-                      })}`
-                    : ` — ${t("reviewed by a subject-matter editor")}`}
-                </span>
+            {/* ---------- VERIFICATION BANNER ---------- */}
+            {/* Patient-facing: generic "Editor Verified" trust badge only — the
+                verifier's identity is tracked internally (verified_by) and shown
+                on the admin side, but never exposed publicly. */}
+            {isVerified && (
+              <div className="trial-detail__verified-banner">
+                <BadgeCheck size={26} />
+                <div>
+                  <strong>{t("Editor Verified")}</strong>
+                  <span className="trial-detail__verified-date">
+                    {trial.verified_at
+                      ? ` — ${t("reviewed by a subject-matter editor on {date}", {
+                          date: formatVerifiedDate(trial.verified_at, dateLocale),
+                        })}`
+                      : ` — ${t("reviewed by a subject-matter editor")}`}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ---------- HEADER ---------- */}
-          <header className="trial-detail__header">
-            <div className="trial-detail__title-row">
-              <img
-                src={getTrialIcon(trial)}
-                alt={t("Trial type")}
-                className="trial-detail__icon"
-              />
-              <h1 className="trial-detail__title">{tf("short_title")}</h1>
-            </div>
-
-            {/* Status badges */}
-            <div className="trial-detail__status-badges">
-              {isCompleted && (
-                <span className="trial-detail__status-badge trial-detail__status-badge--completed">
-                  {t("Completed")}
+            {/* ---------- HEADER ---------- */}
+            <header className="trial-detail__header">
+              {shortName && (
+                <span className="trial-detail__short-name" title={t("Official study name")} lang="en">
+                  {shortName}
                 </span>
               )}
-              {hasFindings && (
-                <span className="trial-detail__status-badge trial-detail__status-badge--findings">
-                  <FileText size={12} /> {t("Findings published")}
-                </span>
-              )}
-            </div>
-          </header>
+              <div className="trial-detail__title-row">
+                <img
+                  src={getTrialIcon(trial)}
+                  alt={t("Trial type")}
+                  className="trial-detail__icon"
+                />
+                <h1 className="trial-detail__title">{tf("short_title")}</h1>
+              </div>
 
-          {/* ---------- LANGUAGE SWITCHER ---------- */}
-          <div className="trial-detail__language-switcher">
-            <Languages size={16} />
-            <span className="trial-detail__language-label">{t("Language:")}</span>
-            <button
-              className={`trial-detail__language-btn${selectedLanguage === null ? " trial-detail__language-btn--active" : ""}`}
-              onClick={() => {
-                setSelectedLanguage(null);
-                setTranslation(null);
-              }}
-              disabled={translating}
-            >
-              English
-            </button>
-            {SUPPORTED_LANGUAGES.map((lang) => (
+              {leadBy && (
+                <p className="trial-detail__lead">
+                  {t.rich("Led by {name}", { name: <strong>{leadBy}</strong> })}
+                </p>
+              )}
+
+              {/* Status badges */}
+              <div className="trial-detail__status-badges">
+                {isCompleted && (
+                  <span className="trial-detail__status-badge trial-detail__status-badge--completed">
+                    {t("Completed")}
+                  </span>
+                )}
+                {hasFindings && (
+                  <span className="trial-detail__status-badge trial-detail__status-badge--findings">
+                    <FileText size={12} /> {t("Findings published")}
+                  </span>
+                )}
+              </div>
+            </header>
+
+            {/* ---------- LANGUAGE SWITCHER ---------- */}
+            <div className="trial-detail__language-switcher">
+              <Languages size={16} />
+              <span className="trial-detail__language-label">{t("Language:")}</span>
               <button
-                key={lang.code}
-                className={`trial-detail__language-btn${selectedLanguage === lang.code ? " trial-detail__language-btn--active" : ""}`}
-                onClick={() => handleTranslate(lang.code)}
+                className={`trial-detail__language-btn${selectedLanguage === null ? " trial-detail__language-btn--active" : ""}`}
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  setTranslation(null);
+                }}
                 disabled={translating}
               >
-                {lang.nativeName}
+                English
               </button>
-            ))}
-          </div>
-
-          {translating && selectedLanguage && (
-            <p className="trial-detail__translating">
-              {TRANSLATION_LOADING_MESSAGES[selectedLanguage] ||
-                t("The translation may take a moment. Thank you for your patience.")}
-            </p>
-          )}
-
-          {selectedLanguage && translation && !translating && (
-            <div className="trial-detail__translation-warning">
-              <AlertTriangle size={16} />
-              <div>
-                <p className="trial-detail__warning-native">
-                  {TRANSLATION_WARNINGS[selectedLanguage]?.native}
-                </p>
-                <p className="trial-detail__warning-english">
-                  {TRANSLATION_WARNINGS[selectedLanguage]?.english}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* ---------- META ---------- */}
-          <div className="trial-detail__meta">
-            {locations
-              .slice(0, showAllLocations ? locations.length : 6)
-              .map((loc, i) => (
-                <div key={i} className="meta-item">
-                  <span className="meta-icon">📍</span>
-                  <span>{loc}</span>
-                </div>
-              ))}
-
-            {locations.length > 6 && (
-              <button
-                type="button"
-                className="locations-toggle"
-                onClick={() => setShowAllLocations((prev) => !prev)}
-              >
-                {showAllLocations
-                  ? t("Show fewer locations")
-                  : t("+ {count} more locations", { count: locations.length - 6 })}
-              </button>
-            )}
-
-            {(minAge || maxAge) && (
-              <div className="meta-item">
-                <span className="meta-icon">👤</span>
-                <span>
-                  {t("Ages {min} – {max}", {
-                    min: minAge ? formatTrialAge(minAge, t) : "?",
-                    max: maxAge ? formatTrialAge(maxAge, t) : "?",
-                  })}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* ---------- FINDINGS (if completed + published) ---------- */}
-          {hasFindings && (
-            <section className="trial-detail__section trial-detail__findings">
-              <h2>
-                <FileText size={20} /> {t("Study Findings")}
-              </h2>
-              <div
-                className="trial-detail__findings-content"
-                dangerouslySetInnerHTML={{
-                  __html: tf("findings") || "",
-                }}
-              />
-              {trial.findings_url && (
-                <Link
-                  href={trial.findings_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="trial-detail__findings-link"
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  className={`trial-detail__language-btn${selectedLanguage === lang.code ? " trial-detail__language-btn--active" : ""}`}
+                  onClick={() => handleTranslate(lang.code)}
+                  disabled={translating}
                 >
-                  {t("Read the full paper")} <ExternalLink size={14} />
-                </Link>
-              )}
-            </section>
-          )}
+                  {lang.nativeName}
+                </button>
+              ))}
+            </div>
 
-          {/* ---------- SUMMARY ---------- */}
-          {(trial.ai_summary_manual || trial.ai_summary) && (
-            <section className="trial-detail__section">
-              <h2>{t("About This Study")}</h2>
-              <p className="trial-detail__summary">
-                {tf("ai_summary")}
+            {translating && selectedLanguage && (
+              <p className="trial-detail__translating">
+                {TRANSLATION_LOADING_MESSAGES[selectedLanguage] ||
+                  t("The translation may take a moment. Thank you for your patience.")}
               </p>
-            </section>
-          )}
+            )}
 
-          {/* ---------- QUESTIONS ---------- */}
-          <TrialDetailQuestions trial={{ ...trial, ...buildOverrides(trial, translation) }} />
-
-          {/* ---------- DISCLAIMER (dynamic based on verification) ---------- */}
-          <div className="trial-detail__disclaimer">
-            {isVerified ? (
-              <p>
-                <BadgeCheck size={14} />{" "}
-                {trial.verified_at
-                  ? t("This summary was reviewed and verified by a subject-matter editor on {date}.", {
-                      date: formatVerifiedDate(trial.verified_at, dateLocale),
-                    })
-                  : t("This summary was reviewed and verified by a subject-matter editor.")}
-              </p>
-            ) : (
-              <p>
-                ⚠️ {t("This summary has not yet been reviewed and verified by an editor.")}
-              </p>
+            {selectedLanguage && translation && !translating && (
+              <div className="trial-detail__translation-warning">
+                <AlertTriangle size={16} />
+                <div>
+                  <p className="trial-detail__warning-native">
+                    {TRANSLATION_WARNINGS[selectedLanguage]?.native}
+                  </p>
+                  <p className="trial-detail__warning-english">
+                    {TRANSLATION_WARNINGS[selectedLanguage]?.english}
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 
-          {/* ---------- CTA ---------- */}
-          <div className="trial-detail__actions">
+          {/* ---------- STUDY AT A GLANCE ---------- */}
+          <aside className="trial-detail__aside" aria-labelledby="trial-glance-title">
+            <h2 id="trial-glance-title" className="trial-detail__aside-title">
+              {t("Study at a glance")}
+            </h2>
+            <dl className="trial-detail__facts">
+              {status && (
+                <div>
+                  <dt>{t("Status")}</dt>
+                  <dd>
+                    <span className={`trial-detail__status trial-detail__status--${status.tone}`} title={status.hint ? t(status.hint) : undefined}>
+                      <span className="trial-detail__status-dot" aria-hidden="true" />
+                      {t(status.label)}
+                    </span>
+                  </dd>
+                </div>
+              )}
+              {ages && (
+                <div>
+                  <dt>{t("Ages")}</dt>
+                  <dd>{ages}</dd>
+                </div>
+              )}
+              {type && (
+                <div>
+                  <dt>{t("Study type")}</dt>
+                  <dd>
+                    {t(type.label)}
+                    {phase && ` · ${phase}`}
+                    {type.hint && <span className="trial-detail__fact-hint">{t(type.hint)}</span>}
+                  </dd>
+                </div>
+              )}
+              {showSponsor && (
+                <div>
+                  <dt>{t("Sponsor")}</dt>
+                  <dd>{sponsor}</dd>
+                </div>
+              )}
+              {locations.length > 0 && (
+                <div>
+                  <dt>{t("Locations")}</dt>
+                  <dd>
+                    <ul className="trial-detail__locations">
+                      {locations.slice(0, showAllLocations ? locations.length : 6).map((loc, i) => (
+                        <li key={i}>
+                          <MapPin size={14} aria-hidden="true" />
+                          {loc}
+                        </li>
+                      ))}
+                    </ul>
+                    {locations.length > 6 && (
+                      <button
+                        type="button"
+                        className="locations-toggle"
+                        onClick={() => setShowAllLocations((prev) => !prev)}
+                      >
+                        {showAllLocations
+                          ? t("Show fewer locations")
+                          : t("+ {count} more locations", { count: locations.length - 6 })}
+                      </button>
+                    )}
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt>{t("ClinicalTrials.gov ID")}</dt>
+                <dd>{trial.nct_id}</dd>
+              </div>
+            </dl>
             <Link
               href={`https://clinicaltrials.gov/study/${trial.nct_id}`}
               target="_blank"
-              className="btn btn-primary-green"
+              rel="noopener noreferrer"
+              className="btn btn-primary-green trial-detail__ctgov"
             >
               {t("View full study on ClinicalTrials.gov")}
+              <ExternalLink size={15} aria-hidden="true" />
             </Link>
+          </aside>
+
+          <div className="trial-detail__card trial-detail__body">
+            {/* ---------- FINDINGS (if completed + published) ---------- */}
+            {hasFindings && (
+              <section className="trial-detail__section trial-detail__findings">
+                <h2>
+                  <FileText size={20} /> {t("Study Findings")}
+                </h2>
+                <div
+                  className="trial-detail__findings-content"
+                  dangerouslySetInnerHTML={{
+                    __html: tf("findings") || "",
+                  }}
+                />
+                {trial.findings_url && (
+                  <Link
+                    href={trial.findings_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="trial-detail__findings-link"
+                  >
+                    {t("Read the full paper")} <ExternalLink size={14} />
+                  </Link>
+                )}
+              </section>
+            )}
+
+            {/* ---------- SUMMARY ---------- */}
+            {(trial.ai_summary_manual || trial.ai_summary) && (
+              <section className="trial-detail__section trial-detail__section--first">
+                <h2>{t("About This Study")}</h2>
+                <p className="trial-detail__summary">
+                  {tf("ai_summary")}
+                </p>
+              </section>
+            )}
+
+            {/* ---------- QUESTIONS ---------- */}
+            <TrialDetailQuestions trial={{ ...trial, ...buildOverrides(trial, translation) }} />
+
+            {/* ---------- DISCLAIMER (dynamic based on verification) ---------- */}
+            <div className="trial-detail__disclaimer">
+              {isVerified ? (
+                <p>
+                  <BadgeCheck size={14} />{" "}
+                  {trial.verified_at
+                    ? t("This summary was reviewed and verified by a subject-matter editor on {date}.", {
+                        date: formatVerifiedDate(trial.verified_at, dateLocale),
+                      })
+                    : t("This summary was reviewed and verified by a subject-matter editor.")}
+                </p>
+              ) : (
+                <p>
+                  ⚠️ {t("This summary has not yet been reviewed and verified by an editor.")}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </main>
